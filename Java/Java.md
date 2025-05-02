@@ -31,6 +31,11 @@ type variableName = value;
 
 Une variable possède une __portée__, sera utilisable uniquement dans certains _blocs de code_.
 
+`final` mot-clés rendant la variable immuable.
+```java
+final int n = 28;
+```
+
 ### Types Primitifs
 - `String`: Stockage _chaîne de caractère_. "Hello"
 - `int`: Stockage des _entiers_.
@@ -45,3 +50,12 @@ Une variable possède une __portée__, sera utilisable uniquement dans certains 
 String name = "Al";
 int age = "28";
 ```
+
+### Types complexes
+Un __objet__ peut assembler un _ensemble de données_, ce qui permet la définition de _données complexes_ et donc de __types complexes__.
+```java
+String name = "Al";
+String concat = "Je me nomme" + name;
+```
+
+## Array
