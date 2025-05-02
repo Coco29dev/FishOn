@@ -4,6 +4,8 @@ __Journal de Bord 2.0__ du pêcheur, cette application à pour but d'offrir une 
 
 Mais pour mener ce _projet_ à bien, il me faut passer par l'_apprentissage_ de plusieurs _technologies_, c'est donc pour moi l'occasion de me mettre à l'épreuve mon __but__ et de me fournir les _compétences_ nécessaire à la construction de cette application. Mais aussi vous fournir une __documentation__ précise sur les technologies utilisé. Au cas où certains d'entre __vous__ serez intéressé par l'envie de répliquer notre méthode pour un autre type d'application utilisant ses _langages_.
 
+Ce projet est une collaboration avec [ROBLES Corentin](https://github.com/Coco29dev).
+
 # Back-End
 - __Java__
 
