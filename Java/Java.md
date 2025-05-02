@@ -10,3 +10,10 @@ _Code exécutable_: Suite d'octets, portion programme compilé, compréhensible 
 
 La _compilation_ ce fais par __Java Development Kit(JDK)__ Une fois _compilé_, on obtient du _bytecode_, ce dernier est exécutable par une __Java Virtual Machine(JVM)__, enfin l'exécution du programme compilé ce fais via __Java Runtime Environement(JRE)__.
 
+__Java Development Kit(JDK)__ et __Java Runtime Environement(JRE)__ embarque une __Java Virtual Machine(JVM)__.
+
+Langage __multiplateforme__, ne dépend pas d'un __OS__. Avantage de __portabilité__ des applications.
+
+Langage __typé__: Définit le _type de données_ que l'on manipule.
+
+Langage __Objet__: _Paradigme_ de programmation, consiste à définir et interagir avec des blocs logicielles(__objet__); Ce dernier représente un _concept_, une _idée_, possédant une _structure interne_ et un _comportement_.
