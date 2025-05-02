@@ -17,3 +17,31 @@ Langage __multiplateforme__, ne dépend pas d'un __OS__. Avantage de __portabili
 Langage __typé__: Définit le _type de données_ que l'on manipule.
 
 Langage __Objet__: _Paradigme_ de programmation, consiste à définir et interagir avec des blocs logicielles(__objet__); Ce dernier représente un _concept_, une _idée_, possédant une _structure interne_ et un _comportement_.
+
+## Variables
+Espace mémoire __OS__ qui contient une _donnée_.
+Ce _définit_ par un _nom_ et un _type_.
+```java
+type variableName = value;
+```
+
+- __Déclaration__: Définition _type_ et _nom_ de la variable.
+- __Affecter__: Utilisation _opérateur_ `=`.
+- __Initialiser__: Insertion _donnée_.
+
+Une variable possède une __portée__, sera utilisable uniquement dans certains _blocs de code_.
+
+### Types Primitifs
+- `String`: Stockage _chaîne de caractère_. "Hello"
+- `int`: Stockage des _entiers_.
+- `float`: Stockage _nombres à virgule_.
+- `char`: Stockage _caractère unique_. 'a'
+- `boolean`: Stockage _valeur d'état_.
+- `byte`: Valeur numérique de _-128_ à _127_ inclus.
+- `long`: Valeur numérique de _-2e31_ à _2e31-1_ inclus.
+- `short`: Valeur numérique  de _-32,768_ à _32,767_ inclus.
+
+```java
+String name = "Al";
+int age = "28";
+```
