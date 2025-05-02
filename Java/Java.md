@@ -18,6 +18,35 @@ Langage __typé__: Définit le _type de données_ que l'on manipule.
 
 Langage __Objet__: _Paradigme_ de programmation, consiste à définir et interagir avec des blocs logicielles(__objet__); Ce dernier représente un _concept_, une _idée_, possédant une _structure interne_ et un _comportement_.
 
+
+## Compilation
+__Création fichier.java__.
+```bash
+touch HelloWorld.java
+```
+```java
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello,World!");
+    }
+// Résultat: Hello,World!
+}
+```
+Le _nom du fichier_ doit obligatoirement être le nom de la `public class`.
+
+__Compiler le fichier.java__.
+```bash
+javac HelloWorld/HelloWorld.java
+```
+Doit correspondre au _chemin_ dans lequel le _fichier_ se trouve
+Cela va créer un fichier `HelloWorld.class`, qui contient le _bytecode_ lisible par la __JVM__.
+
+__Exécution programme__.
+```bash
+java HelloWorld.HelloWorld
+```
+
+
 ## Variables
 Espace mémoire __OS__ qui contient une _donnée_.
 Ce _définit_ par un _nom_ et un _type_.
@@ -31,10 +60,16 @@ type variableName = value;
 
 Une variable possède une __portée__, sera utilisable uniquement dans certains _blocs de code_.
 
-`final` mot-clés rendant la variable immuable.
+`final` mot-clé rendant la variable immuable.
 ```java
 final int n = 28;
 ```
+
+`var` mot-clé permettant subtistution au _type_ lors de déclaration de variable.
+```java
+var entier = 5;
+```
+L'utilisatioon de ce _mot-clé_ est à faire avec précaution. Dans le __bytecode__ généré, le __compilateur__ aura défini le bon type à la place de `var`, il fut donc que la variable sois initialisé pour que le __compilateur__ détermine le _type_.
 
 ### Types Primitifs
 - `String`: Stockage _chaîne de caractère_. "Hello"
@@ -58,4 +93,27 @@ String name = "Al";
 String concat = "Je me nomme" + name;
 ```
 
-## Array
+
+## Tableau unidimensionnel
+Stockage de plusieurs _valeurs_ dans une __même variable__.
+```java
+int[] array = {1, 2, 3};
+```
+Accès à un élément du __tableau__ en indiquant son __indice__.
+```java
+array[1]; // Résultat: 2
+```
+
+`new` mot-clé initilisant 3 cases dans un __tableau__.
+```java
+char[] array = new char[3];
+array[0] = 'a';
+array[1] = 'b';
+array[2] = 'c';
+System.out.println(array) // abc
+```
+
+Accès à la longueur du tableau via `.length`
+```java
+System.out.println(array.length); // 3
+```
