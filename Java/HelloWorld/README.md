@@ -15,7 +15,9 @@ public class HelloWorld {
 
 ## Review
 `package HelloWorld;`: Définition du paquet (groupe de classes).
+
 `public class HelloWorld`: Déclaration __classe publique__.
+
 `public static void main(String[] args)`:
 - `public`: Méthode accessible de partout.
 - `static`: Permet l'utilisation sans créer d'_objet_.
