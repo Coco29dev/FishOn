@@ -44,6 +44,6 @@ public class Main {
 
 `public static void main(String[] args)`: Méthode principal
 - `public`: acessible de partout.
-- `static`: Appelé sans créer d'objet Main.
+- `static`: Appelé sans créer d'objet `Main`.
 - `void`: ne retourne rien.
 - `String[] args`: Paramètres passés en __CLI__.
