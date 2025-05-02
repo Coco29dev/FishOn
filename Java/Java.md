@@ -117,3 +117,6 @@ Accès à la longueur du tableau via `.length`
 ```java
 System.out.println(array.length); // 3
 ```
+
+
+## Fonctions
