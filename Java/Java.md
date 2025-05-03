@@ -3,8 +3,10 @@ Langage de __programmation haut niveau orienté objet__. Créer par __James Gosl
 
 Langage __compilé__: _Code source_ est compilé par un _compilateur_ afin de produire un _code exécutable_.
 
-_Code source_: Instrcutions programme rédigées dans un la,gage de programmation crée et maîtrisé par l'homme.
+_Code source_: Instrcutions programme rédigées dans un _langage de programmation_ crée et maîtrisé par l'homme.
+
 _Compilateur_: Programme réalisant _compilation_ code source, code spécifique et optimisé pour le _microprocesseur_.
+
 _Code exécutable_: Suite d'octets, portion programme compilé, compréhensible par l'ordinateur et réalisant une tâche.
 
 
@@ -59,6 +61,8 @@ type variableName = value;
 - __Initialiser__: Insertion _donnée_.
 
 Une variable possède une __portée__, sera utilisable uniquement dans certains _blocs de code_.
+- __Portée de la méthode__: Disponible n'importe où dans la méthode.
+- __Portée du bloc__: tout le code entre les `{}`.
 
 `final` mot-clé rendant la variable immuable.
 ```java
@@ -69,7 +73,7 @@ final int n = 28;
 ```java
 var entier = 5;
 ```
-L'utilisatioon de ce _mot-clé_ est à faire avec précaution. Dans le __bytecode__ généré, le __compilateur__ aura défini le bon type à la place de `var`, il fut donc que la variable sois initialisé pour que le __compilateur__ détermine le _type_.
+L'utilisatioon de ce _mot-clé_ est à faire avec précaution. Dans le __bytecode__ généré, le __compilateur__ aura défini le bon _type_ à la place de `var`, il faut donc que la variable sois initialisé pour que le __compilateur__ détermine le _type_.
 
 ### Types Primitifs
 - `String`: Stockage _chaîne de caractère_. "Hello"
@@ -119,4 +123,133 @@ System.out.println(array.length); // 3
 ```
 
 
-## Fonctions
+## Méthodes/Fonctions
+Sous-programme qui permet d'effectuer un _ensemble d'instruction_ par simple _appel_ de cette dernière.
+
+Doit être _déclaré_ au sein d'une __classe__.
+
+__Java__ fournit des __méthodes/fonctions__ intégrées.
+
+Possède :
+- Une signature(_prototype_).
+- Une implémentation, correspond aux _instructions_.
+```java
+public static void main(String[] args)
+```
+![Méthode](méthode.png)
+
+### Paramètres/Arguments
+Des _infromations_ peuvent être transmises aux __méthodes/fonctions__. Ses __paramètres/arguments__ agissent comme des variables au sein de la __méthode/fonction__.
+```java
+public static void affiche(final String texte) {
+    System.out.println(texte);
+}
+```
+La __portée__ du __paramètre/argument__ est la __méthode/focntion__. En dehors de cette dernière impossible d'y accèder.
+
+`final` peut-être mis devant les __paramètres/arguments__, c'est une _bonne pratique_ car ils ne sont pas voué à être _modifié_.
+
+## Récursive
+__Méthode/Fonction__ s'appelant elle-même. Permet la _décomposition_ des _problèmes complexes_ en _problèmes simples_.
+Cette dernière doit possèder un __critère d'arrêt__ pour éviter de _boucler indéfiniment_.
+```java
+public static void décompte(final int valeur) {
+    if(valeur >= 0) {
+        System.out.println(valeur);
+        décompte(valeur-1);
+    }
+}
+```
+
+
+## Manipualtion de données
+Deux point fondamentaux __structures conditionnelles__ et __structures itérative__.
+
+Les __variables__, __fonctions__, __conditions__, __itérations__ appatiennent au __paradigme de programmation structurée__:
+- Utilisation des _structures de contrôle_ pour améliorer la _clarté_, _qualité_ et le _temps_ de dévelopement d'un programme.
+- Constitue un _sous-ensemble_ de la __programation impérative__.
+
+
+### Opérateurs relationnels
+- `a < b`: inférieur à
+- `a <= b`: inférieur ou égal à
+- `a > b`: Supérieur à
+- `a >= b`: Supérieur ou égale à
+- `a == b`: Égal à
+- `a != b`: Différent de
+
+### Opérateurs conditionnels
+- `&&`: ET
+- `||`: OU
+
+### Opérateurs comparasion de type
+- `instanceof`: Compare un _objet_ à un _type spécifique_
+
+
+### L'instruction if
+- `if`: Spécifie un _bloc de code_ à exécuter, si une __condition__ est vrai.
+- `else`: Spécifie un _bloc de code_ à exécuter, si la __même condition__ est fausse.
+- `else if`: Spécifie une __nouvelle condition__ à tester, si la première __condition__ est fausse.
+```java
+int i = 20;
+
+if(i > 20) {
+    System.out.println(i);
+} // Faux, donc ce bloc est ignoré
+else if(i < 20) {
+    System.out.println(i);
+} // Faux, donc ce bloc est ignoré
+else {
+    System.out.println(i);
+} // Les deux conditions sont fausses, ce bloc s'exécute
+// 20
+```
+
+### Condition boolean
+Utilisation des _opérateurs de comparaison_ `==` ou `!=`.
+```java
+public static void egal(final int value) {
+    // Évalué et renvoi true ou false
+    if(value == 0) {
+        System.out.println("Value est égale à zéro.");
+    } else {
+        System.out.println("Value n'est pas égale à zéro.");
+    }
+}
+```
+
+Utilisation paramètre de __type boolean__.
+```java
+public static void meteo(final boolean beauTemps) {
+    if(beauTemps) {
+        System.out.println("Je vais à la plage");
+    } else {
+        System.out.println("Je vais au cinéma");
+    }
+}
+```
+__Java__ évalue directement le contenu, donc _opérateur de comparaison_ pas nécessaire dans ce cadre.
+
+Utilisation de la négation `!`.
+```java
+public static void meteo(final boolean beau) {
+    if (!beau) {
+        System.out.println("Je vais à la plage");
+    } else {
+        System.out.println("Je vais au cinéma");
+    }
+}
+```
+
+Comparaison __chaîne de caractères__ `.equals`.
+```java
+public static void meteo(final String temps) {
+    if(temps.equals("soleil")) {
+        System.out.println("Je vais à la plage");
+    }
+}
+```
+
+
+## Structures conditionnelles
+_Instructions_ qui permettent de tester si une __condition__ est vraie ou non. Associées à des _strucutres_ qui se répètent suivant la __condition__ => __Structures de boucle__.
