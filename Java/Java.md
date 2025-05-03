@@ -149,6 +149,7 @@ La __portée__ du __paramètre/argument__ est la __méthode/focntion__. En dehor
 
 `final` peut-être mis devant les __paramètres/arguments__, c'est une _bonne pratique_ car ils ne sont pas voué à être _modifié_.
 
+
 ## Récursive
 __Méthode/Fonction__ s'appelant elle-même. Permet la _décomposition_ des _problèmes complexes_ en _problèmes simples_.
 Cette dernière doit possèder un __critère d'arrêt__ pour éviter de _boucler indéfiniment_.
@@ -169,7 +170,6 @@ Les __variables__, __fonctions__, __conditions__, __itérations__ appatiennent a
 - Utilisation des _structures de contrôle_ pour améliorer la _clarté_, _qualité_ et le _temps_ de dévelopement d'un programme.
 - Constitue un _sous-ensemble_ de la __programation impérative__.
 
-
 ### Opérateurs relationnels
 - `a < b`: inférieur à
 - `a <= b`: inférieur ou égal à
@@ -185,6 +185,8 @@ Les __variables__, __fonctions__, __conditions__, __itérations__ appatiennent a
 ### Opérateurs comparasion de type
 - `instanceof`: Compare un _objet_ à un _type spécifique_
 
+### Structures conditionnelles
+_Instructions_ qui permettent de tester si une __condition__ est vraie ou non.
 
 ### L'instruction if
 - `if`: Spécifie un _bloc de code_ à exécuter, si une __condition__ est vrai.
@@ -250,6 +252,17 @@ public static void meteo(final String temps) {
 }
 ```
 
+### Opérateur ternaire
+Composé de trois _opérandes_, cela permet un _raccouci de syntaxe_.
+```java
+variable = (condition) ? expressionTrue : expressionFalse;
 
-## Structures conditionnelles
-_Instructions_ qui permettent de tester si une __condition__ est vraie ou non. Associées à des _strucutres_ qui se répètent suivant la __condition__ => __Structures de boucle__.
+int time = 20;
+
+String result = (time < 18) ? "GoodDay." : "GoodNigth.";
+
+System.out.println(result); // GoodDay.
+```
+
+### Structure itérative
+Exécution _bloc d'instructions_ à répétition, celle-ci _dépendant_ d'une __condition__.
