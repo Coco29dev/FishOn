@@ -70,6 +70,22 @@ public static void len() {
 - `i < 9`: Définition condition fin de boucle.
 - `i++`: Incrémentation de i.
 
+### Boucle  For-Each
+Parcourir éléments d'un tableau(ou d'autres ensemble).
+```java
+String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+for (String i : cars) {
+  System.out.println(i);
+}
+System.out.println();
+/*
+Volvo
+BMW
+Ford
+Mazda
+*/ 
+```
+
 ### Boucles imbriquées
 __Boucle interne__ exécutée à chaque itération de la __boucle externe__.
 ```java
