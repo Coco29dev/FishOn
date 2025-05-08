@@ -13,6 +13,24 @@ public static void main(String[] args)
 ```
 ![Méthode](méthode.png)
 
+__Qualificateur de visibilité__:
+- `private`.
+- `protected`.
+- Ne rien mettre qui représente la visibilité `package`.
+
+__Méthodes Statiques__:
+- Appartiennent à la __classe__ elle-même.
+- Ne peuvent pas accèder directement aux __attributs d'instance__.
+- Sont appelées sur les __classes__: `Voiture.demarrer()`.
+- Représentent généralement des _fonctionnalités_ liées à la __classe__ mais pas à un __objet__.
+
+__Méthodes d'instances__:
+- Appartiennent à une instance(__objet__) de la __classe__.
+- Accès aux __attributs d'instance__ de la __classe__.
+- Appelées sur l'__objet__: `maVoiture.demarrer()`.
+- Représente _comportement_ de l'__objet__.
+
+
 ## Paramètres/Arguments
 Des _infromations_ peuvent être transmises aux __méthodes/fonctions__. Ses __paramètres/arguments__ agissent comme des variables au sein de la __méthode/fonction__.
 ```java
