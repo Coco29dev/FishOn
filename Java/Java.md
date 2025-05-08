@@ -332,9 +332,9 @@ public static void len() {
     }
 }
 ```
-`int i = 0`: Déclaration / Initialisation i.
-`i < 9`: Définition condition fin de boucle.
-`i++`: Incrémentation de i.
+- `int i = 0`: Déclaration / Initialisation i.
+- `i < 9`: Définition condition fin de boucle.
+- `i++`: Incrémentation de i.
 
 ### Boucles imbriquées
 __Boucle interne__ exécutée à chaque itération de la __boucle externe__.
