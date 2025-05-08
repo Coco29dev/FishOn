@@ -33,3 +33,20 @@ __Caractéristique__:
 - Peut avoir __attributs et méthodes__.
 
 __Instance__: Réalisation concrète d'une __classe__. Si la __classe__ est le "_plan_", __l'instance__ est la "_maison_" construite selon ce plan.
+
+```java
+Voiture maVoiture = new Voiture();
+maVoiture.marque = "Renault";
+maVoiture.modele = "C15";
+maVoiture.annee = "1907";
+maVoiture.demarrer();
+```
+
+# Encapsulation
+Consiste à masquer les _détails internes_ d'un __objet__ et à exposer uniquement ce qui est nécessaire.
+
+__Qualificateur de visibilité__:
+- `public`: Accessible de partout.
+- `private`: Accesible uniquement dans la __classe__.
+- `protected`: Accesible dans la __classe__ et __sous-classe__.
+- (default): Accesible dans le même package
