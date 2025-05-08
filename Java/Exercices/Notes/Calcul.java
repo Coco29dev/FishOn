@@ -1,4 +1,4 @@
-package Notes;
+package Exercices.Notes;
 
 public class Calcul {
     public static double moyenne(double[] notes) {

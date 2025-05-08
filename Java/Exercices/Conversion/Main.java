@@ -1,4 +1,4 @@
-package Conversion;
+package Exercices.Conversion;
 
 public class Main {
     public static void main(String[] args) {

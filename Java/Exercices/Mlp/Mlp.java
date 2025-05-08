@@ -1,4 +1,4 @@
-package Mlp;
+package Exercices.Mlp;
 
 public class Mlp {
     public static void main(String[] args) {

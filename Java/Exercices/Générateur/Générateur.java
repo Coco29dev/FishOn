@@ -1,4 +1,4 @@
-package Générateur;
+package Exercices.Générateur;
 
 // Importation classe Array du package java.util
 // Cette classe contient des méthodes de manipulation des tableaux
