@@ -2,8 +2,8 @@ package Mlp;
 
 public class Mlp {
     public static void main(String[] args) {
-        
-        int nbDebut = 3;
+
+        int nbDebut = 6;
         int nbFin = 7;
         int mul = 5;
 
@@ -21,6 +21,15 @@ public class Mlp {
             }
             // Passer à la ligne suivante
             System.out.println();
+        }
+        genMul(2, 8);
+    }
+    
+    // Fonction génération table de multiplication
+    public static void genMul(int nb, int mul) {
+        for (int i = 1; i <= mul; i++) {
+            int sum = nb * i;
+            System.out.println(nb + "x" + i + "= " + sum);
         }
     }
 }

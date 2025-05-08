@@ -7,8 +7,8 @@ package Mlp;
 
 public class Mlp {
     public static void main(String[] args) {
-        
-        int nbDebut = 3;
+
+        int nbDebut = 6;
         int nbFin = 7;
         int mul = 5;
 
@@ -27,30 +27,21 @@ public class Mlp {
             // Passer à la ligne suivante
             System.out.println();
         }
+        genMul(2, 8);
+    }
+    
+    // Fonction génération table de multiplication
+    public static void genMul(int nb, int mul) {
+        for (int i = 1; i <= mul; i++) {
+            int sum = nb * i;
+            System.out.println(nb + "x" + i + "= " + sum);
+        }
     }
 }
 ```
 
 ## Résultat
 ```bash
-3x1 = 3
-3x2 = 6
-3x3 = 9
-3x4 = 12
-3x5 = 15
-
-4x1 = 4
-4x2 = 8
-4x3 = 12
-4x4 = 16
-20 est un multiple de 10
-
-5x1 = 5
-10 est un multiple de 10
-5x3 = 15
-20 est un multiple de 10
-5x5 = 25
-
 6x1 = 6
 6x2 = 12
 6x3 = 18
@@ -62,4 +53,13 @@ public class Mlp {
 7x3 = 21
 7x4 = 28
 7x5 = 35
+
+2x1= 2
+2x2= 4
+2x3= 6
+2x4= 8
+2x5= 10
+2x6= 12
+2x7= 14
+2x8= 16
 ```
