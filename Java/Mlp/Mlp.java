@@ -22,6 +22,8 @@ public class Mlp {
             // Passer à la ligne suivante
             System.out.println();
         }
+
+        // Appel fonction
         genMul(2, 8);
     }
     
