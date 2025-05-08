@@ -1,0 +1,23 @@
+# Tableau unidimensionnel
+Stockage de plusieurs _valeurs_ dans une __même variable__.
+```java
+int[] array = {1, 2, 3};
+```
+Accès à un élément du __tableau__ en indiquant son __indice__.
+```java
+array[1]; // Résultat: 2
+```
+
+`new` mot-clé initilisant 3 cases dans un __tableau__.
+```java
+char[] array = new char[3];
+array[0] = 'a';
+array[1] = 'b';
+array[2] = 'c';
+System.out.println(array) // abc
+```
+
+Accès à la longueur du tableau via `.length`
+```java
+System.out.println(array.length); // 3
+```
