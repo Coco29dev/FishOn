@@ -7,6 +7,7 @@ package Mlp;
 
 public class Mlp {
     public static void main(String[] args) {
+        
         int nbDebut = 3;
         int nbFin = 7;
         int mul = 5;
