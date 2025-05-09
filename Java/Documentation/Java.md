@@ -38,12 +38,12 @@ Le _nom du fichier_ doit obligatoirement être le nom de la `public class`.
 
 __Compiler le fichier.java__.
 ```bash
-javac HelloWorld/HelloWorld.java
+javac Exercices/Bloc/Main.java Exercices/Bloc/Bloc.java
 ```
-Doit correspondre au _chemin_ dans lequel le _fichier_ se trouve
+Être dans le répertoire parent.
 Cela va créer un fichier `HelloWorld.class`, qui contient le _bytecode_ lisible par la __JVM__.
 
 __Exécution programme__.
 ```bash
-java HelloWorld.HelloWorld
+java Exercices.Bloc.Main
 ```

@@ -62,7 +62,7 @@ public class compteBancaire {
     private double solde;
 
     // Méthode publique pour manipuler l'attribut
-    publis double getSolde() {
+    public double getSolde() {
         if (montant > 0) {
             solde += montant;
         }
