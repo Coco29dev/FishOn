@@ -3,6 +3,7 @@ Stockage de plusieurs _valeurs_ dans une __même variable__.
 ```java
 int[] array = {1, 2, 3};
 ```
+
 Accès à un élément du __tableau__ en indiquant son __indice__.
 ```java
 array[1]; // Résultat: 2

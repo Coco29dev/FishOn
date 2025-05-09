@@ -45,6 +45,7 @@ La __portée__ du __paramètre/argument__ est la __méthode/focntion__. En dehor
 
 # Récursive
 __Méthode/Fonction__ s'appelant elle-même. Permet la _décomposition_ des _problèmes complexes_ en _problèmes simples_.
+
 Cette dernière doit possèder un __critère d'arrêt__ pour éviter de _boucler indéfiniment_.
 ```java
 public static void décompte(final int valeur) {

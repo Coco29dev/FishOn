@@ -92,7 +92,9 @@ public class Person {
 
 # Héritage
 _Mécanisme_ permettant à une __classe__ d'obtenir les _attributs_ et _méthodes_ d'une autre __classe__.
+
 `extends` mot-clé permettant l'__héritage__.
+
 `super` mot-clé permettant accès aux _attributs_ de la __classe parent__.
 
 ```java
@@ -159,6 +161,7 @@ Capacité d'un __objet__ à prendre plusieurs formes, comportements différents 
 - Redéfinition de _méthodes_(_override_).
 - Surcharge de _méthodes_(_overload_).
 - Utilisation d'_interfaces_.
+
 Se produit lorsque plusieurs __classes__ sont liées les une aux autres par __héritage__.
 
 ```java
@@ -184,6 +187,8 @@ public class Calculateur {
 
 # Abstraction
 _Processus_ de mise en évidence des caractéristiques essentielles d'un __objet__ tout en masquant les détails inutiles.
+
 `abstract` mot-clé modifocateur sans accès.
+
 - __Classe abstraite__: __Classe restreinte__ qui ne peut être utilisé pour créer des __objets__(pour y accèder il faut hérité d'une autre __classe__).
 - __Méthode abstraite__: Utilisable seulement dans une __classe abstraite__, ne possède pas de corps, il est fourni par la __sous-classe__.

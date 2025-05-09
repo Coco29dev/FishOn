@@ -41,6 +41,7 @@ __Compiler le fichier.java__.
 javac Exercices/Bloc/Main.java
 ```
 Être dans le répertoire parent.
+
 Cela va créer un fichier `Main.class`, qui contient le _bytecode_ lisible par la __JVM__.
 
 __Exécution programme__.
