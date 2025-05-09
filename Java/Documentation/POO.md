@@ -183,5 +183,7 @@ public class Calculateur {
 ```
 
 # Abstraction
-
-
+_Processus_ de mise en évidence des caractéristiques essentielles d'un __objet__ tout en masquant les détails inutiles.
+`abstract` mot-clé modifocateur sans accès.
+- __Classe abstraite__: __Classe restreinte__ qui ne peut être utilisé pour créer des __objets__(pour y accèder il faut hérité d'une autre __classe__).
+- __Méthode abstraite__: Utilisable seulement dans une __classe abstraite__, ne possède pas de corps, il est fourni par la __sous-classe__.

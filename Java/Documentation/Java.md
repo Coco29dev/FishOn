@@ -38,10 +38,10 @@ Le _nom du fichier_ doit obligatoirement être le nom de la `public class`.
 
 __Compiler le fichier.java__.
 ```bash
-javac Exercices/Bloc/Main.java Exercices/Bloc/Bloc.java
+javac Exercices/Bloc/Main.java
 ```
 Être dans le répertoire parent.
-Cela va créer un fichier `Bloc.class`, qui contient le _bytecode_ lisible par la __JVM__.
+Cela va créer un fichier `Main.class`, qui contient le _bytecode_ lisible par la __JVM__.
 
 __Exécution programme__.
 ```bash
