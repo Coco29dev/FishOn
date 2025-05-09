@@ -41,7 +41,7 @@ __Compiler le fichier.java__.
 javac Exercices/Bloc/Main.java Exercices/Bloc/Bloc.java
 ```
 Être dans le répertoire parent.
-Cela va créer un fichier `HelloWorld.class`, qui contient le _bytecode_ lisible par la __JVM__.
+Cela va créer un fichier `Bloc.class`, qui contient le _bytecode_ lisible par la __JVM__.
 
 __Exécution programme__.
 ```bash

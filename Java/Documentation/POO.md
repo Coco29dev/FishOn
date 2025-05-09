@@ -88,10 +88,12 @@ public class Person {
         this.name = newName;
     }
 }
-
+```
 
 # Héritage
 _Mécanisme_ permettant à une __classe__ d'obtenir les _attributs_ et _méthodes_ d'une autre __classe__.
+`extends` mot-clé permettant l'__héritage__.
+`super` mot-clé permettant accès aux _attributs_ de la __classe parent__.
 
 ```java
 // Classe parent/super-classe
@@ -129,3 +131,57 @@ public class Chien extends Animal {
         System.out.println(nom + " mange des croquettes.")
     }
 }
+```
+
+`final` mot-clé interdisant l'__héritage__ à d'autres __classes__.
+
+```java
+public final class Personne {
+    ...
+}
+
+class Femme extends Personne {
+    ...
+}
+```
+
+Voici le message d'erreur :
+
+```bash
+Main.java:9: error: cannot inherit from final Personne
+class Main extends Personne {
+                  ^
+1 error)
+```
+
+# Polymorphisme
+Capacité d'un __objet__ à prendre plusieurs formes, comportements différents :
+- Redéfinition de _méthodes_(_override_).
+- Surcharge de _méthodes_(_overload_).
+- Utilisation d'_interfaces_.
+Se produit lorsque plusieurs __classes__ sont liées les une aux autres par __héritage__.
+
+```java
+// Se référer à l'exemple section Héritage
+Animal animal = new Chien("Rex", "Akita Inu");
+animal.manger(); // Appelle la méthode manger() de Chien, pas celle d'Animal
+```
+
+# Polymorphisme à la compilation
+__Surcharge de méthodes__, aucun besoin d'__héritage__, cela fonctionne via la __signature__ des _méthodes_ qui est différente.
+```java
+// Exemple de surcharge de méthodes (même nom, paramètres différents)
+public class Calculateur {
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public double add(double a, double b) {
+    return a + b;
+    }
+}
+```
+
+# Abstraction
+
+
