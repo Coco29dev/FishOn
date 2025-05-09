@@ -1,5 +1,6 @@
 # Bloc
 Créez une classe nommée Bloc
+
     - Ajoutez un attribut longueur, un attribut largeur, un attribut hauteur. Les trois attributs seront de type int et de visibilité privée.
     - Ajoutez un constructeur paramétré permettant de définir la valeur des trois attributs.
     - Ajouter l’accesseur pour chaque attribut.
