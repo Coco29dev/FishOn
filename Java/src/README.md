@@ -13,7 +13,7 @@ Créer un gestionnaire de tâches simple qui permet de créer, afficher et marqu
 ### Categorie.java
 Créez une __énumération__ avec différentes catégories de tâches(`ETUDE`, `PERSONNEL`).
 
-## src/modele/Tache.java
+### Tache.java
 Créez une classe pour représenter une tâche avec :
 
 - Des __attributs__ pour le _titre_, la _description_, la _catégorie_ et si la tâche est terminée.
