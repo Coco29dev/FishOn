@@ -192,3 +192,34 @@ _Processus_ de mise en évidence des caractéristiques essentielles d'un __objet
 
 - __Classe abstraite__: __Classe restreinte__ qui ne peut être utilisé pour créer des __objets__(pour y accèder il faut hérité d'une autre __classe__).
 - __Méthode abstraite__: Utilisable seulement dans une __classe abstraite__, ne possède pas de corps, il est fourni par la __sous-classe__.
+
+Une __classe abstraite__ peut avoir __méthodes abstraite et régulières__.
+
+```java
+// Classe absraite
+public abstract class Forme {
+    // Méthode abstraite sans implémentation
+    public abstract doube calcul();
+
+    // Méthode concrète
+    public void afficher() {
+        System.out.println("Forme géométrique");
+    }
+}
+
+// Implémentation concrète
+public class Cercle extends Forme {
+    // Attribut privé
+    private double rayon;
+
+    // Constructeur
+    public Cercle(double rayon) {
+        this.rayon = rayon;
+    }
+
+    @Override
+    public double calcul() {
+        return Math.PI * rayon * rayon
+    }
+}
+```
