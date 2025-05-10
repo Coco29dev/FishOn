@@ -10,10 +10,10 @@ Créer un gestionnaire de tâches simple qui permet de créer, afficher et marqu
 - Interfaces
 - Réduction du couplage via l'injection de dépendances
 
-### Categorie.java
+## Categorie.java
 Créez une __énumération__ avec différentes catégories de tâches(`ETUDE`, `PERSONNEL`).
 
-### Tache.java
+## Tache.java
 Créez une classe pour représenter une tâche avec :
 
 - Des __attributs__ pour le _titre_, la _description_, la _catégorie_ et si la tâche est terminée.
