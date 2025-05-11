@@ -34,15 +34,21 @@ Créez une interface qui définit les méthodes pour :
 ## StockageTableau.java
 Implémentez l'interface StockageTaches en utilisant un tableau simple (pas de collections) :
 
-- Utilisez un tableau de Tache avec une taille fixe (ex: 10)
-- Gardez une variable pour suivre le nombre de tâches actuellement stockées
-- Implémentez toutes les méthodes définies dans l'interface
+- Utilisez un tableau de Tache avec une taille fixe (ex: 10).
+- Gardez une variable pour suivre le nombre de tâches actuellement stockées.
+- Implémentez toutes les méthodes définies dans l'interface.
 
 ## GestionnaireTaches.java
 Créez une interface qui définit les méthodes pour :
 
-- Créer une nouvelle tâche
-- Afficher toutes les tâches
-- Marquer une tâche comme terminée
-- Afficher les tâches terminées
-- Afficher les tâches non terminées
+- Créer une nouvelle tâche.
+- Afficher toutes les tâches.
+- Marquer une tâche comme terminée.
+- Afficher les tâches terminées.
+- Afficher les tâches non terminées.
+
+## GestionnaireTachesImpl.java
+Implémentez l'interface GestionnaireTaches :
+
+- Utilisez l'injection de dépendances pour recevoir une instance de StockageTaches.
+- Implémentez toutes les méthodes définies dans l'interface.
