@@ -37,3 +37,12 @@ Implémentez l'interface StockageTaches en utilisant un tableau simple (pas de c
 - Utilisez un tableau de Tache avec une taille fixe (ex: 10)
 - Gardez une variable pour suivre le nombre de tâches actuellement stockées
 - Implémentez toutes les méthodes définies dans l'interface
+
+## GestionnaireTaches.java
+Créez une interface qui définit les méthodes pour :
+
+- Créer une nouvelle tâche
+- Afficher toutes les tâches
+- Marquer une tâche comme terminée
+- Afficher les tâches terminées
+- Afficher les tâches non terminées

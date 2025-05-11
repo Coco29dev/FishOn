@@ -1,14 +1,16 @@
 package src.modele;
 
+import src.modele.Categorie;
+
 public class Tache {
     // Variable d'instance/Attribut privé
     private String titre;
     private String description;
-    private int categorie;
+    private Categorie categorie;
     private boolean termine;
 
     // Constructeur paramétré
-    public Tache(String titre, String description, int categorie, boolean termine) {
+    public Tache(String titre, String description, Categorie categorie, boolean termine) {
         this.titre = titre;
         this.description = description;
         this.categorie = categorie;
@@ -41,12 +43,8 @@ public class Tache {
         this.description = description;
     }
 
-    public void setCategorie(int categorie) {
-        if (categorie >= 1 && categorie <= 3) {
+    public void setCategorie(Categorie categorie) {
             this.categorie = categorie;
-        } else {
-            System.out.println("Error, seulement catégorie 1, 2, 3");
-        }
     }
 
     // Méthode d'instance tache terminé
