@@ -3,8 +3,8 @@ package src.stockage;
 import src.modele.Tache;
 public class StockageTableau implements StockageTaches {
     // Attributs
-    Tache[] tableauTache; // Stockage taches
-    int nbTaches; // Compteur tâches
+    private Tache[] tableauTache; // Stockage taches
+    private int nbTaches; // Compteur tâches
 
     // Constructeur
     public StockageTableau() {
@@ -69,6 +69,7 @@ public class StockageTableau implements StockageTaches {
     }
 
     // Implémentation méthode totalTache
+    @Override
     public int totalTache() {
         return nbTaches;
     }

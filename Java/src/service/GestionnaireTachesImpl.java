@@ -19,7 +19,7 @@ public class GestionnaireTachesImpl implements GestionnaireTaches {
     public Tache nouvelleTache(String titre, String description, Categorie categorie) {
 
         // Création nouvelle tache via instanciation classe Tache
-        Tache nouvelleTache = new Tache(titre, description, categorie);
+        Tache nouvelleTache = new Tache(titre, description, categorie, false);
 
         // Ajouter au stockage
         stockageTaches.addTache(nouvelleTache);
@@ -30,7 +30,7 @@ public class GestionnaireTachesImpl implements GestionnaireTaches {
     // Implémentation méthode afficherTaches()
     @Override
     public Tache[] afficherTaches() {
-        return stockageTaches.allTaches();
+        return stockageTaches.allTache();
     }
 
     // Implémentation méthode tâche terminée
@@ -56,7 +56,7 @@ public class GestionnaireTachesImpl implements GestionnaireTaches {
     public Tache[] afficherTachesTermine() {
 
         // Récupération toutes les tâches
-        Tache taches = stockageTaches.allTache();
+        Tache[] taches = stockageTaches.allTache();
 
         // Comptage nb de tâches terminées
         int nbTachesTermine = 0;
@@ -86,7 +86,7 @@ public class GestionnaireTachesImpl implements GestionnaireTaches {
     public Tache[] afficherTachesNonTermine() {
 
         // Récupération toutes les tâches
-        Tache taches = stockageTaches.allTache();
+        Tache[] taches = stockageTaches.allTache();
 
         // Comptage tâches pas terminées
         int nbTachesNonTermine = 0;
@@ -97,13 +97,13 @@ public class GestionnaireTachesImpl implements GestionnaireTaches {
         }
 
         // Création tableau tâches non terminées
-        Tache [] tachesNonTermine = new Tache[nbTachesNonTermine];
+        Tache[] tachesNonTermine = new Tache[nbTachesNonTermine];
 
         // Remplissage tableau
         int i = 0;
         for (Tache tache : taches) {
             if (!tache.isTermine()) {
-                tacheNonTermine[i] = tache;
+                tachesNonTermine[i] = tache;
                 i++;
             }
         }

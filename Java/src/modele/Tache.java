@@ -10,7 +10,7 @@ public class Tache {
     private boolean termine;
 
     // Constructeur paramétré
-    public Tache(String titre, String description, Categorie categorie, boolean termine) {
+    public Tache(String titre, String description, Categorie categorie) {
         this.titre = titre;
         this.description = description;
         this.categorie = categorie;
@@ -26,7 +26,7 @@ public class Tache {
         return description;
     }
 
-    public int getCategorie() {
+    public Categorie getCategorie() {
         return categorie;
     }
 
@@ -44,14 +44,14 @@ public class Tache {
     }
 
     public void setCategorie(Categorie categorie) {
-            this.categorie = categorie;
+        this.categorie = categorie;
     }
 
     // Méthode d'instance tache terminé
     public void tacheTermine() {
         this.termine = true;
     }
-    
+
     // Méthode d'instance rénitialisation état tache
     public void tacheNonTermine() {
         this.termine = false;
@@ -60,7 +60,7 @@ public class Tache {
     // Méthode d'instance information tache
     public String toString() {
         return "Tâche: " + titre + " (" + categorie + ")" +
-               "\nDescription: " + description +
-               "\nStatut: " + (terminee ? "Terminée" : "En cours");
+                "\nDescription: " + description +
+                "\nStatut: " + (termine ? "Terminée" : "En cours");
     }
 }
