@@ -1,4 +1,4 @@
-package POO.HierarchieClasse;
+package HierarchieClasse;
 
 public abstract class Vehicule {
 

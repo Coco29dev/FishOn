@@ -1,4 +1,4 @@
-package POO.HierarchieClasse;
+package HierarchieClasse;
 
 public class Moto extends Vehicule {
 
