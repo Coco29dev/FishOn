@@ -1,4 +1,4 @@
-package ExVaribalesTypes.ConvTypes;
+package VaribalesTypes.ConvTypes;
 
 // Classe fournissant méthode pour manipulation dates
 import java.time.LocalDate;

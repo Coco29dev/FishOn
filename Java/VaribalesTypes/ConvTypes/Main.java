@@ -1,4 +1,4 @@
-package ExVaribalesTypes.ConvTypes;
+package VaribalesTypes.ConvTypes;
 
 import java.time.LocalDate;
 // Obtenir input utilisateur
