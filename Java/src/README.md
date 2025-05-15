@@ -14,7 +14,7 @@ Créer un gestionnaire de tâches simple qui permet de créer, afficher et marqu
 Créez une __énumération__ avec différentes catégories de tâches(`ETUDE`, `PERSONNEL`).
 
 ## Tache.java
-Créez une classe pour représenter une tâche avec :
+Créez une __classe__ pour représenter une tâche avec :
 
 - Des __attributs__ pour le _titre_, la _description_, la _catégorie_ et si la tâche est terminée.
 - Un __constructeur__ approprié.
@@ -23,7 +23,7 @@ Créez une classe pour représenter une tâche avec :
 - Une __méthode__ `toString()` pour afficher les informations de la tâche.
 
 ## StockageTaches.java
-Créez une interface qui définit les méthodes pour :
+Créez une `interface` qui définit les méthodes pour :
 
 - Ajouter une tâche.
 - Récupérer toutes les tâches.
@@ -32,14 +32,14 @@ Créez une interface qui définit les méthodes pour :
 - Obtenir le nombre total de tâches.
 
 ## StockageTableau.java
-Implémentez l'interface StockageTaches en utilisant un tableau simple (pas de collections) :
+Implémentez l'interface `StockageTaches` en utilisant un tableau simple (pas de collections) :
 
 - Utilisez un tableau de Tache avec une taille fixe (ex: 10).
 - Gardez une variable pour suivre le nombre de tâches actuellement stockées.
 - Implémentez toutes les méthodes définies dans l'interface.
 
 ## GestionnaireTaches.java
-Créez une interface qui définit les méthodes pour :
+Créez une `interface` qui définit les méthodes pour :
 
 - Créer une nouvelle tâche.
 - Afficher toutes les tâches.
@@ -48,7 +48,14 @@ Créez une interface qui définit les méthodes pour :
 - Afficher les tâches non terminées.
 
 ## GestionnaireTachesImpl.java
-Implémentez l'interface GestionnaireTaches :
+Implémentez l'interface `GestionnaireTaches` :
 
 - Utilisez l'injection de dépendances pour recevoir une instance de StockageTaches.
 - Implémentez toutes les méthodes définies dans l'interface.
+
+## Main.java
+Créez une classe principale avec une méthode `main` qui :
+
+- Initialise les composants avec injection de dépendance.
+- Propose un menu simple en ligne de commande.
+- Permet à l'utilisateur d'interagir avec le gestionnaire de tâches.
