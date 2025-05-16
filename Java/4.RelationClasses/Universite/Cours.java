@@ -20,7 +20,7 @@ public class Cours {
     }
 
     public LinkedList<Etudiant> listeEtudiant() {
-        LinkedList<Etudiant> copyListe = etudiantsInscrits.clone();
+        LinkedList<Etudiant> copyListe = new LinkedList<>(etudiantsInscrits);
         return copyListe;
     }
 

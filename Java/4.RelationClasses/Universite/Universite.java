@@ -22,12 +22,12 @@ public class Universite {
     }
 
     public LinkedList<Cours> getCoursOffers() {
-        LinkedList<Cours> copyListeCours = listeCours.clone();
+        LinkedList<Cours> copyListeCours = new LinkedList<>(listeCours);
         return copyListeCours;
     }
 
     public LinkedList<Etudiant> getListeEtudiants() {
-        LinkedList<Etudiant> copyListeEtudiant = etudiantInscrits.clone();
+        LinkedList<Etudiant> copyListeEtudiant = new LinkedList<>(etudiantInscrits);
         return copyListeEtudiant;
     }
 

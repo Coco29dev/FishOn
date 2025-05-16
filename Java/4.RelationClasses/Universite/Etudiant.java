@@ -32,8 +32,8 @@ public class Etudiant {
     }
 
     public LinkedList<Cours> listeCours() {
-        LinkedList<Cours> copyListe = coursInscrit.clone();
-        return coursInscrit;
+        LinkedList<Cours> copyListe = new LinkedList<>(coursInscrit);
+        return copyListe;
     }
 
     // Setters
