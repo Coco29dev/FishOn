@@ -29,18 +29,21 @@ public abstract class Vehicule {
 
     // Setters
     public void setMarque(String marque) {
+        // Vérification paramètres valide et non vide
         if (marque != null && !marque.isEmpty()) {
             this.marque = marque;
         }
     }
 
     public void setModele(String modele) {
+        // Vérification paramètres valide et non vide
         if (modele != null && !modele.isEmpty()) {
             this.modele = modele;
         }
     }
 
     public void setCouleur(String couleur) {
+        // Vérification paramètres valide et non vide
         if (couleur != null && !couleur.isEmpty()) {
             this.couleur = couleur;
         }

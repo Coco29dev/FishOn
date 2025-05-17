@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class Fusion {
 
-    // Méthode fusion deux tableaux, obtenir un seukl tableau trié
+    // Méthode fusion deux tableaux, obtenir un seul tableau trié
     public static int[] fusionTableau(int[] tableau1, int[] tableau2) {
 
         // Vérification tableau valide

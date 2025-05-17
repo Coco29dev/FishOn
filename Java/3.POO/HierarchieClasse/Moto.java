@@ -19,6 +19,7 @@ public class Moto extends Vehicule {
 
     // Setter
     public void setCategorie(String categorie) {
+        // Vérification paramètres valide et non vide
         if (categorie != null && !categorie.isEmpty()) {
             this.categorie = categorie;
         }
