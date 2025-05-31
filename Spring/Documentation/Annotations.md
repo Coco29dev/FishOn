@@ -1,11 +1,11 @@
 # Annotations de Configuration
 ```java
 @SpringBootApplication  // Point d'entrée principal
-@Configuration         // Classe de configuration
-@ComponentScan         // Scan des composants
-@EnableAutoConfiguration // Configuration automatique
-@ConfigurationProperties // Propriétés de configuration
-@Profile              // Profils d'environnement
+├── @Configuration         // Classe de configuration
+├── @ComponentScan         // Scan des composants
+├── @EnableAutoConfiguration // Configuration automatique
+├── @ConfigurationProperties // Propriétés de configuration
+└── @Profile              // Profils d'environnement
 ```
 
 # Annotations de Composants(Stéréotypes)
