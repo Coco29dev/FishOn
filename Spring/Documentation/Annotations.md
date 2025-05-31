@@ -10,10 +10,12 @@
 
 # Annotations de Composants(Stéréotypes)
 ```java
-@Component    // Composant générique
-@Service      // Logique métier
-@Repository   // Accès aux données
-@Controller   // Contrôleur MVC
+// Hiérarchie d'héritage
+@Component              // Annotation parent (générique)
+├── @Service           // Spécialisé pour la logique métier
+├── @Repository        // Spécialisé pour l'accès aux données  
+└── @Controller        // Spécialisé pour la présentation web
+// Toutes héritent de @Component !
 @RestController // API REST
 ```
 
