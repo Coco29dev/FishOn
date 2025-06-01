@@ -17,3 +17,6 @@ Ce projet est une collaboration avec [ROBLES Corentin](https://github.com/Coco29
 # Framework
 - __Spring Boot__
 - __Angular__
+
+# Base de Données Relationnelles
+- __PostgreSQL__
