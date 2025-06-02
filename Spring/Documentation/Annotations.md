@@ -53,12 +53,24 @@
 
 # Annotations JPA/Base de Données
 ```java
+import jakarta.persistence.Entity;
 @Entity          // Entité JPA
+
 @Table           // Table de base
+
+import jakarta.persistence.Id;
 @Id              // Clé primaire
+
+import jakarta.persistence.GeneratedValue;
 @GeneratedValue  // Génération automatique
+
+import jakarta.persistence.Column;
 @Column          // Colonne
+
+import jakarta.persistence.OneToMany;
 @OneToMany       // Relation 1-N
+
+import jakarta.persistence.ManyToOne;
 @ManyToOne       // Relation N-1
 ```
 
