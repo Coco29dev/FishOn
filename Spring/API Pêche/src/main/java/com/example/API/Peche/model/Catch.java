@@ -31,6 +31,7 @@ public class Catch {
     private LocalDateTime catchDate;
     
     @ManyToOne
+    // Création colonnes en base qui établit la clé étrangère user.id
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     
