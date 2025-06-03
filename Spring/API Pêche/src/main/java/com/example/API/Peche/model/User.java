@@ -35,7 +35,7 @@ public class User {
     // User a plusieurs Catch
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     // mappedBy = Relation géré par le champ "user" dans la classe Catch
-    // CascadeType.ALL = Si User supprime Catch supprimer aussi
+    // CascadeType.ALL = Si User supprimé Catch supprimé aussi
     private List<Catch> catches = new ArrayList<>();
 
     // Constructeur vide(requis pou JPA pour créer les objets)
