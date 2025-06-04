@@ -3,7 +3,6 @@ package com.example.API.Peche.service;
 // Annotation injection automatique dépendances
 import org.springframework.beans.factory.annotation.Autowired;
 // Import classe pour encodage
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
@@ -17,8 +16,8 @@ public class UserService {
     @Autowired // Injection automatique
     private UserRepository userRepository;
 
-    // Solution temporaire simple
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Méthode création utilisateur
     public User createUser(User user) {
