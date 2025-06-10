@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Back-end - Journal de Pêche</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .schema-section {
+            margin-bottom: 50px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .schema-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .diagram-grid {
+            display: grid;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .entities-grid {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+        
+        .controllers-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        
+        .services-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+        
+        .repositories-grid {
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        }
+        
+        .entity-box, .controller-box, .service-box, .repository-box {
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .entity-box:hover, .controller-box:hover, .service-box:hover, .repository-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .box-header {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        
+        .box-content {
+            padding: 20px;
+        }
+        
+        .field {
+            margin: 8px 0;
+            padding: 6px 10px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .method {
+            margin: 6px 0;
+            padding: 8px 12px;
+            background: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+        
+        .annotation {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .type {
+            color: #8e44ad;
+            font-weight: 600;
+        }
+        
+        .primary-key {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .foreign-key {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .relations-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f1f8ff;
+            border-radius: 8px;
+            border-left: 5px solid #0366d6;
+        }
+        
+        .relations-title {
+            color: #0366d6;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .relation {
+            margin: 10px 0;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid #0366d6;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        .security-note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .security-note h4 {
+            color: #d68910;
+            margin: 0 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎣 Architecture Back-end</h1>
+            <p>Journal de Bord de Pêche</p>
+        </div>
+        
+        <div class="content">
+            <!-- MODÈLES DE DONNÉES -->
+            <div class="schema-section">
+                <h2 class="schema-title">📊 1. Modèles de Données (Entités JPA)</h2>
+                
+                <div class="diagram-grid entities-grid">
+                    <!-- BaseModel -->
+                    <div class="entity-box">
+                        <div class="box-header">@MappedSuperclass BaseModel</div>
+                        <div class="box-content">
+                            <div class="field primary-key">
+                                <span class="annotation">@Id @GeneratedValue</span><br>
+                                <span class="type">UUID</span> id
+                            </div>
+                            <div class="field">
+                                <span class="annotation">@CreationTimestamp</span><br>
+                                <span class="type">LocalDateTime</span> createdAt
+                            </div>
+                            <div class="field">
+                                <span class="annotation">@UpdateTimestamp</span><br>
+                                <span class="type">LocalDateTime</span> updatedAt
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- UserModel -->
+                    <div class="entity-box">
+                        <div class="box-header">@Entity UserModel extends BaseModel</div>
+                        <div class="box-content">
+                            <div class="field">
+                                <span class="annotation">@Column(unique=true)</span><br>
+                                <span class="type">String</span> username
+                            </div>
+                            <div class="field">
+                                <span class="annotation">@Column(unique=true)</span><br>
+                                <span class="type">String</span> email
+                            </div>
+                            <div class="field">
+                                <span class="type">String</span> firstName
+                            </div>
+                            <div class="field">
+                                <span class="type">String</span> lastName
+                            </div>
+                            <div class="field">
+                                <span class="type">Integer</span> age
+                            </div>
+                            <div class="field">
+                                <span class="annotation">@JsonIgnore</span><br>
+                                <span class="type">String</span> password
+                            </div>
+                            <div class="field">
+                                <span class="annotation">@Enumerated</span><br>
+                                <span class="type">Role</span> role = USER
+                            </div>
+                            <div class="field">
+                                <span class="type">Boolean</span> enabled = true
+                            </div>
+                            <div class="field">
+                                <span class="type">String</span> profilePicture
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PostModel -->
+                    <div class="entity-box">
+                        <div class="box-header">@Entity PostModel extends BaseModel</div>
+                        <div class="box-content">
+                            <div class="field">
+                                <span class="type">String</span> title
+                            </div>
+                            <div class="field">
+                                <span class="annotation">@Column(length=2000)</span><br>
+                                <span class="type">String</span> description
+                            </div>
+                            <div class="field">
+                                <span class="type">String</span> fishName
+                            </div>
+                            <div class="field">
+                                <span class="type">Double</span> weight
+                            </div>
+                            <div class="field">
+                                <span class="type">Double</span> length
+                            </div>
+                            <div class="field">
+                                <span class="type">String</span> location
+                            </div>
+                            <div class="field">
+                                <span class="type">Double</span> latitude
+                            </div>
+                            <div class="field">
+                                <span class="type">Double</span> longitude
+                            </div>
+                            <div class="field">
+                                <span class="type">LocalDateTime</span> catchDate
+                            </div>
+                            <div class="field">
+                                <span class="type">String</span> weather
+                            </div>
+                            <div class="field foreign-key">
+                                <span class="annotation">@ManyToOne @JoinColumn</span><br>
+                                <span class="type">UserModel</span> author
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CommentModel -->
+                    <div class="entity-box">
+                        <div class="box-header">@Entity CommentModel extends BaseModel</div>
+                        <div class="box-content">
+                            <div class="field">
+                                <span class="annotation">@Column(length=1000)</span><br>
+                                <span class="type">String</span> content
+                            </div>
+                            <div class="field foreign-key">
+                                <span class="annotation">@ManyToOne @JoinColumn</span><br>
+                                <span class="type">UserModel</span> author
+                            </div>
+                            <div class="field foreign-key">
+                                <span class="annotation">@ManyToOne @JoinColumn</span><br>
+                                <span class="type">PostModel</span> post
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="relations-section">
+                    <div class="relations-title">🔗 Relations JPA</div>
+                    <div class="relation">User ← (1:N) → Post : Un utilisateur peut avoir plusieurs posts</div>
+                    <div class="relation">User ← (1:N) → Comment : Un utilisateur peut avoir plusieurs commentaires</div>
+                    <div class="relation">Post ← (1:N) → Comment : Un post peut avoir plusieurs commentaires</div>
+                </div>
+            </div>
+            
+            <!-- CONTRÔLEURS -->
+            <div class="schema-section">
+                <h2 class="schema-title">🎮 2. Couche Contrôleur (REST API)</h2>
+                
+                <div class="diagram-grid controllers-grid">
+                    <!-- AuthController -->
+                    <div class="controller-box">
+                        <div class="box-header">@RestController @RequestMapping("/api/auth")</div>
+                        <div class="box-content">
+                            <div class="method">
+                                <span class="annotation">@PostMapping("/register")</span><br>
+                                ResponseEntity register(@RequestBody RegisterDto)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@PostMapping("/login")</span><br>
+                                ResponseEntity login(@RequestBody LoginDto)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@PostMapping("/logout")</span><br>
+                                ResponseEntity logout(HttpServletRequest)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- UserController -->
+                    <div class="controller-box">
+                        <div class="box-header">@RestController @RequestMapping("/api/users")</div>
+                        <div class="box-content">
+                            <div class="method">
+                                <span class="annotation">@GetMapping("/{userId}")</span><br>
+                                ResponseEntity getUserById(@PathVariable UUID)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@GetMapping("/{username}")</span><br>
+                                ResponseEntity getUserByUsername(@PathVariable)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@PutMapping("/{userId}")</span><br>
+                                ResponseEntity updateAccount(Authentication)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@DeleteMapping("/{userId}")</span><br>
+                                ResponseEntity deleteAccount(Authentication)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PostController -->
+                    <div class="controller-box">
+                        <div class="box-header">@RestController @RequestMapping("/api/posts")</div>
+                        <div class="box-content">
+                            <div class="method">
+                                <span class="annotation">@GetMapping</span><br>
+                                ResponseEntity getAllPosts(@RequestParam Pageable)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@GetMapping("/{id}")</span><br>
+                                ResponseEntity getPostById(@PathVariable UUID)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@GetMapping("/{userId}")</span><br>
+                                ResponseEntity getPostByUserId(@PathVariable UUID)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@GetMapping("/{fishname}")</span><br>
+                                ResponseEntity getPostByFishname(@PathVariable)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@PostMapping</span><br>
+                                ResponseEntity createPost(@RequestBody PostCreateDto)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@PutMapping("/{id}")</span><br>
+                                ResponseEntity updatePost(@PathVariable, @RequestBody)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@DeleteMapping("/{id}")</span><br>
+                                ResponseEntity deletePost(@PathVariable UUID)
+                            </div>
+                    </div>
+                    
+                    <!-- CommentController -->
+                    <div class="controller-box">
+                        <div class="box-header">@RestController @RequestMapping("/api/comments")</div>
+                        <div class="box-content">
+                            <div class="method">
+                                <span class="annotation">@GetMapping("/post/{postId}")</span><br>
+                                ResponseEntity getCommentsByPost(@PathVariable)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@GetMapping("/users/{userId}")</span><br>
+                                ResponseEntity getCommentsByPost(@PathVariable)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@PostMapping</span><br>
+                                ResponseEntity createComment(@RequestBody CommentCreateDto)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@PutMapping("/{id}")</span><br>
+                                ResponseEntity updateComment(@PathVariable, @RequestBody)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@DeleteMapping("/{id}")</span><br>
+                                ResponseEntity deleteComment(@PathVariable UUID)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SERVICES -->
+            <div class="schema-section">
+                <h2 class="schema-title">⚙️ 3. Couche Service (Logique Métier)</h2>
+                
+                <div class="diagram-grid services-grid">
+                    <!-- AuthService -->
+                    <div class="service-box">
+                        <div class="box-header">@Service AuthService</div>
+                        <div class="box-content">
+                            <div class="method">
+                                AuthResponseDto register(RegisterDto dto)
+                            </div>
+                            <div class="method">
+                                AuthResponseDto login(LoginDto dto)
+                            </div>
+                            <div class="method">
+                                void logout(String token)
+                            </div>
+                            <div class="method">
+                                boolean validateToken(String token)
+                            </div>
+                            <div class="method">
+                                String generateJwtToken(UserModel user)
+                            </div>
+                            <div class="method">
+                                UserModel getCurrentUser(Authentication auth)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- UserService -->
+                    <div class="service-box">
+                        <div class="box-header">@Service UserService</div>
+                        <div class="box-content">
+                            <div class="method">
+                                UserDto getUserProfile(Authentication auth)
+                            </div>
+                            <div class="method">
+                                UserDto updateUserProfile(UserUpdateDto dto)
+                            </div>
+                            <div class="method">
+                                UserDto getUserByUsername(String username)
+                            </div>
+                            <div class="method">
+                                void deleteUserAccount(UUID userId)
+                            </div>
+                            <div class="method">
+                                boolean existsByUsername(String username)
+                            </div>
+                            <div class="method">
+                                boolean existsByEmail(String email)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PostService -->
+                    <div class="service-box">
+                        <div class="box-header">@Service PostService</div>
+                        <div class="box-content">
+                            <div class="method">
+                                Page&lt;PostDto&gt; getAllPosts(Pageable pageable)
+                            </div>
+                            <div class="method">
+                                PostDto getPostById(UUID id)
+                            </div>
+                            <div class="method">
+                                PostDto createPost(PostCreateDto dto, UserModel author)
+                            </div>
+                            <div class="method">
+                                PostDto updatePost(UUID id, PostUpdateDto dto)
+                            </div>
+                            <div class="method">
+                                void deletePost(UUID id, UserModel user)
+                            </div>
+                            <div class="method">
+                                List&lt;PostDto&gt; getPostsByUser(UUID userId)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CommentService -->
+                    <div class="service-box">
+                        <div class="box-header">@Service CommentService</div>
+                        <div class="box-content">
+                            <div class="method">
+                                List&lt;CommentDto&gt; getCommentsByPost(UUID postId)
+                            </div>
+                            <div class="method">
+                                CommentDto createComment(CommentCreateDto dto, UserModel author)
+                            </div>
+                            <div class="method">
+                                void deleteComment(UUID id, UserModel user)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- REPOSITORIES -->
+            <div class="schema-section">
+                <h2 class="schema-title">🗄️ 4. Couche Repository (Accès aux Données)</h2>
+                
+                <div class="diagram-grid repositories-grid">
+                    <!-- UserRepository -->
+                    <div class="repository-box">
+                        <div class="box-header">@Repository UserRepository extends JpaRepository&lt;UserModel, UUID&gt;</div>
+                        <div class="box-content">
+                            <div class="method">
+                                Optional&lt;UserModel&gt; findByUsername(String username)
+                            </div>
+                            <div class="method">
+                                Optional&lt;UserModel&gt; findByEmail(String email)
+                            </div>
+                            <div class="method">
+                                boolean existsByUsername(String username)
+                            </div>
+                            <div class="method">
+                                boolean existsByEmail(String email)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@Query</span><br>
+                                List&lt;UserModel&gt; findActiveUsers()
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PostRepository -->
+                    <div class="repository-box">
+                        <div class="box-header">@Repository PostRepository extends JpaRepository&lt;PostModel, UUID&gt;</div>
+                        <div class="box-content">
+                            <div class="method">
+                                Page&lt;PostModel&gt; findByIsPublicTrueOrderByCreatedAtDesc(Pageable)
+                            </div>
+                            <div class="method">
+                                List&lt;PostModel&gt; findByAuthorIdOrderByCreatedAtDesc(UUID authorId)
+                            </div>
+                            <div class="method">
+                                List&lt;PostModel&gt; findByFishNameContainingIgnoreCase(String fishName)
+                            </div>
+                            <div class="method">
+                                List&lt;PostModel&gt; findByLocationContainingIgnoreCase(String location)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@Query</span><br>
+                                List&lt;PostModel&gt; findPostsWithinRadius(Double lat, Double lng, Double radius)
+                            </div>
+                            <div class="method">
+                                <span class="annotation">@Query</span><br>
+                                List&lt;PostModel&gt; searchByKeyword(String keyword)
+                            </div>
+                            <div class="method">
+                                List&lt;PostModel&gt; findByCatchDateBetween(LocalDateTime start, LocalDateTime end)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CommentRepository -->
+                    <div class="repository-box">
+                        <div class="box-header">@Repository CommentRepository extends JpaRepository&lt;CommentModel, UUID&gt;</div>
+                        <div class="box-content">
+                            <div class="method">
+                                List&lt;CommentModel&gt; findByPostIdOrderByCreatedAtAsc(UUID postId)
+                            </div>
+                            <div class="method">
+                                List&lt;CommentModel&gt; findByAuthorIdOrderByCreatedAtDesc(UUID authorId)
+                            </div>
+                            <div class="method">
+                                long countByPostId(UUID postId)
+                            </div>
+                            <div class="method">
+                                void deleteByPostId(UUID postId)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- LikeRepository -->
+                    <div class="repository-box">
+                        <div class="box-header">@Repository LikeRepository extends JpaRepository&lt;LikeModel, UUID&gt;</div>
+                        <div class="box-content">
+                            <div class="method">
+                                Optional&lt;LikeModel&gt; findByUserIdAndPostId(UUID userId, UUID postId)
+                            </div>
+                            <div class="method">
+                                long countByPostId(UUID postId)
+                            </div>
+                            <div class="method">
+                                List&lt;LikeModel&gt; findByUserId(UUID userId)
+                            </div>
+                            <div class="method">
+                                boolean existsByUserIdAndPostId(UUID userId, UUID postId)
+                            </div>
+                            <div class="method">
+                                void deleteByPostId(UUID postId)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SÉCURITÉ -->
+            <div class="schema-section">
+                <div class="security-note">
+                    <h4>🔒 Points de Sécurité Importants</h4>
+                    <p><strong>JWT Configuration :</strong> Durée de vie des tokens (access: 15min, refresh: 7 jours)</p>
+                    <p><strong>Validation :</strong> Utiliser @Valid sur tous les DTOs avec Bean Validation</p>
+                    <p><strong>Autorisation :</strong> @PreAuthorize pour vérifier la propriété des ressources</p>
+                    <p><strong>CORS :</strong> Configuration adaptée pour votre front-end Angular</p>
+                    <p><strong>Rate Limiting :</strong> Limiter les tentatives de connexion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
