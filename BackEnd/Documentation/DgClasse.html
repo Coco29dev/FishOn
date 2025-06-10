@@ -432,6 +432,7 @@
                                 <div class="component controller">
                                     <strong>UserController</strong><br>
                                     <small>/api/users</small><br>
+                                    • GET / (all)<br>
                                     • GET /{userId}<br>
                                     • PUT /{userId}<br>
                                     • DELETE /{userId}
@@ -449,6 +450,7 @@
                                     <strong>CommentController</strong><br>
                                     <small>/api/comments</small><br>
                                     • GET /post/{postId}<br>
+                                    • GET /users/{userId}<br>
                                     • POST /<br>
                                     • PUT /{id}<br>
                                     • DELETE /{id}
@@ -507,18 +509,15 @@
                                 <div class="component repository">
                                     <strong>PostRepository</strong><br>
                                     extends JpaRepository<br>
-                                    • findByAuthorId()<br>
+                                    • findByUserId()<br>
                                     • findByFishName()<br>
                                     • findByLocation()<br>
-                                    • searchByKeyword()
                                 </div>
                                 <div class="component repository">
                                     <strong>CommentRepository</strong><br>
                                     extends JpaRepository<br>
                                     • findByPostId()<br>
-                                    • findByAuthorId()<br>
-                                    • countByPostId()<br>
-                                    • deleteByPostId()
+                                    • findByUserId()<br>
                                 </div>
                             </div>
                         </div>
@@ -554,7 +553,7 @@
                                     <strong>CommentModel</strong><br>
                                     @Entity<br>
                                     • content<br>
-                                    • author<br>
+                                    • user<br>
                                     • post
                                 </div>
                             </div>
