@@ -396,11 +396,11 @@
                                 ResponseEntity getPostById(@PathVariable UUID)
                             </div>
                             <div class="method">
-                                <span class="annotation">@GetMapping("/{userId}")</span><br>
+                                <span class="annotation">@GetMapping("/users/{userId}")</span><br>
                                 ResponseEntity getPostByUserId(@PathVariable UUID)
                             </div>
                             <div class="method">
-                                <span class="annotation">@GetMapping("/{fishname}")</span><br>
+                                <span class="annotation">@GetMapping("/post/{fishname}")</span><br>
                                 ResponseEntity getPostByFishname(@PathVariable)
                             </div>
                             <div class="method">
@@ -427,7 +427,7 @@
                             </div>
                             <div class="method">
                                 <span class="annotation">@GetMapping("/users/{userId}")</span><br>
-                                ResponseEntity getCommentsByPost(@PathVariable)
+                                ResponseEntity getCommentsByUser(@PathVariable)
                             </div>
                             <div class="method">
                                 <span class="annotation">@PostMapping</span><br>
