@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Classes UML - Journal de Pêche</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .level-section {
+            margin-bottom: 60px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .level-title {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        
+        .diagram-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        /* NIVEAU 1 - ENTITÉS */
+        .entities-diagram {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            justify-content: center;
+            min-height: 600px;
+            position: relative;
+        }
+        
+        .entity-class {
+            background: white;
+            border: 3px solid #3498db;
+            border-radius: 10px;
+            min-height: 400px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        .entity-class:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+        
+        .class-header {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            border-radius: 7px 7px 0 0;
+        }
+        
+        .class-section {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .class-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .attribute, .method {
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            padding: 3px 0;
+        }
+        
+        .attribute {
+            color: #2c3e50;
+        }
+        
+        .method {
+            color: #27ae60;
+        }
+        
+        .pk { color: #e74c3c; font-weight: bold; }
+        .fk { color: #f39c12; font-weight: bold; }
+        .annotation { color: #9b59b6; font-style: italic; }
+        
+        /* Relations entre entités */
+        .relation-line {
+            position: absolute;
+            background: #e74c3c;
+            z-index: 10;
+        }
+        
+        .relation-horizontal {
+            height: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .relation-vertical {
+            width: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .relation-label {
+            position: absolute;
+            background: white;
+            padding: 5px 10px;
+            border: 2px solid #e74c3c;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #e74c3c;
+            z-index: 15;
+        }
+        
+        /* NIVEAU 2 - ARCHITECTURE */
+        .architecture-diagram {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            align-items: start;
+            position: relative;
+        }
+        
+        .layer {
+            background: white;
+            border: 2px solid #34495e;
+            border-radius: 8px;
+            min-height: 300px;
+        }
+        
+        .layer-header {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 6px 6px 0 0;
+        }
+        
+        .layer-content {
+            padding: 15px;
+        }
+        
+        .component {
+            background: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 8px 0;
+            text-align: center;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+        
+        .component:hover {
+            background: #d5dbdb;
+        }
+        
+        .controller { background: #e8f5e8; border-color: #27ae60; }
+        .service { background: #fff3cd; border-color: #ffc107; }
+        .repository { background: #d4edda; border-color: #28a745; }
+        .entity { background: #cce5ff; border-color: #007bff; }
+        
+        /* Flèches de communication */
+        .arrow {
+            position: absolute;
+            z-index: 5;
+        }
+        
+        .arrow-right {
+            width: 0;
+            height: 0;
+            border-left: 15px solid #34495e;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+        
+        .flow-arrow {
+            position: absolute;
+            top: 50%;
+            background: #34495e;
+            height: 2px;
+            z-index: 1;
+        }
+        
+        .legend {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+        }
+        
+        @media (max-width: 1200px) {
+            .entities-diagram {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .architecture-diagram {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .architecture-diagram {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Diagramme de Classes UML</h1>
+            <p>Journal de Bord de Pêche - Architecture Technique Complète</p>
+        </div>
+        
+        <div class="content">
+            <!-- NIVEAU 1 : MODÈLE DE DONNÉES -->
+            <div class="level-section">
+                <h2 class="level-title">🗃️ Niveau 1 : Modèle de Données (Entités JPA)</h2>
+                
+                <div class="diagram-container">
+                    <div class="entities-diagram">
+                        
+                        <!-- UserModel -->
+                        <div class="entity-class">
+                            <div class="class-header">
+                                👤 UserModel<br>
+                                <span class="annotation">@Entity extends BaseModel</span>
+                            </div>
+                            
+                            <div class="class-section">
+                                <div class="section-title">🔑 Attributs</div>
+                                <div class="attribute pk">🆔 UUID id (PK)</div>
+                                <div class="attribute">📧 String email @Column(unique)</div>
+                                <div class="attribute">👨‍💼 String username @Column(unique)</div>
+                                <div class="attribute">📝 String firstName</div>
+                                <div class="attribute">📝 String lastName</div>
+                                <div class="attribute">🎂 Integer age</div>
+                                <div class="attribute">🔒 String password @JsonIgnore</div>
+                                <div class="attribute">⚡ Role role @Enumerated</div>
+                                <div class="attribute">✅ Boolean enabled</div>
+                                <div class="attribute">🖼️ String profilePicture</div>
+                                <div class="attribute">📅 LocalDateTime createdAt</div>
+                                <div class="attribute">🔄 LocalDateTime updatedAt</div>
+                            </div>
+                            
+                            <div class="class-section">
+                                <div class="section-title">🔗 Relations</div>
+                                <div class="attribute">📝 List&lt;PostModel&gt; posts @OneToMany</div>
+                                <div class="attribute">💬 List&lt;CommentModel&gt; comments @OneToMany</div>
+                            </div>
+                        </div>
+                        
+                        <!-- PostModel -->
+                        <div class="entity-class">
+                            <div class="class-header">
+                                📝 PostModel<br>
+                                <span class="annotation">@Entity extends BaseModel</span>
+                            </div>
+                            
+                            <div class="class-section">
+                                <div class="section-title">🔑 Attributs</div>
+                                <div class="attribute pk">🆔 UUID id (PK)</div>
+                                <div class="attribute">📰 String title</div>
+                                <div class="attribute">📝 String description @Column(length=2000)</div>
+                                <div class="attribute">🐟 String fishName</div>
+                                <div class="attribute">⚖️ Double weight</div>
+                                <div class="attribute">📏 Double length</div>
+                                <div class="attribute">📍 String location</div>
+                                <div class="attribute">🌐 Double latitude</div>
+                                <div class="attribute">🌐 Double longitude</div>
+                                <div class="attribute">📅 LocalDateTime catchDate</div>
+                                <div class="attribute">🌤️ String weather</div>
+                                <div class="attribute fk">👤 UserModel author @ManyToOne (FK)</div>
+                                <div class="attribute">📅 LocalDateTime createdAt</div>
+                                <div class="attribute">🔄 LocalDateTime updatedAt</div>
+                            </div>
+                            
+                            <div class="class-section">
+                                <div class="section-title">🔗 Relations</div>
+                                <div class="attribute">💬 List&lt;CommentModel&gt; comments @OneToMany</div>
+                            </div>
+                        </div>
+                        
+                        <!-- CommentModel -->
+                        <div class="entity-class">
+                            <div class="class-header">
+                                💬 CommentModel<br>
+                                <span class="annotation">@Entity extends BaseModel</span>
+                            </div>
+                            
+                            <div class="class-section">
+                                <div class="section-title">🔑 Attributs</div>
+                                <div class="attribute pk">🆔 UUID id (PK)</div>
+                                <div class="attribute">💬 String content @Column(length=1000)</div>
+                                <div class="attribute fk">👤 UserModel author @ManyToOne (FK)</div>
+                                <div class="attribute fk">📝 PostModel post @ManyToOne (FK)</div>
+                                <div class="attribute">📅 LocalDateTime createdAt</div>
+                                <div class="attribute">🔄 LocalDateTime updatedAt</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="legend">
+                        <div class="legend-title">🔍 Légende des Relations</div>
+                        <div class="legend-item">
+                            <div class="legend-color pk"></div>
+                            <strong>Clé Primaire (PK)</strong> - Identifiant unique de l'entité
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color fk"></div>
+                            <strong>Clé Étrangère (FK)</strong> - Référence vers une autre entité
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #e74c3c;"></div>
+                            <strong>Relations JPA</strong> - 1:N (Un vers Plusieurs)
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <strong>📋 Cardinalités :</strong><br>
+                            • Un User peut avoir plusieurs Posts (1:N)<br>
+                            • Un User peut écrire plusieurs Comments (1:N)<br>
+                            • Un Post peut avoir plusieurs Comments (1:N)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- NIVEAU 2 : ARCHITECTURE APPLICATIVE -->
+            <div class="level-section">
+                <h2 class="level-title">🏗️ Niveau 2 : Architecture Applicative (Couches Spring Boot)</h2>
+                
+                <div class="diagram-container">
+                    <div class="architecture-diagram">
+                        <!-- Couche Controller -->
+                        <div class="layer">
+                            <div class="layer-header">🎮 CONTROLLERS<br><small>Couche Présentation</small></div>
+                            <div class="layer-content">
+                                <div class="component controller">
+                                    <strong>AuthController</strong><br>
+                                    <small>/api/auth</small><br>
+                                    • POST /register<br>
+                                    • POST /login<br>
+                                    • POST /logout
+                                </div>
+                                <div class="component controller">
+                                    <strong>UserController</strong><br>
+                                    <small>/api/users</small><br>
+                                    • GET /{userId}<br>
+                                    • PUT /{userId}<br>
+                                    • DELETE /{userId}
+                                </div>
+                                <div class="component controller">
+                                    <strong>PostController</strong><br>
+                                    <small>/api/posts</small><br>
+                                    • GET / (all)<br>
+                                    • GET /{id}<br>
+                                    • POST /<br>
+                                    • PUT /{id}<br>
+                                    • DELETE /{id}
+                                </div>
+                                <div class="component controller">
+                                    <strong>CommentController</strong><br>
+                                    <small>/api/comments</small><br>
+                                    • GET /post/{postId}<br>
+                                    • POST /<br>
+                                    • PUT /{id}<br>
+                                    • DELETE /{id}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Couche Service -->
+                        <div class="layer">
+                            <div class="layer-header">⚙️ SERVICES<br><small>Logique Métier</small></div>
+                            <div class="layer-content">
+                                <div class="component service">
+                                    <strong>AuthService</strong><br>
+                                    • register()<br>
+                                    • login()<br>
+                                    • logout()<br>
+                                    • validateToken()<br>
+                                    • generateJWT()
+                                </div>
+                                <div class="component service">
+                                    <strong>UserService</strong><br>
+                                    • getUserProfile()<br>
+                                    • updateProfile()<br>
+                                    • deleteAccount()<br>
+                                    • existsByUsername()
+                                </div>
+                                <div class="component service">
+                                    <strong>PostService</strong><br>
+                                    • getAllPosts()<br>
+                                    • getPostById()<br>
+                                    • createPost()<br>
+                                    • updatePost()<br>
+                                    • deletePost()
+                                </div>
+                                <div class="component service">
+                                    <strong>CommentService</strong><br>
+                                    • getCommentsByPost()<br>
+                                    • createComment()<br>
+                                    • deleteComment()
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Couche Repository -->
+                        <div class="layer">
+                            <div class="layer-header">🗄️ REPOSITORIES<br><small>Accès aux Données</small></div>
+                            <div class="layer-content">
+                                <div class="component repository">
+                                    <strong>UserRepository</strong><br>
+                                    extends JpaRepository<br>
+                                    • findByUsername()<br>
+                                    • findByEmail()<br>
+                                    • existsByUsername()<br>
+                                    • existsByEmail()
+                                </div>
+                                <div class="component repository">
+                                    <strong>PostRepository</strong><br>
+                                    extends JpaRepository<br>
+                                    • findByAuthorId()<br>
+                                    • findByFishName()<br>
+                                    • findByLocation()<br>
+                                    • searchByKeyword()
+                                </div>
+                                <div class="component repository">
+                                    <strong>CommentRepository</strong><br>
+                                    extends JpaRepository<br>
+                                    • findByPostId()<br>
+                                    • findByAuthorId()<br>
+                                    • countByPostId()<br>
+                                    • deleteByPostId()
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Couche Entité -->
+                        <div class="layer">
+                            <div class="layer-header">🗃️ ENTITIES<br><small>Modèle de Données</small></div>
+                            <div class="layer-content">
+                                <div class="component entity">
+                                    <strong>BaseModel</strong><br>
+                                    @MappedSuperclass<br>
+                                    • UUID id<br>
+                                    • createdAt<br>
+                                    • updatedAt
+                                </div>
+                                <div class="component entity">
+                                    <strong>UserModel</strong><br>
+                                    @Entity<br>
+                                    • username<br>
+                                    • email<br>
+                                    • password<br>
+                                    • role
+                                </div>
+                                <div class="component entity">
+                                    <strong>PostModel</strong><br>
+                                    @Entity<br>
+                                    • title<br>
+                                    • description<br>
+                                    • fishName<br>
+                                    • location
+                                </div>
+                                <div class="component entity">
+                                    <strong>CommentModel</strong><br>
+                                    @Entity<br>
+                                    • content<br>
+                                    • author<br>
+                                    • post
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="legend">
+                        <div class="legend-title">🔄 Flux de Communication</div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>📱 Client Angular</strong> → <strong>🎮 Controller</strong> → <strong>⚙️ Service</strong> → <strong>🗄️ Repository</strong> → <strong>🗃️ Entity</strong> → <strong>🐘 PostgreSQL</strong>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color controller"></div>
+                            <strong>Controllers</strong> - Gestion des requêtes HTTP REST
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color service"></div>
+                            <strong>Services</strong> - Logique métier et validation
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color repository"></div>
+                            <strong>Repositories</strong> - Accès et requêtes base de données
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color entity"></div>
+                            <strong>Entities</strong> - Modèle de données JPA/Hibernate
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECTION TECHNIQUE RNCP -->
+            <div class="level-section">
+                <h2 class="level-title">🎓 Points Techniques pour Présentation RNCP</h2>
+                
+                <div class="diagram-container">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div>
+                            <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px;">📋 Technologies Utilisées</h3>
+                            <ul style="line-height: 1.8;">
+                                <li><strong>Backend :</strong> Java 21, Spring Boot 3.x</li>
+                                <li><strong>Framework :</strong> Spring Web, Spring Data JPA, Spring Security</li>
+                                <li><strong>Base de Données :</strong> PostgreSQL avec Hibernate ORM</li>
+                                <li><strong>Frontend :</strong> Angular, HTML5, CSS3, TypeScript</li>
+                                <li><strong>Architecture :</strong> REST API, Pattern MVC</li>
+                                <li><strong>Sécurité :</strong> JWT, Authentification, Autorisation</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px;">🏆 Compétences Démontrées</h3>
+                            <ul style="line-height: 1.8;">
+                                <li><strong>Conception :</strong> Modélisation UML, Architecture 3-tiers</li>
+                                <li><strong>Développement :</strong> API REST, ORM, Relations JPA</li>
+                                <li><strong>Sécurité :</strong> Authentification JWT, Validation</li>
+                                <li><strong>Base de Données :</strong> Conception relationnelle, SQL</li>
+                                <li><strong>Frontend :</strong> Interface responsive, consommation API</li>
+                                <li><strong>Tests :</strong> Tests unitaires, Tests d'intégration</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px; padding: 20px; background: #e8f5e8; border-left: 5px solid #27ae60; border-radius: 5px;">
+                        <h4 style="color: #27ae60; margin: 0 0 10px 0;">💡 Points de Présentation Clés</h4>
+                        <p style="margin: 5px 0;"><strong>• Architecture Modulaire :</strong> Séparation claire des responsabilités (Controller/Service/Repository)</p>
+                        <p style="margin: 5px 0;"><strong>• Bonnes Pratiques :</strong> Patterns DAO, DTO, Inversion de contrôle, Injection de dépendances</p>
+                        <p style="margin: 5px 0;"><strong>• Évolutivité :</strong> Structure extensible pour ajout de fonctionnalités (likes, photos, géolocalisation)</p>
+                        <p style="margin: 5px 0;"><strong>• Sécurité :</strong> Protection des données sensibles, gestion des autorisations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
