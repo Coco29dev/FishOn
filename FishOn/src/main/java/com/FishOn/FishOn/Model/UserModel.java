@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Email;
 
 
 import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity // Création d'un Model (entity) User
 @Table(name = "users") // Création d'une table users
