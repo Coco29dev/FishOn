@@ -38,8 +38,6 @@ public class UserModel extends BaseModel { // Création d'une classe UserModel q
     @JsonIgnore
     private String password;
 
-    @Column(nullable = false)
-    private boolean enabled;
 
     @Column(nullable = true)
     private String profilePicture;
@@ -56,7 +54,7 @@ public class UserModel extends BaseModel { // Création d'une classe UserModel q
     public UserModel() {}
 
     // Constructeur avec paramètre + héritage des attributs de BaseModel avec super()
-    public UserModel(String userName, String email, String firstName, String lastName, Integer age, String password, boolean enabled, String profilePicture) {
+    public UserModel(String userName, String email, String firstName, String lastName, Integer age, String password, String profilePicture) {
         super();
         this.userName = userName;
         this.email = email;
@@ -64,7 +62,6 @@ public class UserModel extends BaseModel { // Création d'une classe UserModel q
         this.lastName = lastName;
         this.age = age;
         this.password = password;
-        this.enabled = enabled;
         this.profilePicture = profilePicture;
     }
 
@@ -94,9 +91,6 @@ public class UserModel extends BaseModel { // Création d'une classe UserModel q
         return password;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
 
     public String getProfilePicture() {
         return profilePicture;
@@ -136,9 +130,6 @@ public class UserModel extends BaseModel { // Création d'une classe UserModel q
         this.password = password;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
