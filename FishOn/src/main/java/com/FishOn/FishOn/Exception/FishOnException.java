@@ -35,4 +35,27 @@ public class FishOnException {
     }
 
     // ============= PostException =============
+    public static class MissingTitleException extends Exception {
+        public MissingTitleException(String title) {
+            super("Titre obligatoire");
+        }
+    }
+
+    public static class MissingDescriptionException extends Exception {
+        public MissingDescriptionException(String description) {
+            super("Description obligatoire");
+        }
+    }
+
+    public static class MissingFishNameException extends Exception {
+        public MissingFishNameException(String fishName) {
+            super("fishName obligatoire");
+        }
+    }
+
+    public static class PostNotFoundById extends Exception {
+        public PostNotFoundById(UUID id) {
+            super("La publication n'existe pas");
+        }
+    }
 }
