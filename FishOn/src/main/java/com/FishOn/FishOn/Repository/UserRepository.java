@@ -33,8 +33,4 @@ public interface UserRepository extends JpaRepository<UserModel, UUID> {
     // Utilisé lors inscription et modification profil
     boolean existsByEmail(String email);
 
-    // Recherche tous les utilisateurs actifs
-    // findByEnabledTrue : utilisateurs avec enabled = true
-    // Utilisé pour lister utilisateurs non suspendus/supprimés
-    List<UserModel> findByEnabledTrue();
 }
