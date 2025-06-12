@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class FishOnException {
 
-    // UserException
+    // ============= UserException =============
     public static class EmailAlreadyExists extends Exception {
         public EmailAlreadyExists(String email) {
             super("L'email " + email + " est déjà pris");
@@ -33,6 +33,6 @@ public class FishOnException {
             super("l'utilisateur " + email + " n'existe pas");
         }
     }
-    // PostException
 
+    // ============= PostException =============
 }
