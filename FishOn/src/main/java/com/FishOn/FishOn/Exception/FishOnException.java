@@ -91,4 +91,11 @@ public class FishOnException {
             super("N'est pas autorisé à modifier");
         }
     }
+
+    // ============= AuthException =============
+    public static class InvalidPassword extends Exception {
+        public InvalidPassword() {
+            super("Le mot de passe est incorrect");
+        }
+    }
 }
