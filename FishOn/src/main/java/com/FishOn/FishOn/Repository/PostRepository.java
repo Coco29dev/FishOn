@@ -26,5 +26,11 @@ public interface PostRepository extends JpaRepository<PostModel, UUID> {
     // Permet de trouver tous les posts d'un lieu spécifique
     List<PostModel> findByLocation(String location);
 
-    
+    // Vérification existance nom de poisson
+    // Retourne boolean pour validation nom de poisson
+    boolean existsByFishName(String fishName);
+
+    // Vérification existance localisation
+    // Retourne boolean pour validation localisation
+    boolean existsByLocation(String location);
 }
