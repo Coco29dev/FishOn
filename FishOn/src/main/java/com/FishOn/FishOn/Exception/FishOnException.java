@@ -78,4 +78,17 @@ public class FishOnException {
             super("Cette localisation n'existe pas");
         }
     }
+
+    // ============= CommentException =============
+    public static class CommentNotFound extends Exception {
+        public CommentNotFound(UUID commentId) {
+            super("le commentaire " + commentId + " n'existe pas");
+        }
+    }
+
+    public static class UnauthorizedAccess extends Exception {
+        public UnauthorizedAccess() {
+            super("N'est pas autorisé à modifier");
+        }
+    }
 }
