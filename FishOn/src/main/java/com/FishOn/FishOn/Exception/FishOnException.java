@@ -2,6 +2,8 @@ package com.FishOn.FishOn.Exception;
 
 import java.util.UUID;
 
+import com.FishOn.FishOn.Model.PostModel;
+
 public class FishOnException {
 
     // ============= UserException =============
@@ -35,7 +37,47 @@ public class FishOnException {
     }
 
     // ============= PostException =============
+    public static class MissingTitleException extends Exception {
+        public MissingTitleException(String title) {
+            super("Titre obligatoire");
+        }
+    }
 
+    public static class MissingDescriptionException extends Exception {
+        public MissingDescriptionException(String description) {
+            super("Description obligatoire");
+        }
+    }
+
+    public static class MissingFishNameException extends Exception {
+        public MissingFishNameException(String fishName) {
+            super("fishName obligatoire");
+        }
+    }
+
+    public static class PostNotFoundById extends Exception {
+        public PostNotFoundById(UUID id) {
+            super("La publication n'existe pas");
+        }
+    }
+
+    public static class UnauthorizedModificationPost extends Exception {
+        public UnauthorizedModificationPost() {
+            super("N'est pas autorisé à modifier cette publication");
+        }
+    }
+
+    public static class FishNameNotFound extends Exception {
+        public FishNameNotFound(String fishName) {
+            super("Ce poisson n'existe pas");
+        }
+    }
+
+    public static class LocationNotFound extends Exception {
+        public LocationNotFound(String location) {
+            super("Cette localisation n'existe pas");
+        }
+    }
 
     // ============= CommentException =============
     public static class CommentNotFound extends Exception {
