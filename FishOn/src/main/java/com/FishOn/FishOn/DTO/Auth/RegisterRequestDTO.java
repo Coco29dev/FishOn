@@ -76,6 +76,10 @@ public class RegisterRequestDTO {
         return age;
     }
 
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
     // Setters
     public void setUserName(String userName) {
         this.userName = userName;
@@ -99,5 +103,9 @@ public class RegisterRequestDTO {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }
