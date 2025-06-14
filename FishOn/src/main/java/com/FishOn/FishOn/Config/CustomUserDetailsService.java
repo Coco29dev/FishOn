@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             return User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .authorities(new ArrayList<>()) // Pas de rôles pour l'instant
+                .authorities(new ArrayList<>())
                 .build();
                 
         } catch (UserNotFoundByEmail e) {
