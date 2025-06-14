@@ -9,18 +9,21 @@ import com.FishOn.FishOn.Service.AuthService;
 
 import jakarta.validation.Valid;
 
-@RestController
-@RequestMapping("/api/auth")
+@RestController // Combinaison @Controller + @ ResponseBody, indiquant que toutes les méthodes retourne du JSON
+@RequestMapping("/api/auth") // Définition préfixe URL endpoints contrôleur
 public class AuthController {
 
-    @Autowired
+    @Autowired // Injection Automatique
     private AuthService authService;
 
 
-    @PostMapping("/register")
-    public RegisterResponseDTO register (@Valid @RequestBody RegisterRequestDTO registerRequest) throws  EmailAlreadyExists, UserAlreadyExists {
+    @PostMapping("/register") // Endpoint inscription
+    public RegisterResponseDTO register(@Valid @RequestBody RegisterRequestDTO registerRequest)
+            throws EmailAlreadyExists, UserAlreadyExists
+    // @Valid déclenche validation des contraintes définie dans RegisterRequestDTO
+    {
 
-        // Conversion de DTO à Model
+        // Conversion données registerRequest en objet UserModel
         UserModel user = new UserModel(
                 registerRequest.getUserName(),
                 registerRequest.getEmail(),
@@ -34,7 +37,7 @@ public class AuthController {
         // Appel de AuthService pour récupérer/utiliser la méthode register
         UserModel newUser = authService.register(user);
 
-        // Conversion de Model à DTO
+        // Transforme newUser en objet RegisterResponseDTO
         RegisterResponseDTO response = new RegisterResponseDTO(
                 newUser.getId(),
                 newUser.getUserName(),
@@ -49,13 +52,16 @@ public class AuthController {
         return response;
     }
 
-    @PostMapping("/login")
-    public LoginResponseDTO login (@Valid @RequestBody LoginRequestDTO loginRequest) throws UserNotFoundByEmail, InvalidPassword {
+    @PostMapping("/login") // Endpoint connexion
+    public LoginResponseDTO login(@Valid @RequestBody LoginRequestDTO loginRequest)
+            throws UserNotFoundByEmail, InvalidPassword
+    // @Valid déclenche validation des contraintes définie dans LoginRequestDTO
+    {
 
         // Appel service pour récupérer/utiliser la méthode login avec comme paramètre email + password
         UserModel user = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
 
-        // Conversion de Model à DTO
+        // Conversion user en objet LoginResponseDTO
         LoginResponseDTO response = new LoginResponseDTO(
                 user.getId(),
                 user.getUserName(),
