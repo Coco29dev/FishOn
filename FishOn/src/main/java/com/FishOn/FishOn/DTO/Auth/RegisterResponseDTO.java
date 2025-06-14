@@ -34,7 +34,6 @@ public class RegisterResponseDTO {
     }
 
     // Getters
-
     public UUID getId() {
         return id;
     }
@@ -68,7 +67,6 @@ public class RegisterResponseDTO {
     }
 
     // Setters
-
     public void setId(UUID id) {
         this.id = id;
     }
