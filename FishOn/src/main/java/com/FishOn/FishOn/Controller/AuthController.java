@@ -1,29 +1,36 @@
 package com.FishOn.FishOn.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 import com.FishOn.FishOn.DTO.Auth.*;
 import com.FishOn.FishOn.Exception.FishOnException.*;
 import com.FishOn.FishOn.Model.UserModel;
 import com.FishOn.FishOn.Service.AuthService;
+import com.FishOn.FishOn.Config.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
-@RestController // Combinaison @Controller + @ ResponseBody, indiquant que toutes les méthodes retourne du JSON
-@RequestMapping("/api/auth") // Définition préfixe URL endpoints contrôleur
+@RestController // Spring va automatiquement JSON
+@RequestMapping("/api/auth") // Préfixe URL
 public class AuthController {
 
-    @Autowired // Injection Automatique
+    @Autowired // Injection automatique
     private AuthService authService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    @PostMapping("/register") // Endpoint inscription
+    @PostMapping("/register")
     public RegisterResponseDTO register(@Valid @RequestBody RegisterRequestDTO registerRequest)
-            throws EmailAlreadyExists, UserAlreadyExists
-    // @Valid déclenche validation des contraintes définie dans RegisterRequestDTO
-    {
+            throws EmailAlreadyExists, UserAlreadyExists {
 
-        // Conversion données registerRequest en objet UserModel
         UserModel user = new UserModel(
                 registerRequest.getUserName(),
                 registerRequest.getEmail(),
@@ -34,11 +41,10 @@ public class AuthController {
                 registerRequest.getProfilePicture()
         );
 
-        // Appel de AuthService pour récupérer/utiliser la méthode register
+        // Appel service authentification pour enregistrement utilisateur bdd
         UserModel newUser = authService.register(user);
 
-        // Transforme newUser en objet RegisterResponseDTO
-        RegisterResponseDTO response = new RegisterResponseDTO(
+        return new RegisterResponseDTO(
                 newUser.getId(),
                 newUser.getUserName(),
                 newUser.getEmail(),
@@ -48,21 +54,28 @@ public class AuthController {
                 newUser.getProfilePicture(),
                 newUser.getCreatedAt()
         );
-
-        return response;
     }
 
-    @PostMapping("/login") // Endpoint connexion
-    public LoginResponseDTO login(@Valid @RequestBody LoginRequestDTO loginRequest)
-            throws UserNotFoundByEmail, InvalidPassword
-    // @Valid déclenche validation des contraintes définie dans LoginRequestDTO
-    {
+    @PostMapping("/login")
+    public LoginResponseDTO login(@Valid @RequestBody LoginRequestDTO loginRequest) 
+            throws UserNotFoundByEmail, InvalidPassword {
+    
+        // Spring Security vérifié identifiants, si incorrects exception levée automatiquement
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginRequest.getEmail(), 
+                    loginRequest.getPassword()
+                )
+            );
+        
+        // Stockage authentification réussie dans le contexte Spring Security session courante
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    
+        // Récupération directe depuis l'Authentication
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        UserModel user = userDetails.getUser();
 
-        // Appel service pour récupérer/utiliser la méthode login avec comme paramètre email + password
-        UserModel user = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
-
-        // Conversion user en objet LoginResponseDTO
-        LoginResponseDTO response = new LoginResponseDTO(
+        return new LoginResponseDTO(
                 user.getId(),
                 user.getUserName(),
                 user.getEmail(),
@@ -71,7 +84,16 @@ public class AuthController {
                 user.getAge(),
                 user.getProfilePicture()
         );
+    }
 
-        return response;
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        // Nettoyage conetxte Spring Security
+        SecurityContextHolder.clearContext();
+        return "Déconnexion réussie";
     }
 }
