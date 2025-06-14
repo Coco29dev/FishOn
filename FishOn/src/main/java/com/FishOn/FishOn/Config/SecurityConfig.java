@@ -11,6 +11,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 import java.util.Arrays;
 
@@ -57,12 +59,17 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Autorisation Méthode
         configuration.setAllowedHeaders(Arrays.asList("*")); // Autorisation headers
         configuration.setAllowCredentials(true); // Permet envoie cookies session entre Spring et React
-        
+
         // Création gestionnaire configuration CORS basé sur URL
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         // Application config CORS à toutes les URLs
         source.registerCorsConfiguration("/api/**", configuration);
         // Retourne configuration à Spring
         return source;
+    }
+    
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
