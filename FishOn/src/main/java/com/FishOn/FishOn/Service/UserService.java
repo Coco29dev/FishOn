@@ -57,9 +57,15 @@ public class UserService {
             }
         }
 
-        // Met à jour les champs modifié (email, username)
+        // MAJ les champs modifié obligatoire (email, username)
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setUserName(updatedUser.getUserName());
+
+        // MAJ champs optionnels
+        existingUser.setFirstName(updatedUser.getFirstName());
+        existingUser.setLastName(updatedUser.getLastName());
+        existingUser.setAge(updatedUser.getAge());
+        existingUser.setProfilePicture(updatedUser.getProfilePicture());
 
         // Retourne l'user modifié
         return userRepository.save(existingUser);
