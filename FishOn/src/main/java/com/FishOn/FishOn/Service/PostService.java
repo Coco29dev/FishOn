@@ -78,9 +78,16 @@ public class PostService {
         // Validation champ obligatoire
         validateData(updatedPost);
 
+        // MAJ champ obligatoires
         existingPost.setTitle(updatedPost.getTitle());
         existingPost.setDescription(updatedPost.getDescription());
         existingPost.setFishName(updatedPost.getFishName());
+
+        // MAJ champs optionnels
+        existingPost.setWeight(updatedPost.getWeight());
+        existingPost.setLength(updatedPost.getLength());
+        existingPost.setLocation(updatedPost.getLocation());
+        existingPost.setCatchDate(updatedPost.getCatchDate());
 
         return postRepository.save(existingPost);
     }
