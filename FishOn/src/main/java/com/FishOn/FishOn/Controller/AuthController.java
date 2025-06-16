@@ -110,10 +110,6 @@ public class AuthController {
         // Nécessaire pour que Spring Security retrouve l'authentification lors des prochaines requêtes
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-        // Logs de debug pour vérifier la création de session (à retirer en production)
-        System.out.println("=== SESSION CRÉÉE ===");
-        System.out.println("Session ID: " + session.getId());
-        System.out.println("Session new: " + session.isNew());
 
         // Récupération des données utilisateur depuis l'objet Authentication
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
