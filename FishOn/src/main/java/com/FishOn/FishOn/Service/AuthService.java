@@ -21,16 +21,6 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
 
 
-    // Méthode Login
-    public UserModel login(String email, String password) throws UserNotFoundByEmail, InvalidPassword{
-        UserModel existingUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundByEmail(email));
-
-        if (!passwordEncoder.matches(password, existingUser.getPassword())) {
-            throw new InvalidPassword();
-        }
-        return existingUser;
-    }
 
     // Méthode Register
     public UserModel register(UserModel user) throws EmailAlreadyExists, UserAlreadyExists {
