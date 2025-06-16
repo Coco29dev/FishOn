@@ -115,6 +115,17 @@ public class PostService {
     }
 
     // ========= Méthode Repository =========
+    public List<PostModel> getAll() {
+        return postRepository.findAll();
+    }
+
+    public List<PostModel> getByUserName(String userName) throws UserNotFoundByUserName {
+        if (!userRepository.existsByUserName(userName)) {
+            throw new UserNotFoundByUserName(userName);
+        }
+        return postRepository.findByUserName(userName);
+    }
+
     public List<PostModel> getByUserId(UUID userId) throws UserNotFoundById {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundById(userId);

@@ -13,6 +13,12 @@ import java.util.List; // Import interface List pour collections
 // Types génériques : PostModel (entité) et UUID (type clé primaire)
 public interface PostRepository extends JpaRepository<PostModel, UUID> {
 
+
+    //Méthode de recherche nom d'utilisateur
+    // Convention Spring Data JPA : findBy + nom attribut relation
+    // Retourne posts d'un utilisateur spécifique
+    List <PostModel> findByUserName(String userName);
+
     // Méthode de recherche par ID utilisateur
     // Convention Spring Data JPA : findBy + nom attribut relation
     // Retourne tous les posts d'un utilisateur spécifique

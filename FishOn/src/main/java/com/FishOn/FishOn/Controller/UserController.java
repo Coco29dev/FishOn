@@ -97,6 +97,12 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
         }
 
+        // Vérification du type d'authentification : doit être notre CustomUserDetails
+        // Protection contre les autres types d'authentification (OAuth, JWT, etc.)
+        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
+        }
+
         // Récupération de l'ID utilisateur depuis l'authentification
         // Garantit que l'utilisateur ne peut modifier que son propre profil
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -145,12 +151,19 @@ public class UserController {
     public String deleteUser(Authentication authentication, HttpServletRequest request)
             throws UserNotFoundById {
 
-        // Vérification de sécurité identique aux autres endpoints protégés
+        // Vérification de sécurité identique à getUser()
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
         }
 
-        // Récupération de l'ID utilisateur pour suppression
+        // Vérification du type d'authentification : doit être notre CustomUserDetails
+        // Protection contre les autres types d'authentification (OAuth, JWT, etc.)
+        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
+        }
+
+        // Récupération de l'ID utilisateur depuis l'authentification
+        // Garantit que l'utilisateur ne peut modifier que son propre profil
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         UUID currentUserId = userDetails.getUser().getId();
 

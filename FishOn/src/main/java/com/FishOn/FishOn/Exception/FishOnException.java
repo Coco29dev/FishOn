@@ -2,8 +2,6 @@ package com.FishOn.FishOn.Exception;
 
 import java.util.UUID;
 
-import com.FishOn.FishOn.Model.PostModel;
-
 public class FishOnException {
 
     // ============= UserException =============
