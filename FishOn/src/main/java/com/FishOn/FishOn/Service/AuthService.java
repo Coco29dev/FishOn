@@ -31,6 +31,7 @@ public class AuthService {
     public void updatePassword(String email, String currentPassword, String newPassword) throws UserNotFoundByEmail, InvalidPassword{
         UserModel existingUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundByEmail(email));
+        //
         if (!passwordEncoder.matches(currentPassword, existingUser.getPassword())) {
             throw new InvalidPassword();
         }
