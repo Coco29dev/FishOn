@@ -1,0 +1,56 @@
+HELP.md
+# === macOS ===
+.DS_Store
+
+# === Maven ===
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# === Spring Boot Logs / IDEs ===
+*.log
+
+# === Eclipse / STS (Spring Tool Suite) ===
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans/
+.sts4-cache/
+
+# === IntelliJ IDEA ===
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# === NetBeans ===
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# === Gradle (si utilisé) ===
+.gradle/
+build/
+
+# === VS Code ===
+.vscode/
+
+# === Système ===
+*.swp
+*.bak
+*.tmp
+
+# === Test output ===
+test-output/
+out/
+
+# === OS spécifiques ===
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === Ignore tous les fichiers `.DS_Store` récursivement ===
+**/.DS_Store
