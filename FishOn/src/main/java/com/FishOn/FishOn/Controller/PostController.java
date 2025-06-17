@@ -140,7 +140,7 @@ public class PostController {
         }
 
         // Récupération de tout les posts d'un utilisateur
-        List<PostModel> postsUser = postService.getByUserName(userName);
+        List<PostModel> postsUser = postService.getByUserUserName(userName);
 
         // Transformation des entités PostModel en DTOs PostResponseDTO
         // Utilisation de Stream API pour une transformation fonctionnelle

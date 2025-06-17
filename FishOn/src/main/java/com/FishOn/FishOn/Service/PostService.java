@@ -119,11 +119,11 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public List<PostModel> getByUserName(String userName) throws UserNotFoundByUserName {
+    public List<PostModel> getByUserUserName(String userName) throws UserNotFoundByUserName {
         if (!userRepository.existsByUserName(userName)) {
             throw new UserNotFoundByUserName(userName);
         }
-        return postRepository.findByUserName(userName);
+        return postRepository.findByUserUserName(userName);
     }
 
     public List<PostModel> getByUserId(UUID userId) throws UserNotFoundById {
