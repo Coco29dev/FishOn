@@ -146,6 +146,17 @@ __Utilisé pour__:
 - __Post__ <-> __Comment__: `@OneToMany` / `@ManyToOne`.
 - __User__ <-> __Comment__: `@OneToMany` / `@ManyToOne`.
 
+## Auto-Configuration
+`Spring Boot` configure automatiquement l'application selon les __dépendances__ présentes.
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<!-- Auto-configure : DataSource, EntityManager, Repositories -->
+```
+
 # spring-boot-starter-validation
 ```xml
 <dependency>
@@ -259,17 +270,6 @@ __Représentation__ des données en __base de données__.
 @Repository     // Accès aux données
 @Configuration  // Configuration Spring
 @Component      // Composant générique
-```
-
-# Auto-Configuration
-`Spring Boot` configure automatiquement l'application selon les __dépendances__ présentes.
-
-```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-jpa</artifactId>
-</dependency>
-<!-- Auto-configure : DataSource, EntityManager, Repositories -->
 ```
 
 # Pattern MVC(Model-View-Controller)
