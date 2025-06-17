@@ -13,6 +13,53 @@ Assure la __sécurisation__ de l'`API REST` et la __gestion des sessions__ utili
 
 ## Intégration métier/sécurité
 - __Pont__ entre `UserModel` et `UserDetails Spring Security`.
-Service d'authentification personnalisé
-Chargement des utilisateurs depuis la base de données
-Adaptation du modèle métier aux interfaces Spring
+- __Service d'authentification__ personnalisé.
+- __Chargement__ des utilisateurs depuis la __base de données__.
+- __Adaptation__ du modèle métier aux interfaces `Spring`.
+
+## Sécurit Web
+- __Configuration__ `CORS` pour `frontend React`.
+- __Gestion__ des cookies de session.
+- __Désactivation__ `CSRF` pour `API REST`.
+- __Encodage__ sécurisé des mots de passe.
+
+# Architecture Configuration
+```bash
+Config/
+├── SecurityConfig.java           # Configuration principale Spring Security
+├── CustomUserDetailsService.java # Service de chargement utilisateur
+└── CustomUserDetails.java        # Adaptateur UserModel → UserDetails
+```
+
+# Conceptions et Annotations Spring
+`@Configuration` / `@EnableWebSecurity`
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    // @Configuration : Classe de configuration Spring
+    // @EnableWebSecurity : Active le système de sécurité web Spring
+    // Charge les filtres de sécurité automatiquement
+}
+```
+
+`@Bean`
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+// Définit un composant géré par Spring
+// Disponible pour injection dans toute l'application
+// Cycle de vie géré par le conteneur Spring
+```
+
+`@Service`
+```java
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+    // Implémentation personnalisée de UserDetailsService
+    // Service Spring automatiquement détecté par Spring Security
+    // Intégration transparente avec AuthenticationManager
+}
+```
