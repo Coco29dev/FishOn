@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FishOn - Créez votre compte de pêche">
+    <title>FishOn - Création de compte</title>
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <header>
+        <img src="../IMG/Login.png" alt="FishOn">
+    </header>
+
+    <main>
+        <div>
+            <h1>Rejoins l'équipage !</h1>
+        </div>
+
+        <div>
+            <form>
+                <div>
+                    <!-- Champ Username -->
+                    <label for="username">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Votre nom d'utilisateur"
+                        required
+                    >
+                </div>
+                <div>
+                    <!-- Champ Email -->
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Votre@email.com"
+                        required
+                    >
+                </div>
+                <div>
+                    <!-- Champ Mot de passe -->
+                    <label for="password">Mot de passe</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Votre mot de passe"
+                        minlength="5"
+                        required
+                    >
+                </div>
+                <div>
+                    <!-- Champ Prénom -->
+                    <label for="firstname">Prénom</label>
+                    <input
+                        type="text"
+                        id="firstname"
+                        name="firstname"
+                        placeholder="Votre prénom"
+                        required
+                    >
+                </div>
+                <div>
+                    <!-- Champ Nom de famille -->
+                    <label for="lastname">Nom de famille</label>
+                    <input
+                            type="text"
+                            id="lastname"
+                            name="lastname"
+                            placeholder="Votre nom de famille"
+                            required
+                    >
+                </div>
+                <div>
+                    <!-- Champ Âge -->
+                    <label for="age">Âge</label>
+                    <input
+                            type="number"
+                            id="age"
+                            name="age"
+                            placeholder="Votre âge"
+                            min="9"
+                            max="99"
+                            required
+                    >
+                </div>
+                <div>
+                    <!-- Champ Photo de profil -->
+                    <label for="profilepicture">Photo de profil</label>
+                    <input
+                            type="url"
+                            id="profilepicture"
+                            name="profilepicture"
+                            placeholder="https://exemple.com/votre-photo.jpg"
+                    >
+                </div>
+                <div>
+                    <!-- Bouton de soumission formulaire -->
+                    <button type="submit">Créez votre compte !</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div>
+            <h3>Suivez-Nous</h3>
+        </div>
+        <!-- Icone réseaux sociaux -->
+        <div>
+            <ul>
+                <li><img src="../IMG/Facebook.png"></li>
+                <li><img src="../IMG/X.png"></li>
+                <li><img src="../IMG/Instagram.png"></li>
+            </ul>
+        </div>
+
+        <div>
+            <h4>Bienvenue sur FishOn</h4>
+        </div>
+
+        <div>
+            <h6>&copy; 2025</h6>
+        </div>
+    </footer>
+
+    <script src="JS/auth.js"></script>
+</body>
+</html>
