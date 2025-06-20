@@ -41,6 +41,7 @@ body::before {
     padding: 0 20px;
 }
 
+
 /* ========== TITRE PRINCIPAL ========== */
 
 .auth-title {
@@ -63,10 +64,12 @@ body::before {
     backdrop-filter: blur(20px);
     border-radius: 16px;
     padding: 40px;
-    box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(255, 255, 255, 0.2);
+    box-shadow:
+            0 20px 60px rgba(0, 0, 0, 0.1),
+            0 0 0 1px rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 /* ========== FORMULAIRE ========== */

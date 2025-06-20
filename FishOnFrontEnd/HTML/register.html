@@ -8,127 +8,142 @@
     <link rel="stylesheet" href="../CSS/auth.css">
 </head>
 <body>
-    <header>
-        <img src="../IMG/Login.png" alt="FishOn">
-    </header>
-
-    <main>
-        <div>
+<!-- Container principal centré -->
+<div class="auth-container">
+    <!-- Carte formulaire -->
+    <div class="auth-card">
+        <!-- Titre principal -->
+        <div class="auth-title">
             <h1>Rejoins l'équipage !</h1>
         </div>
 
-        <div>
-            <form id="formRegister">
-                <div>
-                    <!-- Champ Username -->
-                    <label for="username">Username</label>
-                    <input
+        <!-- Formulaire d'inscription -->
+        <form id="formRegister" class="auth-form">
+            <!-- Champ Username -->
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input
                         type="text"
                         id="username"
                         name="username"
+                        class="form-input"
                         placeholder="Votre nom d'utilisateur"
                         required
-                    >
-                </div>
-                <div>
-                    <!-- Champ Email -->
-                    <label for="email">Email</label>
-                    <input
+                >
+            </div>
+
+            <!-- Champ Email -->
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input
                         type="email"
                         id="email"
                         name="email"
+                        class="form-input"
                         placeholder="Votre@email.com"
                         required
-                    >
-                </div>
-                <div>
-                    <!-- Champ Mot de passe -->
-                    <label for="password">Mot de passe</label>
-                    <input
+                >
+            </div>
+
+            <!-- Champ Mot de passe -->
+            <div class="form-group">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input
                         type="password"
                         id="password"
                         name="password"
+                        class="form-input"
                         placeholder="Votre mot de passe"
                         minlength="5"
                         required
-                    >
-                </div>
-                <div>
-                    <!-- Champ Prénom -->
-                    <label for="firstname">Prénom</label>
-                    <input
+                >
+            </div>
+
+            <!-- Champ Prénom -->
+            <div class="form-group">
+                <label for="firstname" class="form-label">Prénom</label>
+                <input
                         type="text"
                         id="firstname"
                         name="firstname"
+                        class="form-input"
                         placeholder="Votre prénom"
                         required
-                    >
-                </div>
-                <div>
-                    <!-- Champ Nom de famille -->
-                    <label for="lastname">Nom de famille</label>
-                    <input
-                            type="text"
-                            id="lastname"
-                            name="lastname"
-                            placeholder="Votre nom de famille"
-                            required
-                    >
-                </div>
-                <div>
-                    <!-- Champ Âge -->
-                    <label for="age">Âge</label>
-                    <input
-                            type="number"
-                            id="age"
-                            name="age"
-                            placeholder="Votre âge"
-                            min="9"
-                            max="99"
-                            required
-                    >
-                </div>
-                <div>
-                    <!-- Champ Photo de profil -->
-                    <label for="profilepicture">Photo de profil</label>
-                    <input
-                            type="url"
-                            id="profilepicture"
-                            name="profilepicture"
-                            placeholder="https://exemple.com/votre-photo.jpg"
-                    >
-                </div>
-                <div>
-                    <!-- Bouton de soumission formulaire -->
-                    <button type="submit">Créez votre compte !</button>
-                </div>
-            </form>
-        </div>
-    </main>
+                >
+            </div>
 
-    <footer>
-        <div>
-            <h3>Suivez-Nous</h3>
-        </div>
-        <!-- Icone réseaux sociaux -->
-        <div>
-            <ul>
-                <li><img src="../IMG/Facebook.png"></li>
-                <li><img src="../IMG/X.png"></li>
-                <li><img src="../IMG/Instagram.png"></li>
-            </ul>
-        </div>
+            <!-- Champ Nom de famille -->
+            <div class="form-group">
+                <label for="lastname" class="form-label">Nom de famille</label>
+                <input
+                        type="text"
+                        id="lastname"
+                        name="lastname"
+                        class="form-input"
+                        placeholder="Votre nom de famille"
+                        required
+                >
+            </div>
 
-        <div>
-            <h4>Bienvenue sur FishOn</h4>
-        </div>
+            <!-- Champ Âge -->
+            <div class="form-group">
+                <label for="age" class="form-label">Âge</label>
+                <input
+                        type="number"
+                        id="age"
+                        name="age"
+                        class="form-input"
+                        placeholder="Votre âge"
+                        min="9"
+                        max="99"
+                        required
+                >
+            </div>
 
-        <div>
-            <h6>&copy; 2025</h6>
-        </div>
-    </footer>
+            <!-- Champ Photo de profil (optionnel) -->
+            <div class="form-group">
+                <label for="profilepicture" class="form-label">Photo de profil</label>
+                <input
+                        type="url"
+                        id="profilepicture"
+                        name="profilepicture"
+                        class="form-input"
+                        placeholder="https://exemple.com/votre-photo.jpg"
+                >
+            </div>
 
-    <script src="../JS/API.js"></script>
-    <script src="../JS/Auth.js"></script>
+            <!-- Bouton de soumission du formulaire -->
+            <button type="submit" class="btn-primary">Créez votre compte !</button>
+
+            <!-- Lien vers la page de connexion -->
+            <a href="login.html" class="link-secondary">Déjà membre ? Connecte-toi !</a>
+        </form>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <!-- Titre des réseaux sociaux -->
+        <h3 class="footer-title">Suivez-Nous</h3>
+
+        <!-- Icônes des réseaux sociaux -->
+        <ul class="social-links">
+            <li><img src="../IMG/Facebook.png" alt="Facebook"></li>
+            <li><img src="../IMG/X.png" alt="X (Twitter)"></li>
+            <li><img src="../IMG/Instagram.png" alt="Instagram"></li>
+        </ul>
+
+        <!-- Message de bienvenue -->
+        <div class="footer-brand">Bienvenue sur FishOn</div>
+
+        <!-- Copyright -->
+        <div class="footer-copyright">&copy; 2025</div>
+    </div>
+</footer>
+
+<!-- Scripts JavaScript -->
+<script src="../JS/API.js"></script>
+<script src="../JS/Auth.js"></script>
 </body>
 </html>
