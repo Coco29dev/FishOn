@@ -1,239 +1,235 @@
 /* ========== RESET ET BASE ========== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+
+/* Uniformisation des comportements */
+* /* Sélecteur universel */{
+    margin: 0; /* Suppression marge par défaut des navigateurs */
+    padding: 0; /* Suppression padding par défaut */
+    box-sizing: border-box; /* Calcul taille totale élément par largeur et hauteur inclut padding et bordures */
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-image: url('../IMG/Login.png'); /* Image de fond de la maquette */
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    min-height: 100vh;
-    color: #333;
-    line-height: 1.6;
-    position: relative;
-}
-
-/* Overlay pour améliorer la lisibilité */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.02);
-    z-index: -1;
+    font-family: system-ui, -apple-system, sans-serif; /* Police d'écriture */
+    background-image: url('../IMG/Login.webp'); /* Image de fond de la maquette */
+    background-size: cover; /* Taille de l'image de fond, couvre entièrement la zone */
+    background-position: center center; /* Positionnement image de fond centrer horizontalement et verticalement */
+    background-attachment: fixed; /* Définition image fixe pendant le scroll */
+    background-repeat: no-repeat; /* Évite la répétition */
+    image-rendering: high-quality; /* Haute qualité (non-standard) */
+    min-height: 100vh; /* Hauteur minimale élément à 100% de la viewport(écran visible) */
+    color: #333; /* Couleur texte */
+    line-height: 1.6; /* Hauter des lignes de texte(interlignage) */
+    position: relative; /* Positionnement relatif permettant le positionnement absolu des enfants */
 }
 
 /* ========== CONTAINER PRINCIPAL ========== */
 
 .auth-container {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    max-width: 400px;
-    padding: 0 20px;
+    position: absolute; /* L'élément flotte, peut se superposer à d'autres éléments */
+    top: 40%; /* Distance depuis le bord supérieur du parent */
+    left: 50%; /* Distance depuis le bord gauche du parent */
+    transform: translate(-50%, -50%); /* Applique transformation géométrique à l'élément */
+    width: 100%; /* Prend toute la largeur du conteneur parent */
+    max-width: 400px; /* Largeur maximale autorisée */
+    padding: 0 20px; /* Espace intérieur élément */
 }
 
 /* ========== TITRE PRINCIPAL ========== */
 
 .auth-title {
-    text-align: center;
-    margin-bottom: 25px;
+    text-align: center; /* Définit alignement horizontal contenu textuel */
+    margin-bottom: 25px; /* Espace extérieur inférieur de l'élément */
 }
 
 .auth-title h1 {
-    font-size: 32px;
-    font-weight: 800;
-    color: #333;
-    margin-bottom: 8px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 32px; /* Taille des caractères */
+    font-weight: 800; /* Épaisseur/graisse de la police */
+    color: #333; /* Couleur texte */
+    margin-bottom: 8px; /* Espace extérieur inférieur */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre portée sur le texte */
 }
 
 /* ========== CARTE FORMULAIRE ========== */
 
 .auth-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
-    padding: 40px;
-    box-shadow: 
+    background: rgba(255, 255, 255, 0.95); /* Couleur de fond format RougeVertBleuAlpha */
+    backdrop-filter: blur(20px); /* Filtre appliqué à ce qui se trouve derrière l'élément */
+    border-radius: 16px; /* Arrondir coin d'élément */
+    padding: 40px; /* Espace intérieur élément */
+    box-shadow: /* Ombre portées de l'élément */
     0 20px 60px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure réelle de l'élément */
 }
 
 /* ========== FORMULAIRE ========== */
 
 .auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    display: flex; /* Activation mode flexbox pour organisation éléments enfants */
+    flex-direction: column; /* Dispose les éléments enfants verticalement(en colonne) */
+    gap: 24px; /* Création espacement de 24 pixels entre chaque élément enfant du formulaire */
 }
 
 /* ========== GROUPES DE CHAMPS ========== */
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: flex; /* Activation flexbox */
+    flex-direction: column; /* Organise les éléments verticalement */
+    gap: 8px; /* Création espacement de 8 pixels entre le label et le champ de saisi */
 }
 
 /* ========== LABELS ========== */
 
 .form-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 4px;
+    font-size: 14px; /* Définit taille de la police */
+    font-weight: 600; /* Application graisse semi-bold au texte */
+    color: #2c3e50; /* Couleur texte */
+    margin-bottom: 4px; /* Ajoute espacement inférieur label */
 }
 
 /* ========== INPUTS ========== */
 
 .form-input {
-    width: 100%;
-    padding: 14px 16px;
-    background: #f8f9fa;
-    border: 1.5px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 16px;
-    font-family: inherit;
-    transition: all 0.2s ease;
-    color: #495057;
+    width: 100%; /* Occupation de toute la largeur disponible */
+    padding: 14px 16px; /* Espacement intérieur */
+    background: #f8f9fa; /* Couleur de fond */
+    border: 1.5px solid #e9ecef; /* Bordure */
+    border-radius: 8px; /* Arrondis bordure */
+    font-size: 16px; /* Taille de la police */
+    font-family: inherit; /* Hérite de la police du parent */
+    transition: all 0.2s ease; /* Animation fluide de 0.2s pours les changements */
+    color: #495057; /* Couleur du texte */
 }
 
 .form-input::placeholder {
-    color: #adb5bd;
-    font-weight: 400;
+    color: #adb5bd; /* Couleur texte placeholder */
+    font-weight: 400; /* Épaisseur de la police */
 }
 
-.form-input:focus {
-    outline: none;
-    border-color: #007bff;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+.form-input:focus /* Input sélectionné */{
+    outline: none; /* Suppression bordure par défaut navigateur */
+    border-color: #007bff; /* Couleur bordure lors du focus */
+    background: white; /* Couleur de fond lors du focus */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); /* Ombre de focus pour l'accessibilité */
 }
 
-.form-input:hover:not(:focus) {
-    border-color: #ced4da;
-    background: #fff;
+/* Input survolé par la souris */
+.form-input:hover:not(:focus) /* :hover:not(:focus) s'applique au survol si le champ n'est pas focus */{
+    border-color: #ced4da; /* Bordure devienne légèrement plus foncée */
+    background: #fff; /* Couleur de fond devient blanc */
 }
 
 /* ========== BOUTON PRINCIPAL ========== */
 
 .btn-primary {
-    width: 100%;
-    padding: 16px;
-    background: #333;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 8px;
-    text-transform: none;
+    width: 100%; /* Occupation largeur disponible */
+    padding: 16px; /* Espacement intérieur */
+    background: #333; /* Couleur de fond*/
+    color: white; /* Couleur du texte */
+    border: none; /* Suppression bordure */
+    border-radius: 8px; /* Arrondissement des coins */
+    font-size: 16px; /* Taille de la police */
+    font-weight: 600; /* Épaisseur de la police */
+    cursor: pointer; /* Forme du curseur */
+    transition: all 0.2s ease; /* Animation fluide changements */
+    margin-top: 8px; /* Espacement supérieur */
+    text-transform: none; /* Pas de transformation de texte */
 }
 
+/* État de survol */
 .btn-primary:hover {
-    background: #444;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #444; /* Fond devient légèrement plus clair */
+    transform: translateY(-1px); /* Soulèvement bouton */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Ombre portée */
 }
 
+/* État active(clic) */
 .btn-primary:active {
-    transform: translateY(0);
+    transform: translateY(0); /* Remet bouton position normal quand on clique */
 }
 
+/* État disable(désactivé) */
 .btn-primary:disabled {
-    background: #6c757d;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    background: #6c757d; /* Fond gris pour marquer état inactif */
+    cursor: not-allowed; /* Curseur d'interdiction */
+    transform: none; /* Pas d'effet de survol */
+    box-shadow: none; /* Suppression ombre */
 }
 
 /* ========== LIEN SECONDAIRE ========== */
 
 .link-secondary {
-    display: block;
-    text-align: center;
-    margin-top: 20px;
-    padding: 12px;
-    color: #333;
-    text-decoration: none;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: all 0.2s ease;
+    display: block; /* Devient élément block (occupation largeur) */
+    text-align: center; /* Centre le texte horizontalement */
+    margin-top: 20px; /* Espacement supérieur */
+    padding: 12px; /* Espacement intérieur */
+    color: #333; /* Couleur du texte */
+    text-decoration: none; /* Suppression soulignement par défaut */
+    font-weight: 500; /* Épaisseur de la police */
+    border-radius: 6px; /* Arrondissement coins */
+    transition: all 0.2s ease; /* Animation fluide pour changement d'état */
 }
 
 .link-secondary:hover {
-    background: rgba(0, 123, 255, 0.05);
-    color: #333;
+    background: rgba(0, 123, 255, 0.05); /* Fond légèrement coloré au survol */
+    color: #333; /* Maintient la couleur du texte */
 }
 
 /* ========== FOOTER ========== */
 
 footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    padding: 20px 0;
-    text-align: center;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    position: fixed; /* Positionnement fixe même lors du scroll */
+    bottom: 0; /* Positionné en bas de l'écran */
+    left: 0; /* Aligné à gauche */
+    right: 0; /* Aligné à droite (étend sur toute la largeur) */
+    background: rgba(255, 255, 255, 0.9); /* Fond blanc semi-transparent */
+    backdrop-filter: blur(10px); /* Effet de flou sur l'arrière-plan */
+    padding: 20px 0; /* Espacement intérieur vertical */
+    text-align: center; /* Centre le contenu */
+    border-top: 1px solid rgba(0, 0, 0, 0.05); /* Bordure supérieure subtile */
 }
 
 .footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    max-width: 1200px; /* Largeur maximale du contenu */
+    margin: 0 auto; /* Centre le contenu horizontalement */
+    padding: 0 20px; /* Espacement intérieur horizontal */
 }
 
 .footer-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 12px;
+    font-size: 16px; /* Taille de la police */
+    font-weight: 600; /* Épaisseur de la police */
+    color: #2c3e50; /* Couleur du texte */
+    margin-bottom: 12px; /* Espacement inférieur */
 }
 
 .social-links {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 12px;
-    list-style: none;
+    display: flex; /* Activation flexbox */
+    justify-content: center; /* Centre les éléments horizontalement */
+    gap: 20px; /* Espacement entre les liens */
+    margin-bottom: 12px; /* Espacement inférieur */
+    list-style: none; /* Suppression puces de liste */
 }
 
 .social-links img {
-    width: 24px;
-    height: 24px;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+    width: 24px; /* Largeur des icônes */
+    height: 24px; /* Hauteur des icônes */
+    opacity: 0.7; /* Transparence par défaut */
+    transition: opacity 0.2s ease; /* Animation fluide de l'opacité */
 }
 
 .social-links img:hover {
-    opacity: 1;
+    opacity: 1; /* Opacité complète au survol */
 }
 
 .footer-brand {
-    font-size: 18px;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 4px;
+    font-size: 18px; /* Taille de la police */
+    font-weight: 700; /* Épaisseur de la police */
+    color: #2c3e50; /* Couleur du texte */
+    margin-bottom: 4px; /* Espacement inférieur */
 }
 
 .footer-copyright {
-    font-size: 12px;
-    color: #6c757d;
+    font-size: 12px; /* Taille de la police */
+    color: #6c757d; /* Couleur du texte grise */
 }
 
 /* ========== RESPONSIVE DESIGN ========== */
@@ -241,88 +237,90 @@ footer {
 /* Tablettes */
 @media (max-width: 768px) {
     .auth-container {
-        max-width: 90%;
-        padding: 0 15px;
+        max-width: 90%; /* Largeur maximale réduite pour tablettes */
+        padding: 0 15px; /* Espacement intérieur réduit */
     }
 
     .auth-card {
-        padding: 30px 25px;
+        padding: 30px 25px; /* Espacement intérieur réduit */
     }
 
     .auth-title h1 {
-        font-size: 28px;
+        font-size: 28px; /* Taille de police réduite */
     }
 
     .nav-buttons {
-        top: 15px;
-        right: 15px;
-        gap: 10px;
+        top: 15px; /* Position depuis le haut */
+        right: 15px; /* Position depuis la droite */
+        gap: 10px; /* Espacement entre boutons */
     }
 
     .nav-btn {
-        padding: 6px 12px;
-        font-size: 12px;
+        padding: 6px 12px; /* Espacement intérieur des boutons */
+        font-size: 12px; /* Taille de police réduite */
     }
     
     header {
-        top: 15px;
-        left: 15px;
+        top: 15px; /* Position depuis le haut */
+        left: 15px; /* Position depuis la gauche */
     }
     
     header img {
-        width: 60px;
+        width: 60px; /* Largeur de l'image réduite */
     }
 }
 
 /* Mobiles */
 @media (max-width: 480px) {
     .auth-container {
-    max-width: 95%;
-    top: 45%;
+        max-width: 95%; /* Largeur maximale pour mobiles */
+        top: 45%; /* Position verticale ajustée */
     }
     
     .auth-card {
-    padding: 25px 20px;
-    border-radius: 12px;
+        padding: 25px 20px; /* Espacement intérieur réduit */
+        border-radius: 12px; /* Arrondi des coins réduit */
     }
     
     .auth-title h1 {
-    font-size: 24px;
+        font-size: 24px; /* Taille de police réduite pour mobile */
     }
     
     .form-input {
-    padding: 12px 14px;
-      font-size: 16px; /* Évite le zoom sur iOS */
+        padding: 12px 14px; /* Espacement intérieur réduit */
+        font-size: 16px; /* Évite le zoom sur iOS */
     }
 
     .btn-primary {
-        padding: 14px;
-        font-size: 16px;
+        padding: 14px; /* Espacement intérieur réduit */
+        font-size: 16px; /* Taille de police maintenue */
     }
     
     .nav-buttons {
-        position: relative;
-        top: auto;
-        right: auto;
-        justify-content: center;
-        margin: 20px 0;
+        position: relative; /* Positionnement relatif */
+        top: auto; /* Position automatique */
+        right: auto; /* Position automatique */
+        justify-content: center; /* Centre les boutons */
+        margin: 20px 0; /* Espacement vertical */
     }
     
     header {
-        position: relative;
-        top: auto;
-        left: auto;
-        text-align: center;
-        padding: 20px 0 0 0;
+        position: relative; /* Positionnement relatif */
+        top: auto; /* Position automatique */
+        left: auto; /* Position automatique */
+        text-align: center; /* Centre le contenu */
+        padding: 20px 0 0 0; /* Espacement intérieur ajusté */
     }
 }
 
 /* Footer responsive */
-.social-links {
-    gap: 15px;
-}
+@media (max-width: 768px) {
+    .social-links {
+        gap: 15px; /* Espacement réduit entre liens sociaux */
+    }
 
-.social-links img {
-    width: 20px;
-    height: 20px;
+    .social-links img {
+        width: 20px; /* Largeur des icônes réduite */
+        height: 20px; /* Hauteur des icônes réduite */
+    }
 }
