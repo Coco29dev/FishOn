@@ -52,27 +52,16 @@ body {
 /* ========== CARTE FORMULAIRE ========== */
 
 .auth-card {
-<<<<<<< HEAD
     background: rgba(255, 255, 255, 0.95); /* Couleur de fond format RougeVertBleuAlpha */
     backdrop-filter: blur(20px); /* Filtre appliqué à ce qui se trouve derrière l'élément */
     border-radius: 16px; /* Arrondir coin d'élément */
     padding: 40px; /* Espace intérieur élément */
     box-shadow: /* Ombre portées de l'élément */
-    0 20px 60px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure réelle de l'élément */
-=======
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
-    padding: 40px;
-    box-shadow:
             0 20px 60px rgba(0, 0, 0, 0.1),
             0 0 0 1px rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
     max-height: 80vh;
     overflow-y: auto;
->>>>>>> main
 }
 
 /* ========== FORMULAIRE ========== */
