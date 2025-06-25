@@ -84,7 +84,8 @@ class PostControllerTest {
         testPost = new PostModel(
                 "Amazing trout catch",
                 "Caught this beautiful trout today",
-                "Trout"
+                "Trout",
+                ""
         );
         testPost.setId(postId);
         testPost.setCreatedAt(LocalDateTime.now());
@@ -101,8 +102,9 @@ class PostControllerTest {
                 "Epic pike fishing",
                 "Caught a huge pike today!",
                 "Pike",
-                5.2,
+                "oui",
                 80.0,
+                5.6,
                 "River Seine",
                 LocalDateTime.now()
         );
@@ -112,6 +114,7 @@ class PostControllerTest {
                 "Updated fishing trip",
                 "Even better day at the lake",
                 "Bass",
+                "oui",
                 3.1,
                 45.0,
                 "Lake Placid",
@@ -132,6 +135,7 @@ class PostControllerTest {
                 "", // Empty title
                 "Valid description",
                 "Valid fish",
+                "oui",
                 5.2,
                 80.0,
                 "Valid location",
@@ -154,6 +158,7 @@ class PostControllerTest {
                 "Valid title",
                 "", // Empty description
                 "Valid fish",
+                "oui",
                 5.2,
                 80.0,
                 "Valid location",
@@ -176,6 +181,7 @@ class PostControllerTest {
                 "Valid title",
                 "Valid description",
                 "", // Empty fish name
+                "",
                 5.2,
                 80.0,
                 "Valid location",
@@ -198,6 +204,7 @@ class PostControllerTest {
                 "Valid title",
                 "Valid description",
                 "Valid fish",
+                "",
                 -1.0, // Negative weight
                 80.0,
                 "Valid location",
@@ -220,6 +227,7 @@ class PostControllerTest {
                 "Valid title",
                 "Valid description",
                 "Valid fish",
+                "",
                 5.2,
                 -1.0, // Negative length
                 "Valid location",
@@ -242,6 +250,7 @@ class PostControllerTest {
                 "Valid title",
                 "Valid description",
                 "Valid fish",
+                "",
                 5.2,
                 80.0,
                 "Valid location",
@@ -266,6 +275,7 @@ class PostControllerTest {
                 "", // Empty title
                 "Valid description",
                 "Valid fish",
+                "",
                 3.1,
                 45.0,
                 "Valid location",
@@ -288,6 +298,7 @@ class PostControllerTest {
                 "Valid title",
                 "Valid description",
                 null, // Null fish name
+                "",
                 3.1,
                 45.0,
                 "Valid location",
@@ -364,6 +375,7 @@ class PostControllerTest {
                 "Test title",
                 "Test description",
                 "Test fish",
+                "",
                 null, // weight
                 null, // length
                 null, // location
@@ -397,6 +409,7 @@ class PostControllerTest {
                 "Valid title within limits",
                 "Valid description that meets minimum requirements",
                 "Valid fish name",
+                "",
                 0.1, // Minimum positive weight
                 1.0, // Minimum positive length
                 "Valid location",
@@ -418,7 +431,8 @@ class PostControllerTest {
         PostModel createdPost = new PostModel(
                 createPostRequest.getTitle(),
                 createPostRequest.getDescription(),
-                createPostRequest.getFishName()
+                createPostRequest.getFishName(),
+                createPostRequest.getPhotoUrl()
         );
         createdPost.setId(postId);
         createdPost.setCreatedAt(LocalDateTime.now());
@@ -450,7 +464,8 @@ class PostControllerTest {
         PostModel createdPost = new PostModel(
                 createPostRequest.getTitle(),
                 createPostRequest.getDescription(),
-                createPostRequest.getFishName()
+                createPostRequest.getFishName(),
+                createPostRequest.getPhotoUrl()
         );
         createdPost.setId(postId);
         createdPost.setCreatedAt(LocalDateTime.now());
