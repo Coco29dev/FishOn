@@ -12,6 +12,7 @@ import com.FishOn.FishOn.DTO.Post.PostResponseDTO;
 import com.FishOn.FishOn.DTO.Post.PostUpdateDTO;
 import com.FishOn.FishOn.Exception.FishOnException.MissingDescriptionException;
 import com.FishOn.FishOn.Exception.FishOnException.MissingFishNameException;
+import com.FishOn.FishOn.Exception.FishOnException.MissingPhotoException;
 import com.FishOn.FishOn.Exception.FishOnException.MissingTitleException;
 import com.FishOn.FishOn.Exception.FishOnException.PostNotFoundById;
 import com.FishOn.FishOn.Exception.FishOnException.UnauthorizedAccess;
@@ -99,6 +100,7 @@ public class PostController {
                         post.getTitle(),
                         post.getDescription(),
                         post.getFishName(),
+                        post.getPhotoUrl(),
 
                         // Données optionnelles de pêche
                         post.getWeight(),
@@ -155,6 +157,7 @@ public class PostController {
                         post.getTitle(),
                         post.getDescription(),
                         post.getFishName(),
+                        post.getPhotoUrl(),
 
                         // Données optionnelles de pêche
                         post.getWeight(),
@@ -180,7 +183,7 @@ public class PostController {
 
     @PostMapping
     public PostResponseDTO createPost(@Valid @RequestBody PostCreateDTO postCreateDTO, Authentication authentication)
-        throws MissingTitleException, MissingDescriptionException, MissingFishNameException, UserNotFoundById
+        throws MissingTitleException, MissingDescriptionException, MissingFishNameException, MissingPhotoException, UserNotFoundById
     {
         // Vérification de sécurité identique à getUser()
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -200,10 +203,12 @@ public class PostController {
 
         // Conversion objet PostCreateDTO en objet PostModel
         PostModel post = new PostModel(
-                // Champ obligatoire
-                postCreateDTO.getTitle(),
-                postCreateDTO.getDescription(),
-                postCreateDTO.getFishName());
+            // Champ obligatoire
+            postCreateDTO.getTitle(),
+            postCreateDTO.getDescription(),
+            postCreateDTO.getFishName(),
+            postCreateDTO.getPhotoUrl()
+        );
 
         // Champ optionnel
         post.setWeight(postCreateDTO.getWeight());
@@ -224,6 +229,7 @@ public class PostController {
                 createPost.getTitle(),
                 createPost.getDescription(),
                 createPost.getFishName(),
+                createPost.getPhotoUrl(),
 
                 // Données optionnelles de pêche
                 createPost.getWeight(),
@@ -249,7 +255,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public PostResponseDTO updatePost(@PathVariable UUID postId, @Valid @RequestBody PostUpdateDTO postUpdateDTO,
             Authentication authentication)
-            throws MissingTitleException, MissingDescriptionException, MissingFishNameException,
+            throws MissingTitleException, MissingDescriptionException, MissingFishNameException, MissingPhotoException
             UserNotFoundById, PostNotFoundById, UnauthorizedModificationPost
     {
         // Vérification de sécurité identique à getUser()
@@ -270,10 +276,12 @@ public class PostController {
 
         // Conversion objet PostCreateDTO en objet PostModel
         PostModel post = new PostModel(
-                // Champ obligatoire
-                postUpdateDTO.getTitle(),
-                postUpdateDTO.getDescription(),
-                postUpdateDTO.getFishName());
+            // Champ obligatoire
+            postUpdateDTO.getTitle(),
+            postUpdateDTO.getDescription(),
+            postUpdateDTO.getFishName(),
+            postUpdateDTO.getPhotoUrl()
+        );
 
         // Champ optionnel
         post.setWeight(postUpdateDTO.getWeight());
@@ -294,6 +302,7 @@ public class PostController {
                 updatePost.getTitle(),
                 updatePost.getDescription(),
                 updatePost.getFishName(),
+                updatePost.getPhotoUrl(),
 
                 // Données optionnelles de pêche
                 updatePost.getWeight(),

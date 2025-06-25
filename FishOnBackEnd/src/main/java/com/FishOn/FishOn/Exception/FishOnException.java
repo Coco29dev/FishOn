@@ -53,6 +53,12 @@ public class FishOnException {
         }
     }
 
+    public static class MissingPhotoException extends Exception {
+        public MissingPhotoException(String photoUrl) {
+            super("Photo obligatoire");
+        }
+    }
+
     public static class PostNotFoundById extends Exception {
         public PostNotFoundById(UUID id) {
             super("La publication n'existe pas");

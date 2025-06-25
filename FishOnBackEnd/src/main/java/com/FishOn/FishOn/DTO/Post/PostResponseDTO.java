@@ -17,6 +17,7 @@ public class PostResponseDTO {
     private String title;
     private String description;
     private String fishName;
+    private String photoUrl;
 
     // Données de pêche
     private Double weight;
@@ -37,7 +38,7 @@ public class PostResponseDTO {
 
 // Constructeur paramétré
     public PostResponseDTO(UUID id, LocalDateTime createdAt, LocalDateTime updatedAt,
-                        String title, String description, String fishName,
+                        String title, String description, String fishName, String photoUrl,
                         Double weight, Double length, String location, 
                         LocalDateTime catchDate, String userName,
             List<CommentResponseDTO> comments) {
@@ -47,6 +48,7 @@ public class PostResponseDTO {
         this.title = title;
         this.description = description;
         this.fishName = fishName;
+        this.photoUrl = photoUrl;
         this.weight = weight; // ⚠️ Attention à la typo
         this.length = length;
         this.location = location;
@@ -78,6 +80,10 @@ public class PostResponseDTO {
 
     public String getFishName() {
         return fishName;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
     public Double getWeight() {  // ⚠️ Corrigé "weight"
@@ -127,6 +133,10 @@ public class PostResponseDTO {
 
     public void setFishName(String fishName) {
         this.fishName = fishName;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public void setWeight(Double weight) {  // ⚠️ Corrigé "weight"

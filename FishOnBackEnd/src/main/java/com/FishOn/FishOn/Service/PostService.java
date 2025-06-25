@@ -22,7 +22,7 @@ public class PostService {
     private UserRepository userRepository;
 
     //========= Méthode validation Post =========
-    public void validateData(PostModel post) throws MissingTitleException, MissingDescriptionException, MissingFishNameException {
+    public void validateData(PostModel post) throws MissingTitleException, MissingDescriptionException, MissingFishNameException, MissingPhotoException {
         // Validation titre
         String title = post.getTitle();
         if (title == null || title.trim().isEmpty()) {
@@ -40,11 +40,17 @@ public class PostService {
         if (fishName == null || fishName.trim().isEmpty()) {
             throw new MissingFishNameException(fishName);
         }
+
+        // Validation photo
+        String photoUrl = post.getPhotoUrl();
+        if (photoUrl == null || photoUrl.trim().isEmpty()) {
+            throw new MissingPhotoException(photoUrl);
+        }
     }
 
     // ========= Méthode CRUD =========
     public PostModel createPost(UUID userId, PostModel post)
-            throws UserNotFoundById, MissingTitleException, MissingDescriptionException, MissingFishNameException {
+            throws UserNotFoundById, MissingTitleException, MissingDescriptionException, MissingFishNameException, MissingPhotoException {
         // Récupérer l'utilisateur avec son ID, si non trouvé envoie l'exception UserNotFound avec orElseThrow
         UserModel existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundById(userId));
@@ -58,7 +64,7 @@ public class PostService {
     
     public PostModel updatePost(UUID userId, UUID postId, PostModel updatedPost)
             throws UserNotFoundById, PostNotFoundById, UnauthorizedModificationPost, MissingTitleException,
-            MissingDescriptionException, MissingFishNameException {
+            MissingDescriptionException, MissingFishNameException, MissingPhotoException {
         // Récupérer l'utilisateur avec son ID, si non trouvé envoie l'exception UserNotFound avec orElseThrow
         UserModel existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundById(userId));
@@ -82,6 +88,7 @@ public class PostService {
         existingPost.setTitle(updatedPost.getTitle());
         existingPost.setDescription(updatedPost.getDescription());
         existingPost.setFishName(updatedPost.getFishName());
+        existingPost.setPhotoUrl(updatedPost.getPhotoUrl());
 
         // MAJ champs optionnels
         existingPost.setWeight(updatedPost.getWeight());
