@@ -20,6 +20,9 @@ public class PostCreateDTO {
     @Size(max = 20, message = "Nom de poisson dépassant la limite de caractère")
     private String fishName;
 
+    @NotBlank(message = "Photo obligatoire")
+    private String photoUrl;
+
     // Optionnels
     private Double weight;
     private Double length;
@@ -32,11 +35,12 @@ public class PostCreateDTO {
     }
 
     // Constructeur paramétré
-    public PostCreateDTO(String title, String description, String fishName, Double weight,
+    public PostCreateDTO(String title, String description, String fishName, String photoUrl, Double weight,
             Double length, String location, LocalDateTime catchDate) {
         this.title = title;
         this.description = description;
         this.fishName = fishName;
+        this.photoUrl = photoUrl;
         this.weight = weight;
         this.length = length;
         this.location = location;
@@ -54,6 +58,10 @@ public class PostCreateDTO {
 
     public String getFishName() {
         return fishName;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
     public Double getWeight() {
@@ -83,6 +91,10 @@ public class PostCreateDTO {
     
     public void setFishName(String fishName) {
         this.fishName = fishName;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public void setWeight(Double weight) {

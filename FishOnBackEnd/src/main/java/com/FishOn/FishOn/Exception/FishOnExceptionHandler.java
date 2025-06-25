@@ -1,6 +1,7 @@
 package com.FishOn.FishOn.Exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -67,6 +68,11 @@ public class FishOnExceptionHandler {
     // HttpStatus.BAD_REQUEST = 400 BAD_REQUEST : Nom de poisson manquant
     @ExceptionHandler(MissingFishNameException.class)
     public ResponseEntity<String> handleMissingFishNameException(MissingFishNameException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MissingPhotoException.class)
+    public ResponseEntity<String> handleMissingPhotoException(MissingPhotoException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
