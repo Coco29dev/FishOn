@@ -10,18 +10,20 @@ public class CommentResponseDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String userName;
+    private String userProfilePicture;
 
 
     // Constructeur par défaut
     public CommentResponseDTO() {}
 
     // Constructeur avec paramètres
-    public CommentResponseDTO(UUID id, String content, LocalDateTime createdAt, LocalDateTime updatedAt, String userName) {
+    public CommentResponseDTO(UUID id, String content, LocalDateTime createdAt, LocalDateTime updatedAt, String userName,  String userProfilePicture) {
         this.id = id;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.userName = userName;
+        this.userProfilePicture = userProfilePicture;
 
     }
 
@@ -41,6 +43,7 @@ public class CommentResponseDTO {
     public String getUserName() {
         return userName;
     }
+    public String getUserProfilePicture() { return userProfilePicture; }
 
 
     // Setter
@@ -59,5 +62,6 @@ public class CommentResponseDTO {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+    public void setUserProfilePicture(String userProfilePicture) { this.userProfilePicture = userProfilePicture; }
 
 }

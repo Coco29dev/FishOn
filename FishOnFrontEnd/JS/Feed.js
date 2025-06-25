@@ -140,12 +140,12 @@ function createPostCard(post) {
         <div class="post-content">
             <h2 class="post-title">${escapeHtml(post.title)}</h2>
             <p class="post-description">${escapeHtml(post.description)}</p>
-            ${post.imageUrl ? `
+            ${post.photoUrl ? `
                 <img 
-                    src="${escapeHtml(post.imageUrl)}" 
+                    src="${escapeHtml(post.photoUrl)}" 
                     alt="Photo de pêche" 
                     class="post-image"
-                    onclick="openImageModal('${escapeHtml(post.imageUrl)}')"
+                    onerror="this.style.display='none'"
                 >
             ` : ''}
         </div>
