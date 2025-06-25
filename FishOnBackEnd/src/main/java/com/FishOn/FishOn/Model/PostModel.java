@@ -32,6 +32,9 @@ public class PostModel extends BaseModel {
     @Column(nullable = false) // Champ obligatoire
     private String fishName;
 
+    @Column(nullable = false) // Champ obligatoire
+    private String photoUrl;
+
     @Column(nullable = true) // Champ optionnel
     private Double weight;
 
@@ -58,11 +61,12 @@ public class PostModel extends BaseModel {
     }
 
     // Construteur paramétré
-    public PostModel(String title, String description, String fishName) {
+    public PostModel(String title, String description, String fishName, String photoUrl) {
         super(); // Appel constructeur BaseModel
         this.title = title;
         this.description = description;
         this.fishName = fishName;
+        this.photoUrl = photoUrl;
     }
 
     // Getters
@@ -76,6 +80,10 @@ public class PostModel extends BaseModel {
 
     public String getFishName() {
         return fishName;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
     public Double getWeight() {
@@ -113,6 +121,10 @@ public class PostModel extends BaseModel {
     
     public void setFishName(String fishName) {
         this.fishName = fishName;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public void setWeight(Double weight) {
