@@ -110,6 +110,7 @@ public class PostController {
 
                         // Nom d'utilisateur qui a créé le post
                         post.getUser().getUserName(),
+                        post.getUser().getProfilePicture(),
 
                         // Conversion des commentaires associés au post
                         // Stream imbriqué pour transformer CommentModel → CommentResponseDTO
@@ -119,7 +120,8 @@ public class PostController {
                                         comment.getContent(),
                                         comment.getCreatedAt(),
                                         comment.getUpdatedAt(),
-                                        comment.getUser().getUserName())) // Nom d'utilisateur qui a écrit le commentaire
+                                        comment.getUser().getUserName(),
+                                        comment.getUser().getProfilePicture())) // Nom d'utilisateur qui a écrit le commentaire
                                 .collect(Collectors.toList()))) // Collecte des commentaires en List<CommentResponseDTO>
                 .collect(Collectors.toList()); // Collecte finale en List<PostResponseDTO>
     }
@@ -167,6 +169,7 @@ public class PostController {
 
                         // Nom d'utilisateur qui a créé le post
                         post.getUser().getUserName(),
+                        post.getUser().getProfilePicture(),
 
                         // Conversion des commentaires associés au post
                         // Stream imbriqué pour transformer CommentModel → CommentResponseDTO
@@ -176,7 +179,8 @@ public class PostController {
                                         comment.getContent(),
                                         comment.getCreatedAt(),
                                         comment.getUpdatedAt(),
-                                        comment.getUser().getUserName())) // Nom d'utilisateur qui a écrit le commentaire
+                                        comment.getUser().getUserName(),
+                                        comment.getUser().getProfilePicture())) // Nom d'utilisateur qui a écrit le commentaire
                                 .collect(Collectors.toList()))) // Collecte des commentaires en List<CommentResponseDTO>
                 .collect(Collectors.toList()); // Collecte finale en List<PostResponseDTO>
     }
@@ -239,6 +243,7 @@ public class PostController {
 
                 // Nom d'utilisateur qui a créé le post
                 createPost.getUser().getUserName(),
+                createPost.getUser().getProfilePicture(),
 
                 createPost.getComments().stream()
                         .map(comment -> new CommentResponseDTO(
@@ -246,7 +251,8 @@ public class PostController {
                                 comment.getContent(),
                                 comment.getCreatedAt(),
                                 comment.getUpdatedAt(),
-                                comment.getUser().getUserName() // Nom d'utilisateur qui a écrit le commentaire
+                                comment.getUser().getUserName(),
+                                comment.getUser().getProfilePicture()// Nom d'utilisateur qui a écrit le commentaire
                         ))
                         .collect(Collectors.toList()) // Collecte des commentaires en List<CommentResponseDTO>
         );
@@ -255,7 +261,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public PostResponseDTO updatePost(@PathVariable UUID postId, @Valid @RequestBody PostUpdateDTO postUpdateDTO,
             Authentication authentication)
-            throws MissingTitleException, MissingDescriptionException, MissingFishNameException, MissingPhotoException
+            throws MissingTitleException, MissingDescriptionException, MissingFishNameException, MissingPhotoException,
             UserNotFoundById, PostNotFoundById, UnauthorizedModificationPost
     {
         // Vérification de sécurité identique à getUser()
@@ -312,6 +318,7 @@ public class PostController {
 
                 // Nom d'utilisateur qui a créé le post
                 updatePost.getUser().getUserName(),
+                updatePost.getUser().getProfilePicture(),
 
                 updatePost.getComments().stream()
                         .map(comment -> new CommentResponseDTO(
@@ -319,7 +326,8 @@ public class PostController {
                                 comment.getContent(),
                                 comment.getCreatedAt(),
                                 comment.getUpdatedAt(),
-                                comment.getUser().getUserName() // Nom d'utilisateur qui a écrit le commentaire
+                                comment.getUser().getUserName(),
+                                comment.getUser().getProfilePicture()// Nom d'utilisateur qui a écrit le commentaire
                         ))
                         .collect(Collectors.toList()) // Collecte des commentaires en List<CommentResponseDTO>
         );

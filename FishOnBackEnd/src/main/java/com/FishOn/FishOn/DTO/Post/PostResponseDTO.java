@@ -27,6 +27,7 @@ public class PostResponseDTO {
 
     // Information utilisateur
     private String userName;
+    private String userProfilePicture;
 
     // Liste commentaire
     private List<CommentResponseDTO> comments;
@@ -40,7 +41,7 @@ public class PostResponseDTO {
     public PostResponseDTO(UUID id, LocalDateTime createdAt, LocalDateTime updatedAt,
                         String title, String description, String fishName, String photoUrl,
                         Double weight, Double length, String location, 
-                        LocalDateTime catchDate, String userName,
+                        LocalDateTime catchDate, String userName, String userProfilePicture,
             List<CommentResponseDTO> comments) {
         this.id = id;
         this.createdAt = createdAt;
@@ -54,6 +55,7 @@ public class PostResponseDTO {
         this.location = location;
         this.catchDate = catchDate;
         this.userName = userName;
+        this.userProfilePicture = userProfilePicture;
         this.comments = comments;
     }
 
@@ -105,6 +107,8 @@ public class PostResponseDTO {
     public String getUserName() {
         return userName;
     }
+
+    public String getUserProfilePicture() { return userProfilePicture; }
 
     public List<CommentResponseDTO> getComments() {
         return comments;
@@ -158,6 +162,8 @@ public class PostResponseDTO {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    public void setUserProfilePicture(String userProfilePicture) { this.userProfilePicture = userProfilePicture; }
 
     public void setComments(List<CommentResponseDTO> comments) {
         this.comments = comments;

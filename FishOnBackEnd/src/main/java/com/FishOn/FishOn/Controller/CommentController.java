@@ -58,7 +58,8 @@ public class CommentController {
                 savedComment.getContent(),
                 savedComment.getCreatedAt(),
                 savedComment.getUpdatedAt(),
-                savedComment.getUser().getUserName()
+                savedComment.getUser().getUserName(),
+                savedComment.getUser().getProfilePicture()
         );
     }
 
@@ -87,7 +88,8 @@ public class CommentController {
                 savedComment.getContent(),
                 savedComment.getCreatedAt(),
                 savedComment.getUpdatedAt(),
-                savedComment.getUser().getUserName()
+                savedComment.getUser().getUserName(),
+                savedComment.getUser().getProfilePicture()
         );
     }
 
@@ -129,7 +131,8 @@ public class CommentController {
                         comment.getContent(),
                         comment.getCreatedAt(),
                         comment.getUpdatedAt(),
-                        comment.getUser().getUserName()
+                        comment.getUser().getUserName(),
+                        comment.getUser().getProfilePicture()
                 ))
                 .collect(Collectors.toList());
     }
@@ -152,7 +155,8 @@ public class CommentController {
                         comment.getContent(),
                         comment.getCreatedAt(),
                         comment.getUpdatedAt(),
-                        comment.getUser().getUserName()
+                        comment.getUser().getUserName(),
+                        comment.getUser().getProfilePicture()
                 ))
                 .collect(Collectors.toList());
     }

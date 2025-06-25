@@ -11,10 +11,10 @@ import com.FishOn.FishOn.Model.PostModel;
 import com.FishOn.FishOn.Model.UserModel;
 import com.FishOn.FishOn.Repository.PostRepository;
 
-@Component // Cette classe est un bean gestion automatique de Spring
+@Component
 public class PostDataInitializer {
 
-    @Autowired // Injection automatique
+    @Autowired
     private PostRepository postRepository;
 
     public List<PostModel> createPosts(List<UserModel> users) {
@@ -22,88 +22,86 @@ public class PostDataInitializer {
 
         // ==== CRÉATION TEMPLATES ====
         String[] titles = {
-                "Belle prise du matin", // 0
-                "Record personnel battu", // 1
-                "Sortie exceptionnelle", // 2
-                "Combat épique", // 3
-                "Magnifique spécimen", // 4
-                "Pêche nocturne réussie", // 5
-                "Première de l'année", // 6
-                "Week-end parfait", // 7
-                "Session productive", // 8
-                "Technique payante" // 9     
+                "Belle prise du matin", "Record personnel battu", "Sortie exceptionnelle",
+                "Combat épique", "Magnifique spécimen", "Pêche nocturne réussie",
+                "Première de l'année", "Week-end parfait", "Session productive", "Technique payante"
         };
 
         String[] descriptions = {
-                "Quelle journée ! Le poisson était au rendez-vous.", // 0
-                "Après 2h de combat, j'ai enfin réussi à la sortir.", // 1
-                "Conditions parfaites, eau claire et temps idéal.", // 2
-                "Une technique qui porte enfin ses fruits !", // 3
-                "Spot secret qui ne déçoit jamais.", // 4
-                "Lever à 5h du matin, mais ça valait le coup !", // 5
-                "Premier poisson de cette taille pour moi.", // 6
-                "Belle bataille, respect pour ce combattant.", // 7
-                "Technique à la mouche qui fonctionne à merveille.", // 8
-                "Patience récompensée après 3h d'attente." // 9
+                "Quelle journée ! Le poisson était au rendez-vous.",
+                "Après 2h de combat, j'ai enfin réussi à la sortir.",
+                "Conditions parfaites, eau claire et temps idéal.",
+                "Une technique qui porte enfin ses fruits !",
+                "Spot secret qui ne déçoit jamais.",
+                "Lever à 5h du matin, mais ça valait le coup !",
+                "Premier poisson de cette taille pour moi.",
+                "Belle bataille, respect pour ce combattant.",
+                "Technique à la mouche qui fonctionne à merveille.",
+                "Patience récompensée après 3h d'attente."
         };
 
         String[] fishNames = {
-                "Carpe", // 0
-                "Brochet", // 1
-                "Truite", // 2
-                "Sandre", // 3
-                "Perche", // 4
-                "Black-bass", // 5
-                "Gardon", // 6
-                "Tanche", // 7
-                "Silure", // 8
-                "Barbeau" // 9
+                "Carpe", "Brochet", "Truite", "Sandre", "Perche",
+                "Black-bass", "Gardon", "Tanche", "Silure", "Barbeau"
         };
 
         String[] locations = {
-                "Lac d'Annecy", // 0
-                "Seine à Paris", // 1
-                "Lac du Bourget", // 2
-                "Étang privé de Sologne", // 3
-                "Rivière Dordogne", // 4
-                "Canal du Midi", // 5
-                "Lac de Sainte-Croix", // 6
-                "Rhône à Lyon", // 7
-                "Étang communal local", // 8
-                "Réservoir de Vouglans" // 9
+                "Lac d'Annecy", "Seine à Paris", "Lac du Bourget", "Étang privé de Sologne",
+                "Rivière Dordogne", "Canal du Midi", "Lac de Sainte-Croix", "Rhône à Lyon",
+                "Étang communal local", "Réservoir de Vouglans"
         };
 
-        // ==== CRÉATION PUBLICATION ====
+        String[] photoUrls = {
+                "img/fish1.jpg", "img/fish2.jpg", "img/fish3.jpg", "img/fish4.jpg", "img/fish5.jpg",
+                "img/fish6.jpg", "img/fish7.jpg", "img/fish8.jpg", "img/fish9.jpg", "img/fish10.jpg"
+        };
+
+        // ==== CRÉATION PUBLICATIONS ====
         Integer i = 0;
         for (UserModel user : users) {
             for (Integer j = 0; j < 3; j++) {
-                // Calcul index templates
-                Integer index_title = (i + j) % 10;
-                Integer index_description = (i * 2 + j) % 10;
-                Integer index_fishName = (i + j * 2) % 10;
-                Integer index_location = (i * 3 + j) % 10;
+                try {
+                    // Calcul des index
+                    Integer index_title = (i + j) % 10;
+                    Integer index_description = (i * 2 + j) % 10;
+                    Integer index_fishName = (i + j * 2) % 10;
+                    Integer index_location = (i * 3 + j) % 10;
+                    Integer index_photoUrl = (i + j) % 10;
 
-                // Récupération données depuis les templates
-                String title = titles[index_title];
-                String description = descriptions[index_description];
-                String fishName = fishNames[index_fishName];
-                String location = locations[index_location];
+                    // Récupération des données
+                    String title = titles[index_title];
+                    String description = descriptions[index_description];
+                    String fishName = fishNames[index_fishName];
+                    String location = locations[index_location];
+                    String photoUrl = photoUrls[index_photoUrl];
 
-                // Création publication avec données aléatoires
-                PostModel post = postRepository.save(new PostModel(title, description, fishName));
-                post.setUser(user);
+                    // CORRECTION : Créer le post SANS le sauvegarder immédiatement
+                    PostModel post = new PostModel(title, description, fishName, photoUrl);
 
-                // Données optionnelles pour certains posts seulement
-                if (j == 0 || j == 2) {
-                    post.setWeight(1.0 + (i + j) * 0.5);
-                    post.setLength(20.0 + (i + j) * 3.0);
-                    post.setLocation(location);
-                    post.setCatchDate(LocalDateTime.now().minusDays(i + j + 1));
+                    // Définir l'utilisateur AVANT la sauvegarde
+                    post.setUser(user);
+
+                    // Données optionnelles pour certains posts seulement
+                    if (j == 0 || j == 2) {
+                        post.setWeight(1.0 + (i + j) * 0.5);
+                        post.setLength(20.0 + (i + j) * 3.0);
+                        post.setLocation(location);
+                        post.setCatchDate(LocalDateTime.now().minusDays(i + j + 1));
+                    }
+
+                    // Sauvegarder APRÈS avoir défini toutes les propriétés
+                    PostModel savedPost = postRepository.save(post);
+                    posts.add(savedPost);
+
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la création du post pour l'utilisateur " + user.getUserName() + ": " + e.getMessage());
+                    e.printStackTrace();
                 }
-                posts.add(post);
             }
             i++;
         }
+
+        System.out.println("Création terminée : " + posts.size() + " posts créés");
         return posts;
     }
 }
