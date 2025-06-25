@@ -1,3 +1,57 @@
+// ========== Configuration des chemins d'images ==========
+const BACKEND_URL = 'http://localhost:8080'; // URL de votre backend Spring Boot
+
+// Fonction pour obtenir l'URL correcte des avatars depuis le backend
+function getCorrectAvatarPath(profilePicture, userName) {
+    // Si pas d'image de profil ou chemin invalide, utiliser l'avatar par défaut local
+    if (!profilePicture || profilePicture === 'null' || profilePicture === '') {
+        return '../IMG/default-avatar.png';
+    }
+
+    // Si le chemin commence par "profilePicture/", construire l'URL complète du backend
+    if (profilePicture.startsWith('profilePicture/')) {
+        return `${BACKEND_URL}/${profilePicture}`;
+    }
+
+    // Si c'est déjà une URL complète, la retourner telle quelle
+    if (profilePicture.startsWith('http://') || profilePicture.startsWith('https://')) {
+        return profilePicture;
+    }
+
+    // Si le chemin est relatif frontend (../IMG/), le garder tel quel
+    if (profilePicture.startsWith('../IMG/') || profilePicture.startsWith('IMG/')) {
+        return profilePicture;
+    }
+
+    // Par défaut, essayer de construire l'URL backend
+    return `${BACKEND_URL}/profilePicture/${profilePicture}`;
+}
+
+// Fonction pour obtenir l'URL correcte des photos de poissons
+function getCorrectPhotoPath(photoUrl) {
+    if (!photoUrl || photoUrl === 'null' || photoUrl === '') {
+        return null;
+    }
+
+    // Si c'est déjà une URL complète, la retourner telle quelle
+    if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
+        return photoUrl;
+    }
+
+    // Si le chemin commence par "img/", construire l'URL complète du backend
+    if (photoUrl.startsWith('img/')) {
+        return `${BACKEND_URL}/${photoUrl}`;
+    }
+
+    // Si le chemin est relatif frontend, le garder tel quel
+    if (photoUrl.startsWith('../IMG/') || photoUrl.startsWith('IMG/')) {
+        return photoUrl;
+    }
+
+    // Par défaut, essayer de construire l'URL backend
+    return `${BACKEND_URL}/img/${photoUrl}`;
+}
+
 // ========== Fonction Message d'erreur ==========
 function message(message, type) {
     // Gestion des messages d'erreur avec préfixe visuel
@@ -114,18 +168,22 @@ function createPostCard(post) {
     postCard.className = 'post-card';
 
     const createdDate = formatDate(post.createdAt);
-    // Vérifier si le post a vraiment été modifié (différence significative entre les dates)
     const isModified = post.updatedAt && post.createdAt &&
-        Math.abs(new Date(post.updatedAt) - new Date(post.createdAt)) > 1000; // Plus d'1 seconde de différence
+        Math.abs(new Date(post.updatedAt) - new Date(post.createdAt)) > 1000;
     const updatedDate = isModified ? formatDate(post.updatedAt) : null;
+
+    // CORRECTION: Utiliser les fonctions pour obtenir les URLs correctes depuis le backend
+    const avatarPath = getCorrectAvatarPath(post.userProfilePicture || post.profilePicture, post.userName);
+    const photoPath = getCorrectPhotoPath(post.photoUrl);
 
     postCard.innerHTML = `
         <div class="post-header">
             <div class="post-author-info">
                 <div class="post-author-avatar">
-                    <img src="${post.userProfilePicture || post.profilePicture || '../IMG/default-avatar.png'}" 
+                    <img src="${avatarPath}" 
                          alt="Photo de profil de ${escapeHtml(post.userName)}"
-                         onerror="this.src='../IMG/default-avatar.png'">
+                         onerror="this.src='../IMG/default-avatar.png'"
+                         loading="lazy">
                 </div>
                 <div class="post-author-details">
                     <div class="post-author">@${escapeHtml(post.userName)}</div>
@@ -140,12 +198,15 @@ function createPostCard(post) {
         <div class="post-content">
             <h2 class="post-title">${escapeHtml(post.title)}</h2>
             <p class="post-description">${escapeHtml(post.description)}</p>
-            ${post.photoUrl ? `
+            ${photoPath ? `
                 <img 
-                    src="${escapeHtml(post.photoUrl)}" 
+                    src="${escapeHtml(photoPath)}" 
                     alt="Photo de pêche" 
                     class="post-image"
                     onerror="this.style.display='none'"
+                    loading="lazy"
+                    onclick="openImageModal('${escapeHtml(photoPath)}')"
+                    style="cursor: pointer;"
                 >
             ` : ''}
         </div>
@@ -203,19 +264,22 @@ function createCommentsHTML(comments, postId) {
     if (comments && comments.length > 0) {
         commentsHTML = comments.map(comment => {
             const commentDate = formatDate(comment.createdAt);
-            // Vérifier si le commentaire a vraiment été modifié
             const isModified = comment.updatedAt && comment.createdAt &&
                 Math.abs(new Date(comment.updatedAt) - new Date(comment.createdAt)) > 1000;
             const updatedDate = isModified ? formatDate(comment.updatedAt) : null;
+
+            // CORRECTION: Utiliser la fonction pour obtenir l'URL correcte depuis le backend
+            const avatarPath = getCorrectAvatarPath(comment.userProfilePicture || comment.profilePicture, comment.userName);
 
             return `
                 <div class="comment-item">
                     <div class="comment-header">
                         <div class="comment-author-info">
                             <div class="comment-author-avatar">
-                                <img src="${comment.userProfilePicture || comment.profilePicture || '../IMG/default-avatar.png'}" 
+                                <img src="${avatarPath}" 
                                      alt="Photo de profil de ${escapeHtml(comment.userName)}"
-                                     onerror="this.src='../IMG/default-avatar.png'">
+                                     onerror="this.src='../IMG/default-avatar.png'"
+                                     loading="lazy">
                             </div>
                             <div class="comment-author-details">
                                 <div class="comment-author">@${escapeHtml(comment.userName)}</div>
@@ -533,4 +597,4 @@ function refreshFeed() {
 // Rafraîchir automatiquement le feed toutes les 30 secondes
 setInterval(refreshFeed, 30000);
 
-console.log('Feed.js chargé - Version consultation uniquement');
+console.log('Feed.js chargé - Version avec support des images backend');
