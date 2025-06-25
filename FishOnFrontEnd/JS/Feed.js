@@ -137,6 +137,7 @@ async function loadFeed() {
     }
 }
 
+// Dans Feed.js - Modifier la fonction displayPosts
 function displayPosts(posts) {
     const postsContainer = document.getElementById('postsContainer');
     if (!postsContainer) return;
@@ -157,7 +158,15 @@ function displayPosts(posts) {
         return;
     }
 
-    posts.forEach(post => {
+    // ✨ SOLUTION 1 : Tri par date de création décroissante (plus récent en premier)
+    const sortedPosts = [...posts].sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateB - dateA; // Ordre décroissant (plus récent en premier)
+    });
+
+    // Utiliser les posts triés au lieu des posts originaux
+    sortedPosts.forEach(post => {
         const postCard = createPostCard(post);
         postsContainer.appendChild(postCard);
     });
@@ -335,15 +344,53 @@ function formatDate(dateString) {
             return 'Date invalide';
         }
 
-        const options = {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        };
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - date) / 1000);
 
-        return date.toLocaleDateString('fr-FR', options);
+        // ✨ OPTION 4 : Format intelligent adaptatif
+
+        // Très récent (< 1 minute) : "À l'instant"
+        if (diffInSeconds < 60) {
+            return "À l'instant";
+        }
+
+        // Récent (< 1 heure) : "il y a X min"
+        else if (diffInSeconds < 3600) {
+            const minutes = Math.floor(diffInSeconds / 60);
+            return `il y a ${minutes} min`;
+        }
+
+        // Aujourd'hui (< 24h) : "il y a Xh"
+        else if (diffInSeconds < 86400) {
+            const hours = Math.floor(diffInSeconds / 3600);
+            return `il y a ${hours}h`;
+        }
+
+        // Cette semaine (< 7 jours) : "il y a X jours"
+        else if (diffInSeconds < 604800) {
+            const days = Math.floor(diffInSeconds / 86400);
+            if (days === 1) return "hier";
+            return `il y a ${days} jours`;
+        }
+
+        // Ce mois (< 30 jours) : "il y a X semaines"
+        else if (diffInSeconds < 2592000) {
+            const weeks = Math.floor(diffInSeconds / 604800);
+            return `il y a ${weeks} sem`;
+        }
+
+        // Cette année : "12 nov" (date courte)
+        else if (date.getFullYear() === now.getFullYear()) {
+            const options = { day: 'numeric', month: 'short' };
+            return date.toLocaleDateString('fr-FR', options);
+        }
+
+        // Ancienne année : "12 nov 2023"
+        else {
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('fr-FR', options);
+        }
+
     } catch (error) {
         console.error('Erreur lors du formatage de la date:', error);
         return 'Date invalide';
