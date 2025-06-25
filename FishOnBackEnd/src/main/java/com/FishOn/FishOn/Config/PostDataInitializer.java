@@ -77,7 +77,7 @@ public class PostDataInitializer {
         Integer i = 0;
         for (UserModel user : users) {
             for (Integer j = 0; j < 3; j++) {
-                // Calcul lindex templates
+                // Calcul index templates
                 Integer index_title = (i + j) % 10;
                 Integer index_description = (i * 2 + j) % 10;
                 Integer index_fishName = (i + j * 2) % 10;
