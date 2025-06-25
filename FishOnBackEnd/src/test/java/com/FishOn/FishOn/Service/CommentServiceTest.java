@@ -62,8 +62,8 @@ class CommentServiceTest {
         otherUser = new UserModel("otheruser", "other@example.com", "Jane", "Smith", 30, "password", "profile2.jpg");
         otherUser.setId(otherUserId);
 
-        // Création post de test
-        testPost = new PostModel("Superbe carpe", "Belle prise ce matin", "Carpe");
+        // ✅ CORRECTION : Utiliser le constructeur PostModel avec 4 paramètres (title, description, fishName, photoUrl)
+        testPost = new PostModel("Superbe carpe", "Belle prise ce matin", "Carpe", "img/carpe.jpg");
         testPost.setId(postId);
         testPost.setUser(testUser);
 
@@ -358,5 +358,114 @@ class CommentServiceTest {
         assertNotNull(result);
         assertEquals(longContent, result.getContent());
         verify(commentRepository).save(newComment);
+    }
+
+    // =============== TESTS AVANCÉS ===============
+
+    @Test
+    void createComment_WithSpecialCharacters() throws Exception {
+        // Given
+        String specialContent = "Commentaire avec émojis 🎣🐟 et caractères spéciaux äöüß@#$%^&*()";
+        CommentModel newComment = new CommentModel(specialContent);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
+        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
+        when(commentRepository.save(any(CommentModel.class))).thenReturn(newComment);
+
+        // When
+        CommentModel result = commentService.createComment(newComment, userId, postId);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(specialContent, result.getContent());
+        verify(commentRepository).save(newComment);
+    }
+
+    @Test
+    void createComment_MultipleCommentsOnSamePost() throws Exception {
+        // Given
+        CommentModel comment1 = new CommentModel("Premier commentaire");
+        CommentModel comment2 = new CommentModel("Deuxième commentaire");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
+        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
+        when(commentRepository.save(any(CommentModel.class)))
+                .thenReturn(comment1)
+                .thenReturn(comment2);
+
+        // When
+        CommentModel result1 = commentService.createComment(comment1, userId, postId);
+        CommentModel result2 = commentService.createComment(comment2, userId, postId);
+
+        // Then
+        assertNotNull(result1);
+        assertNotNull(result2);
+        assertNotEquals(result1.getContent(), result2.getContent());
+        verify(commentRepository, times(2)).save(any(CommentModel.class));
+    }
+
+    @Test
+    void updateComment_SameContentMultipleTimes() throws Exception {
+        // Given
+        CommentModel updatedComment = new CommentModel("Contenu identique");
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(testComment));
+        when(commentRepository.save(any(CommentModel.class))).thenReturn(testComment);
+
+        // When
+        CommentModel result1 = commentService.updateComment(commentId, updatedComment, userId);
+        CommentModel result2 = commentService.updateComment(commentId, updatedComment, userId);
+
+        // Then
+        assertNotNull(result1);
+        assertNotNull(result2);
+        assertEquals("Contenu identique", testComment.getContent());
+        verify(commentRepository, times(2)).save(testComment);
+    }
+
+    @Test
+    void createComment_WithMaxContentLength() throws Exception {
+        // Given - Test avec contenu très long (limite probable de la DB)
+        String maxContent = "a".repeat(5000); // 5000 caractères
+        CommentModel newComment = new CommentModel(maxContent);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
+        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
+        when(commentRepository.save(any(CommentModel.class))).thenReturn(newComment);
+
+        // When
+        CommentModel result = commentService.createComment(newComment, userId, postId);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(maxContent, result.getContent());
+        assertEquals(5000, result.getContent().length());
+        verify(commentRepository).save(newComment);
+    }
+
+    @Test
+    void getByUserId_WithMultipleUsers() throws Exception {
+        // Given
+        CommentModel userComment = new CommentModel("Commentaire de testUser");
+        userComment.setUser(testUser);
+
+        CommentModel otherComment = new CommentModel("Commentaire de otherUser");
+        otherComment.setUser(otherUser);
+
+        List<CommentModel> userComments = Arrays.asList(userComment);
+        List<CommentModel> otherComments = Arrays.asList(otherComment);
+
+        when(userRepository.existsById(userId)).thenReturn(true);
+        when(userRepository.existsById(otherUserId)).thenReturn(true);
+        when(commentRepository.findByUserId(userId)).thenReturn(userComments);
+        when(commentRepository.findByUserId(otherUserId)).thenReturn(otherComments);
+
+        // When
+        List<CommentModel> userResult = commentService.getByUserId(userId);
+        List<CommentModel> otherResult = commentService.getByUserId(otherUserId);
+
+        // Then
+        assertEquals(1, userResult.size());
+        assertEquals(1, otherResult.size());
+        assertEquals("Commentaire de testUser", userResult.get(0).getContent());
+        assertEquals("Commentaire de otherUser", otherResult.get(0).getContent());
+        assertNotEquals(userResult.get(0).getUser().getId(), otherResult.get(0).getUser().getId());
     }
 }

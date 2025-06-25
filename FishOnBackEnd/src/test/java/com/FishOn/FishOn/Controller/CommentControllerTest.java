@@ -90,7 +90,8 @@ class CommentControllerTest {
         testPost = new PostModel(
                 "Amazing catch",
                 "Great day fishing",
-                "Trout"
+                "Trout",
+                ""
         );
         testPost.setId(postId);
         testPost.setUser(testUser);
