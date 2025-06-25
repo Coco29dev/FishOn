@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FishOn - Fil d'actualité des pêcheurs">
+    <title>FishOn - Feed</title>
+    <link rel="stylesheet" href="../CSS/feed.css">
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="nav-bar">
+    <div class="nav-container">
+        <!-- Logo -->
+        <div class="nav-logo">
+            <span class="nav-brand">FishOn</span>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button id="profileBtn" class="nav-btn">Profil</button>
+            <button id="logoutBtn" class="nav-btn btn-logout">Déconnexion</button>
+        </div>
+    </div>
+</nav>
+
+<!-- Container principal -->
+<div class="feed-container">
+    <!-- Carte feed -->
+    <div class="feed-card">
+        <!-- Titre du feed -->
+        <div class="feed-title">
+            <h1>A l'aventure marin d'eau douce !</h1>
+            <p class="feed-subtitle">Découvrez les dernières prises de la communauté</p>
+        </div>
+
+        <!-- Zone de chargement -->
+        <div id="loadingMessage" class="loading-message">
+            Chargement des publications...
+        </div>
+
+        <!-- Zone d'erreur -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            Une erreur est survenue lors du chargement
+        </div>
+
+        <!-- Container des posts -->
+        <div id="postsContainer" class="posts-container">
+            <!-- Les posts seront ajoutés dynamiquement par JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <h3 class="footer-title">Suivez-nous !</h3>
+
+        <!-- Icônes réseaux sociaux -->
+        <ul class="social-links">
+            <li><img src="../IMG/Facebook.png" alt="Facebook"></li>
+            <li><img src="../IMG/X.png" alt="X (Twitter)"></li>
+            <li><img src="../IMG/Instagram.png" alt="Instagram"></li>
+        </ul>
+
+        <div class="footer-brand">Bienvenue sur Fish On</div>
+        <div class="footer-copyright">@copyright2025</div>
+    </div>
+</footer>
+
+<!-- Scripts JavaScript -->
+<script src="../JS/API.js"></script>
+<script src="../JS/Feed.js"></script>
+</body>
+</html>
