@@ -239,8 +239,8 @@ body {
 }
 
 .post-author-avatar {
-    width: 40px;
-    height: 40px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
@@ -411,8 +411,8 @@ body {
 }
 
 .comment-author-avatar {
-    width: 28px;
-    height: 28px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
