@@ -23,16 +23,16 @@ public class UserDataInitializer {
         // Tableau de tableaux d'objects
         // Chaque ligne {} = un utilisateur
         Object[][] userData = {
-            {"capitaine_crochet", "capitaine@fishon.com", "Capitaine", "Crochet", 35, "Crochet50", "img/capitaine.jpg"},
-            {"Riton", "riton@fishon.com", "Riton", "Manivelle", 66, "Riton50", "img/riton.jpg"},
-            {"Kevin", "kevin@fishon.com", "Kevin", "Cadillac", 16, "Kevin50", "img/kevin.jpeg"},
-            {"little_mermaid", "mermaid@fishon.com", "Little", "Mermaid", 23, "Mermaid50", "img/mermaid.jpeg"},
-            {"Gaspard", "gaspard@fishon.com", "Gaspard", "Quoi", 39, "Gaspard50", "img/gaspard.jpeg"},
-            {"Bigornaud", "bigornaud@fishon.com", "Mac", "Bernick", 11, "Bigornaud50", "img/bigornaud.jpeg"},
-            {"la_cindy", "cindy@fishon.com", "La", "Cindy", 27, "Cindy50", "img/cindy.jpeg"},
-            {"petit_poisson", "petit@fishon.com", "Petit", "Poisson", 17, "Petit50", "img/petitpoisson.jpeg"},
-            {"gégé", "gégé@fishon.com", "Gégé", "Depardieu", 69, "Gégé50", "img/gégé.jpeg"},
-            {"jeanne_au_secours", "jeanne@fishon.com", "Jeanne", "Tipiak", 77, "Jeanne50", "img/jeanne.jpeg"}
+            {"capitaine_crochet", "capitaine@fishon.com", "Capitaine", "Crochet", 35, "Crochet50", "profilePicture/capitaine.jpg"},
+            {"Riton", "riton@fishon.com", "Riton", "Manivelle", 66, "Riton50", "profilePicture/riton.jpg"},
+            {"Kevin", "kevin@fishon.com", "Kevin", "Cadillac", 16, "Kevin50", "profilePicture/kevin.jpeg"},
+            {"little_mermaid", "mermaid@fishon.com", "Little", "Mermaid", 23, "Mermaid50", "profilePicture/mermaid.jpeg"},
+            {"Gaspard", "gaspard@fishon.com", "Gaspard", "Quoi", 39, "Gaspard50", "profilePicture/gaspard.jpeg"},
+            {"Bigornaud", "bigornaud@fishon.com", "Mac", "Bernick", 11, "Bigornaud50", "profilePicture/bigornaud.jpeg"},
+            {"la_cindy", "cindy@fishon.com", "La", "Cindy", 27, "Cindy50", "profilePicture/cindy.jpeg"},
+            {"petit_poisson", "petit@fishon.com", "Petit", "Poisson", 17, "Petit50", "profilePicture/petitpoisson.jpeg"},
+            {"gégé", "gégé@fishon.com", "Gégé", "Depardieu", 69, "Gégé50", "profilePicture/gégé.jpeg"},
+            {"jeanne_au_secours", "jeanne@fishon.com", "Jeanne", "Tipiak", 77, "Jeanne50", "profilePicture/jeanne.jpeg"}
         };
 
         // Boucle For-Each création utilisateurs
