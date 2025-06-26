@@ -5,7 +5,7 @@ const BACKEND_URL = 'http://localhost:8080'; // URL de votre backend Spring Boot
 function getCorrectAvatarPath(profilePicture, userName) {
     // Si pas d'image de profil ou chemin invalide, utiliser l'avatar par défaut local
     if (!profilePicture || profilePicture === 'null' || profilePicture === '') {
-        return '../IMG/default-avatar.png';
+        return '../IMG/Avatar-defaut.png';
     }
 
     // Si le chemin commence par "profilePicture/", construire l'URL complète du backend
