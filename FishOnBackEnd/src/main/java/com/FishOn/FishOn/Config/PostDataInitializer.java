@@ -52,8 +52,8 @@ public class PostDataInitializer {
         };
 
         String[] photoUrls = {
-                "img/fish1.jpg", "img/fish2.jpg", "img/fish3.jpg", "img/fish4.jpg", "img/fish5.jpg",
-                "img/fish6.jpg", "img/fish7.jpg", "img/fish8.jpg", "img/fish9.jpg", "img/fish10.jpg"
+                "fishPicture/carpe.jpeg", "fishPicture/brochet.jpeg", "fishPicture/truite.jpeg", "fishPicture/sandre.jpeg", "fishPicture/perche.jpeg",
+                "fishPicture/blackbass.jpeg", "fishPicture/gardon.jpeg", "fishPicture/tanche.jpeg", "fishPicture/silure.jpeg", "fishPicture/barbeau.jpeg"
         };
 
         // ==== CRÉATION PUBLICATIONS ====
