@@ -17,7 +17,7 @@ function message(message, type) {
 // ========== Configuration des chemins d'images ==========
 
 // Fonction pour obtenir l'URL correcte des avatars depuis le backend
-function getCorrectAvatarPath(profilePicture, userName) {
+function getCorrectAvatarPath(profilePicture) {
     // Si pas d'image de profil ou chemin invalide, utiliser l'avatar par défaut local
     if (!profilePicture || profilePicture === 'null' || profilePicture === '') {
         return '../IMG/Avatar-defaut.png';
@@ -48,24 +48,20 @@ function getCorrectPhotoPath(photoUrl) {
     if (!photoUrl || photoUrl === 'null' || photoUrl === '') {
         return null;
     }
-
     // Si c'est déjà une URL complète, la retourner telle quelle
     if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
         return photoUrl;
     }
-
-    // Si le chemin commence par "img/", construire l'URL complète du backend
-    if (photoUrl.startsWith('img/')) {
+    // CORRECTION : Si le chemin commence par "fishPicture/", construire l'URL complète du backend
+    if (photoUrl.startsWith('fishPicture/')) {
         return `${API_BASE.replace('/api', '')}/${photoUrl}`; // Construction URL backend
     }
-
     // Si le chemin est relatif frontend, le garder tel quel
     if (photoUrl.startsWith('../IMG/') || photoUrl.startsWith('IMG/')) {
         return photoUrl;
     }
-
-    // Par défaut, essayer de construire l'URL backend
-    return `${API_BASE.replace('/api', '')}/img/${photoUrl}`;
+    // CORRECTION : Par défaut, essayer de construire l'URL backend avec fishPicture
+    return `${API_BASE.replace('/api', '')}/fishPicture/${photoUrl}`;
 }
 
 // ========== Initialisation ==========
@@ -160,16 +156,10 @@ function displayPosts(posts) {
 
     // Gestion du cas où aucune publication n'est disponible
     if (!posts || posts.length === 0) {
-        postsContainer.innerHTML = `
-            <div class="empty-feed-message">
-                <div class="empty-feed-icon">🎣</div>
-                <div class="empty-feed-title">Aucune publication à afficher</div>
-                <div class="empty-feed-subtitle">
-                    La communauté n'a pas encore partagé de prises.<br>
-                    Revenez plus tard pour découvrir les dernières captures !
-                </div>
-            </div>
-        `;
+        // Utilisation template pour feed vide
+        const emptyTemplate = document.getElementById('empty-feed-template');
+        const emptyElement = emptyTemplate.content.cloneNode(true);
+        postsContainer.appendChild(emptyElement);
         return;
     }
 
@@ -182,192 +172,52 @@ function displayPosts(posts) {
 
     // Création et ajout de chaque carte de publication au DOM
     sortedPosts.forEach(post => {
-        const postCard = createPostCard(post);
+        const postCard = createPostFromTemplate(post);
         postsContainer.appendChild(postCard);
     });
 }
 
 // Fonction pour créer l'élément HTML d'une carte de publication
-function createPostCard(post) {
-    // Création de l'élément conteneur principal de la carte
-    const postCard = document.createElement('div');
-    postCard.className = 'post-card';
+function createPostFromTemplate(post) {
+    // Récupération et clonage du template
+    const template = document.getElementById('post-template');
+    const postCard = template.content.cloneNode(true);
 
-    // Formatage des dates de création et modification
+    // Remplir les données de base
+    postCard.querySelector('.post-author').textContent = `@${post.userName}`;
+    postCard.querySelector('.post-title').textContent = post.title;
+    postCard.querySelector('.post-description').textContent = post.description;
+    
+    // Gestion des dates
     const createdDate = formatDate(post.createdAt);
-    // Vérification si la publication a été modifiée (différence > 1 seconde)
     const isModified = post.updatedAt && post.createdAt &&
         Math.abs(new Date(post.updatedAt) - new Date(post.createdAt)) > 1000;
-    const updatedDate = isModified ? formatDate(post.updatedAt) : null;
-
-    // Récupération des URLs correctes pour les images (avatar et photo)
+    const dateText = createdDate + (isModified ? ` (modifié le ${formatDate(post.updatedAt)})` : '');
+    postCard.querySelector('.post-date').textContent = dateText;
+    
+    // Avatar
+    const avatarImg = postCard.querySelector('.avatar-img');
     const avatarPath = getCorrectAvatarPath(post.userProfilePicture || post.profilePicture, post.userName);
+    avatarImg.src = avatarPath;
+    avatarImg.alt = `Photo de profil de ${post.userName}`;
+    avatarImg.onerror = () => avatarImg.src = '../IMG/Avatar-defaut.png';
+    
+    // Image du post
+    const postImage = postCard.querySelector('.post-image');
     const photoPath = getCorrectPhotoPath(post.photoUrl);
-
-    // Construction du HTML de la carte avec tous les éléments
-    postCard.innerHTML = `
-        <!-- En-tête avec informations auteur -->
-        <div class="post-header">
-            <div class="post-author-info">
-                <div class="post-author-avatar">
-                    <img src="${avatarPath}" 
-                         alt="Photo de profil de ${escapeHtml(post.userName)}"
-                         onerror="this.src='../IMG/Avatar-defaut.png'"
-                         loading="lazy">
-                </div>
-                <div class="post-author-details">
-                    <div class="post-author">@${escapeHtml(post.userName)}</div>
-                    <div class="post-date">
-                        ${createdDate}
-                        ${updatedDate ? ` (modifié le ${updatedDate})` : ''}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contenu principal de la publication -->
-        <div class="post-content">
-            <h2 class="post-title">${escapeHtml(post.title)}</h2>
-            <p class="post-description">${escapeHtml(post.description)}</p>
-            ${photoPath ? `
-                <img 
-                    src="${escapeHtml(photoPath)}" 
-                    alt="Photo de pêche" 
-                    class="post-image"
-                    onerror="this.style.display='none'"
-                    loading="lazy"
-                    onclick="openImageModal('${escapeHtml(photoPath)}')"
-                    style="cursor: pointer;"
-                >
-            ` : ''}
-        </div>
-
-        <!-- Détails de la pêche (poisson, poids, longueur, etc.) -->
-        <div class="post-details">
-            <div class="detail-item">
-                <div class="detail-label">Poisson</div>
-                <div class="detail-value">${escapeHtml(post.fishName)}</div>
-            </div>
-            ${post.weight ? `
-                <div class="detail-item">
-                    <div class="detail-label">Poids</div>
-                    <div class="detail-value">${post.weight} kg</div>
-                </div>
-            ` : ''}
-            ${post.length ? `
-                <div class="detail-item">
-                    <div class="detail-label">Longueur</div>
-                    <div class="detail-value">${post.length} cm</div>
-                </div>
-            ` : ''}
-            ${post.location ? `
-                <div class="detail-item">
-                    <div class="detail-label">Lieu</div>
-                    <div class="detail-value">${escapeHtml(post.location)}</div>
-                </div>
-            ` : ''}
-            ${post.catchDate ? `
-                <div class="detail-item">
-                    <div class="detail-label">Date de capture</div>
-                    <div class="detail-value">${formatDate(post.catchDate)}</div>
-                </div>
-            ` : ''}
-        </div>
-
-        <!-- Section commentaires avec système de toggle -->
-        <div class="comments-section">
-            <h3 class="comments-title" onclick="toggleCommentsVisibility('${post.id}')">
-                <span class="comments-toggle-icon" id="commentsIcon-${post.id}">▶</span>
-                Commentaires (${post.comments ? post.comments.length : 0})
-            </h3>
-            <div class="comments-content hidden" id="commentsContent-${post.id}">
-                <div class="comments-list">
-                    ${createCommentsHTML(post.comments, post.id)}
-                </div>
-            </div>
-        </div>
-    `;
-
-    return postCard; // Retour de l'élément DOM créé
-}
-
-// Fonction pour créer le HTML des commentaires d'une publication
-function createCommentsHTML(comments, postId) {
-    let commentsHTML = '';
-
-    // Traitement des commentaires existants
-    if (comments && comments.length > 0) {
-        // Génération du HTML pour chaque commentaire
-        commentsHTML = comments.map(comment => {
-            // Formatage des dates de création et modification du commentaire
-            const commentDate = formatDate(comment.createdAt);
-            const isModified = comment.updatedAt && comment.createdAt &&
-                Math.abs(new Date(comment.updatedAt) - new Date(comment.createdAt)) > 1000;
-            const updatedDate = isModified ? formatDate(comment.updatedAt) : null;
-
-            // Récupération de l'avatar de l'auteur du commentaire
-            const avatarPath = getCorrectAvatarPath(comment.userProfilePicture || comment.profilePicture, comment.userName);
-
-            // Construction du HTML pour un commentaire individuel
-            return `
-                <div class="comment-item">
-                    <!-- En-tête du commentaire avec avatar et infos auteur -->
-                    <div class="comment-header">
-                        <div class="comment-author-info">
-                            <div class="comment-author-avatar">
-                                <img src="${avatarPath}" 
-                                     alt="Photo de profil de ${escapeHtml(comment.userName)}"
-                                     onerror="this.src='../IMG/default-avatar.png'"
-                                     loading="lazy">
-                            </div>
-                            <div class="comment-author-details">
-                                <div class="comment-author">@${escapeHtml(comment.userName)}</div>
-                                <div class="comment-date">
-                                    ${commentDate}
-                                    ${updatedDate ? ` (modifié le ${updatedDate})` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Contenu du commentaire -->
-                    <div class="comment-content">${escapeHtml(comment.content)}</div>
-                </div>
-            `;
-        }).join(''); // Concaténation de tous les commentaires
+    if (photoPath) {
+        postImage.src = photoPath;
+        postImage.style.display = 'block';
+        postImage.onclick = () => openImageModal(photoPath);
     }
-    // Cas où aucun commentaire n'existe
-    else {
-        commentsHTML = '<div class="no-comments">Aucun commentaire pour le moment</div>';
-    }
+    
+    // Remplir les détails
+    fillPostDetails(postCard, post);
+    
+    // Gestion des commentaires
+    setupComments(postCard, post);
 
-    // Ajout du bouton et formulaire d'ajout de commentaire
-    commentsHTML += `
-        <!-- Bouton pour afficher le formulaire d'ajout de commentaire -->
-        <button class="add-comment-toggle" onclick="toggleCommentForm('${postId}')">
-            💬 Ajouter un commentaire
-        </button>
-        
-        <!-- Formulaire d'ajout de commentaire (caché par défaut) -->
-        <form class="add-comment-form hidden" id="commentForm-${postId}" onsubmit="submitComment(event, '${postId}')">
-            <textarea 
-                class="comment-input" 
-                id="commentInput-${postId}"
-                placeholder="Écrivez votre commentaire..."
-                maxlength="1000"
-                required
-            ></textarea>
-            <div class="comment-form-buttons">
-                <button type="button" class="comment-btn comment-btn-cancel" onclick="cancelComment('${postId}')">
-                    Annuler
-                </button>
-                <button type="submit" class="comment-btn comment-btn-submit">
-                    Publier
-                </button>
-            </div>
-        </form>
-    `;
-
-    return commentsHTML; // Retour du HTML complet des commentaires
+    return postCard;
 }
 
 // ========== Fonctions utilitaires ==========
@@ -442,6 +292,122 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text; // Définit le texte de manière sécurisée
     return div.innerHTML; // Récupère le HTML échappé
+}
+
+// ========== AJOUTER ICI après escapeHtml() ========== 
+
+function fillPostDetails(postElement, post) {
+    const detailsContainer = postElement.querySelector('.post-details');
+    const detailTemplate = document.getElementById('detail-template');
+    
+    // Poisson (toujours présent)
+    const fishDetail = detailTemplate.content.cloneNode(true);
+    fishDetail.querySelector('.detail-label').textContent = 'POISSON';
+    fishDetail.querySelector('.detail-value').textContent = post.fishName;
+    detailsContainer.appendChild(fishDetail);
+    
+    // Poids (si disponible)
+    if (post.weight) {
+        const weightDetail = detailTemplate.content.cloneNode(true);
+        weightDetail.querySelector('.detail-label').textContent = 'POIDS';
+        weightDetail.querySelector('.detail-value').textContent = `${post.weight} kg`;
+        detailsContainer.appendChild(weightDetail);
+    }
+    
+    // Longueur (si disponible)
+    if (post.length) {
+        const lengthDetail = detailTemplate.content.cloneNode(true);
+        lengthDetail.querySelector('.detail-label').textContent = 'LONGUEUR';
+        lengthDetail.querySelector('.detail-value').textContent = `${post.length} cm`;
+        detailsContainer.appendChild(lengthDetail);
+    }
+    
+    // Lieu (si disponible)
+    if (post.location) {
+        const locationDetail = detailTemplate.content.cloneNode(true);
+        locationDetail.querySelector('.detail-label').textContent = 'LIEU';
+        locationDetail.querySelector('.detail-value').textContent = post.location;
+        detailsContainer.appendChild(locationDetail);
+    }
+}
+
+function setupComments(postElement, post) {
+    const commentsCount = postElement.querySelector('.comments-count');
+    const commentsTitle = postElement.querySelector('.comments-title');
+    const commentsContent = postElement.querySelector('.comments-content');
+    
+    // Mettre à jour le nombre de commentaires
+    commentsCount.textContent = `Commentaires (${post.comments ? post.comments.length : 0})`;
+    
+    // Event listener pour toggle commentaires
+    commentsTitle.onclick = () => toggleCommentsVisibility(post.id);
+    
+    // Ajouter l'ID pour le toggle
+    commentsContent.id = `commentsContent-${post.id}`;
+    commentsTitle.querySelector('.comments-toggle-icon').id = `commentsIcon-${post.id}`;
+    
+    // Remplir les commentaires existants
+    fillComments(postElement, post.comments, post.id);
+}
+
+function fillComments(postElement, comments, postId) {
+    const commentsList = postElement.querySelector('.comments-list');
+    
+    if (!comments || comments.length === 0) {
+        const noCommentsTemplate = document.getElementById('no-comments-template');
+        const noCommentsElement = noCommentsTemplate.content.cloneNode(true);
+        commentsList.appendChild(noCommentsElement);
+    } else {
+        // Ajouter chaque commentaire
+        comments.forEach(comment => {
+            const commentElement = createCommentFromTemplate(comment);
+            commentsList.appendChild(commentElement);
+        });
+    }
+    
+    // Configurer le formulaire de commentaire
+    setupCommentForm(postElement, postId);
+}
+
+function createCommentFromTemplate(comment) {
+    const template = document.getElementById('comment-template');
+    const commentElement = template.content.cloneNode(true);
+    
+    // Remplir les données du commentaire
+    commentElement.querySelector('.comment-author').textContent = `@${comment.userName}`;
+    commentElement.querySelector('.comment-content').textContent = comment.content;
+    
+    // Date du commentaire
+    const commentDate = formatDate(comment.createdAt);
+    const isModified = comment.updatedAt && comment.createdAt &&
+        Math.abs(new Date(comment.updatedAt) - new Date(comment.createdAt)) > 1000;
+    const dateText = commentDate + (isModified ? ` (modifié le ${formatDate(comment.updatedAt)})` : '');
+    commentElement.querySelector('.comment-date').textContent = dateText;
+    
+    // Avatar du commentaire
+    const avatarImg = commentElement.querySelector('.comment-avatar-img');
+    const avatarPath = getCorrectAvatarPath(comment.userProfilePicture || comment.profilePicture, comment.userName);
+    avatarImg.src = avatarPath;
+    avatarImg.alt = `Photo de profil de ${comment.userName}`;
+    avatarImg.onerror = () => avatarImg.src = '../IMG/Avatar-defaut.png';
+    
+    return commentElement;
+}
+
+function setupCommentForm(postElement, postId) {
+    const form = postElement.querySelector('.add-comment-form');
+    const button = postElement.querySelector('.add-comment-toggle');
+    const textarea = postElement.querySelector('.comment-input');
+    const cancelBtn = postElement.querySelector('.comment-btn-cancel');
+    
+    // Ajouter les IDs nécessaires
+    form.id = `commentForm-${postId}`;
+    textarea.id = `commentInput-${postId}`;
+    
+    // Event listeners
+    button.onclick = () => toggleCommentForm(postId);
+    cancelBtn.onclick = () => cancelComment(postId);
+    form.onsubmit = (e) => submitComment(e, postId);
 }
 
 // Fonction pour ouvrir une image en modal (plein écran)
