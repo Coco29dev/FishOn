@@ -212,7 +212,7 @@ function createPostCard(post) {
                 <div class="post-author-avatar">
                     <img src="${avatarPath}" 
                          alt="Photo de profil de ${escapeHtml(post.userName)}"
-                         onerror="this.src='../IMG/default-avatar.png'"
+                         onerror="this.src='../IMG/Avatar-defaut.png'"
                          loading="lazy">
                 </div>
                 <div class="post-author-details">
