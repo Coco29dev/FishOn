@@ -51,6 +51,117 @@
     </div>
 </div>
 
+<!-- ========== TEMPLATES (INVISIBLES) ========== -->
+
+<!-- Template principal d'une publication -->
+<template id="post-template">
+    <div class="post-card">
+        <!-- En-tête avec informations auteur -->
+        <div class="post-header">
+            <div class="post-author-info">
+                <div class="post-author-avatar">
+                    <img class="avatar-img" src="" alt="" loading="lazy">
+                </div>
+                <div class="post-author-details">
+                    <div class="post-author"></div>
+                    <div class="post-date"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu principal de la publication -->
+        <div class="post-content">
+            <h2 class="post-title"></h2>
+            <p class="post-description"></p>
+            <img class="post-image" src="" alt="Photo de pêche" loading="lazy" style="display: none; cursor: pointer;">
+        </div>
+
+        <!-- Détails de la pêche (sera rempli dynamiquement) -->
+        <div class="post-details">
+            <!-- Les détails seront ajoutés par JavaScript -->
+        </div>
+
+        <!-- Section commentaires -->
+        <div class="comments-section">
+            <h3 class="comments-title">
+                <span class="comments-toggle-icon">▶</span>
+                <span class="comments-count">Commentaires (0)</span>
+            </h3>
+            <div class="comments-content hidden">
+                <div class="comments-list">
+                    <!-- Les commentaires seront ajoutés ici -->
+                </div>
+                <!-- Bouton pour ajouter un commentaire -->
+                <button class="add-comment-toggle">
+                    💬 Ajouter un commentaire
+                </button>
+                <!-- Formulaire d'ajout de commentaire (caché par défaut) -->
+                <form class="add-comment-form hidden">
+                    <textarea 
+                        class="comment-input" 
+                        placeholder="Écrivez votre commentaire..."
+                        maxlength="1000"
+                        required
+                    ></textarea>
+                    <div class="comment-form-buttons">
+                        <button type="button" class="comment-btn comment-btn-cancel">
+                            Annuler
+                        </button>
+                        <button type="submit" class="comment-btn comment-btn-submit">
+                            Publier
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Template pour un détail de pêche -->
+<template id="detail-template">
+    <div class="detail-item">
+        <div class="detail-label"></div>
+        <div class="detail-value"></div>
+    </div>
+</template>
+
+<!-- Template pour un commentaire -->
+<template id="comment-template">
+    <div class="comment-item">
+        <!-- En-tête du commentaire avec avatar et infos auteur -->
+        <div class="comment-header">
+            <div class="comment-author-info">
+                <div class="comment-author-avatar">
+                    <img class="comment-avatar-img" src="" alt="" loading="lazy">
+                </div>
+                <div class="comment-author-details">
+                    <div class="comment-author"></div>
+                    <div class="comment-date"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Contenu du commentaire -->
+        <div class="comment-content"></div>
+    </div>
+</template>
+
+<!-- Template pour message "aucun commentaire" -->
+<template id="no-comments-template">
+    <div class="no-comments">Aucun commentaire pour le moment</div>
+</template>
+
+<!-- Template pour message "feed vide" -->
+<template id="empty-feed-template">
+    <div class="empty-feed-message">
+        <div class="empty-feed-icon">🎣</div>
+        <div class="empty-feed-title">Aucune publication à afficher</div>
+        <div class="empty-feed-subtitle">
+            La communauté n'a pas encore partagé de prises.<br>
+            Revenez plus tard pour découvrir les dernières captures !
+        </div>
+    </div>
+</template>
+
 <!-- Footer -->
 <footer>
     <div class="footer-content">
