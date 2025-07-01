@@ -52,7 +52,7 @@ function getCorrectPhotoPath(photoUrl) {
     if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
         return photoUrl;
     }
-    // CORRECTION : Si le chemin commence par "fishPicture/", construire l'URL complète du backend
+    // Si le chemin commence par "fishPicture/", construire l'URL complète du backend
     if (photoUrl.startsWith('fishPicture/')) {
         return `${API_BASE.replace('/api', '')}/${photoUrl}`; // Construction URL backend
     }
@@ -60,7 +60,7 @@ function getCorrectPhotoPath(photoUrl) {
     if (photoUrl.startsWith('../IMG/') || photoUrl.startsWith('IMG/')) {
         return photoUrl;
     }
-    // CORRECTION : Par défaut, essayer de construire l'URL backend avec fishPicture
+    // Par défaut, essayer de construire l'URL backend avec fishPicture
     return `${API_BASE.replace('/api', '')}/fishPicture/${photoUrl}`;
 }
 
@@ -154,26 +154,28 @@ function displayPosts(posts) {
     // Vidage du contenu précédent
     postsContainer.innerHTML = '';
 
-    // Gestion du cas où aucune publication n'est disponible
+    // Gestion du cas où aucune publication existe
+    // Vérification publication inexistante
     if (!posts || posts.length === 0) {
         // Utilisation template pour feed vide
-        const emptyTemplate = document.getElementById('empty-feed-template');
-        const emptyElement = emptyTemplate.content.cloneNode(true);
-        postsContainer.appendChild(emptyElement);
-        return;
+        const emptyTemplate = document.getElementById('empty-feed-template'); // Récupération template
+        const emptyElement = emptyTemplate.content.cloneNode(true); // Copie du template
+        postsContainer.appendChild(emptyElement); // Template cloné ajouté à la div
+        return; // Stop l'exécution fonction
     }
 
     // Tri des publications par date de création décroissante (plus récent en premier)
+    // Création copie du tableau (utilisation opérateur spread(...) pour éviter modification tableau original)
     const sortedPosts = [...posts].sort((a, b) => {
-        const dateA = new Date(a.createdAt);
-        const dateB = new Date(b.createdAt);
+        const dateA = new Date(a.createdAt); // Transformation chaîne de caractère en objet Date
+        const dateB = new Date(b.createdAt); // Transformation chaîne de caractère en objet Date
         return dateB - dateA; // Ordre décroissant
     });
 
     // Création et ajout de chaque carte de publication au DOM
     sortedPosts.forEach(post => {
-        const postCard = createPostFromTemplate(post);
-        postsContainer.appendChild(postCard);
+        const postCard = createPostFromTemplate(post); // Création d'une publication basé sur le template
+        postsContainer.appendChild(postCard); // Template créé ajouté à la div
     });
 }
 
@@ -184,12 +186,13 @@ function createPostFromTemplate(post) {
     const postCard = template.content.cloneNode(true);
 
     // Remplir les données de base
+    // Utilisation de .textContent (sécurisation contre les injections XSS)
     postCard.querySelector('.post-author').textContent = `@${post.userName}`;
     postCard.querySelector('.post-title').textContent = post.title;
     postCard.querySelector('.post-description').textContent = post.description;
     
     // Gestion des dates
-    const createdDate = formatDate(post.createdAt);
+    const createdDate = formatDate(post.createdAt); // Appel fonction formatge de date
     const isModified = post.updatedAt && post.createdAt &&
         Math.abs(new Date(post.updatedAt) - new Date(post.createdAt)) > 1000;
     const dateText = createdDate + (isModified ? ` (modifié le ${formatDate(post.updatedAt)})` : '');
@@ -200,15 +203,16 @@ function createPostFromTemplate(post) {
     const avatarPath = getCorrectAvatarPath(post.userProfilePicture || post.profilePicture, post.userName);
     avatarImg.src = avatarPath;
     avatarImg.alt = `Photo de profil de ${post.userName}`;
-    avatarImg.onerror = () => avatarImg.src = '../IMG/Avatar-defaut.png';
+    avatarImg.onerror = () => avatarImg.src = '../IMG/Avatar-defaut.png'; // Image de secours via avatar par défaut
     
     // Image du post
     const postImage = postCard.querySelector('.post-image');
     const photoPath = getCorrectPhotoPath(post.photoUrl);
+    // Vérification photo de profil existante
     if (photoPath) {
         postImage.src = photoPath;
         postImage.style.display = 'block';
-        postImage.onclick = () => openImageModal(photoPath);
+        postImage.onclick = () => openImageModal(photoPath); // Ajout d'un clic pour ouvrir l'image en modal
     }
     
     // Remplir les détails
@@ -283,30 +287,17 @@ function formatDate(dateString) {
     }
 }
 
-// Fonction pour échapper les caractères HTML et prévenir les attaques XSS
-function escapeHtml(text) {
-    // Vérification de la validité du paramètre
-    if (!text) return '';
-
-    // Utilisation d'un élément div temporaire pour échapper automatiquement le HTML
-    const div = document.createElement('div');
-    div.textContent = text; // Définit le texte de manière sécurisée
-    return div.innerHTML; // Récupère le HTML échappé
-}
-
-// ========== AJOUTER ICI après escapeHtml() ========== 
-
 function fillPostDetails(postElement, post) {
     const detailsContainer = postElement.querySelector('.post-details');
     const detailTemplate = document.getElementById('detail-template');
     
-    // Poisson (toujours présent)
+    // Poisson (Champ obligatoire)
     const fishDetail = detailTemplate.content.cloneNode(true);
     fishDetail.querySelector('.detail-label').textContent = 'POISSON';
     fishDetail.querySelector('.detail-value').textContent = post.fishName;
     detailsContainer.appendChild(fishDetail);
     
-    // Poids (si disponible)
+    // Poids (Champ optionnel)
     if (post.weight) {
         const weightDetail = detailTemplate.content.cloneNode(true);
         weightDetail.querySelector('.detail-label').textContent = 'POIDS';
@@ -314,7 +305,7 @@ function fillPostDetails(postElement, post) {
         detailsContainer.appendChild(weightDetail);
     }
     
-    // Longueur (si disponible)
+    // Longueur Champ optionnel)
     if (post.length) {
         const lengthDetail = detailTemplate.content.cloneNode(true);
         lengthDetail.querySelector('.detail-label').textContent = 'LONGUEUR';
@@ -322,7 +313,7 @@ function fillPostDetails(postElement, post) {
         detailsContainer.appendChild(lengthDetail);
     }
     
-    // Lieu (si disponible)
+    // Lieu (Champ optionnel)
     if (post.location) {
         const locationDetail = detailTemplate.content.cloneNode(true);
         locationDetail.querySelector('.detail-label').textContent = 'LIEU';
