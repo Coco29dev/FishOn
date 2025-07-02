@@ -74,7 +74,7 @@
 
         <!-- Container souvenirs accès aux autres publications -->
         <!-- Zone d'injection dynamique des autres publication par Javascript -->
-        <div id="otherPosts" class="all-posts-container">
+        <div id="postsMemories" class="post-memories">
             <!-- Ajout dynamique structure HTML des autres publications(scrool horizontal) via template -->
         </div>
     </div>
@@ -89,10 +89,39 @@
         <h2>Pêche du jour!</h2>
     </div>
     <div class="picture-last-post">
-        <img class="fish-picture" src="" alt="Photo de poisson" loading="lazy">
+        <img class="fish-picture" src="" alt="" loading="lazy">
     </div>
     <div class="details-last-post">
-        
+        <!-- Champ obligatoire -->
+        <h3 class="post-title"></h3>
+        <p class="post-description"></p>
+        <div class="post-fishname"></div>
+        <!-- Champ optionnels -->
+        <div class="post-weight"></div>
+        <div class="post-length"></div>
+        <div class="post-location"></div>
+        <div class="post-date"></div>
+    </div>
+</template>
+
+<!-- ========== TEMPLATES AUTRES PUBLICATIONS ========== -->
+<template id="memoriesTemplate">
+    <div class="title-memories">
+    </div>
+    <div class="picture-post-memories">
+        <img class="fish-picture" src="" alt="" loading="lazy">
+    </div>
+    <div class="details-post-memories">
+        <!-- Champ obligatoire -->
+        <h3 class="post-title"></h3>
+        <p class="post-description"></p>
+        <div class="post-fishname"></div>
+        <!-- Champ optionnels -->
+        <div class="post-weight"></div>
+        <div class="post-length"></div>
+        <div class="post-location"></div>
+        <div class="post-date"></div>
+    </div>
     </div>
 </template>
 
