@@ -488,37 +488,6 @@ async function getFeedAPI() {
     }
 }
 
-// Fonction pour déconnecter l'utilisateur via l'API
-async function logoutAPI() {
-    try {
-        console.log('Déconnexion en cours...');
-
-        // Appel API pour déconnecter l'utilisateur
-        const response = await apiCall('/auth/logout', {
-            method: 'POST'
-        });
-
-        // Récupération de la réponse en texte brut
-        const result = await response.text();
-        console.log('Déconnexion réussie:', result);
-        return { success: true, data: result }; // Retour standardisé en cas de succès
-
-    } catch (error) {
-        console.error('Erreur logout:', error);
-
-        // Messages d'erreur spécifiques selon le type d'erreur
-        let userMessage = 'Une erreur est survenue lors de la déconnexion';
-
-        if (error.message.includes('Impossible de contacter')) {
-            userMessage = 'Impossible de contacter le serveur';
-        } else if (error.message.includes('Erreur serveur')) {
-            userMessage = 'Erreur serveur, réessayez plus tard';
-        }
-
-        return { success: false, error: userMessage }; // Retour standardisé en cas d'erreur
-    }
-}
-
 // Fonction pour créer un nouveau commentaire via l'API
 async function createCommentAPI(postId, commentData) {
     try {

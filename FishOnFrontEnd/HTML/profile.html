@@ -51,21 +51,27 @@
                     <span id="userName" class="detail-value">Chargement...</span>
                 </li>
                 <li class="profile-detail-item">
-                    <span class="detail-label">Ton île :</span>
+                    <span class="detail-label">Âge :</span>
                     <span id="location" class="detail-value">Chargement...</span>
                 </li>
                 <li class="profile-detail-item">
                     <span class="detail-label">Nombre de prises :</span>
-                    <span id="catches" class="detail-value">Chargement...</span>
+                    <span id="userPostCount" class="detail-value">Chargement...</span>
                 </li>
             </ul>
         </div>
 
+        <!-- ========== MESSAGES D'ÉTAT ========== -->
+        <!-- Message affiché pendant le chargement des publications -->
+        <div id="loadingMessage" class="loading-message">
+            Chargement de ton navire !
+        </div>
         <!-- Message d'erreur en cas de problème de chargement (caché par défaut) -->
         <div id="errorMessage" class="error-message" style="display: none;">
             Navré une erreur est survenue lors du chargement.
         </div>
 
+        <!-- ========== CONTAINER DYNAMIQUE ========== -->
         <!-- Container dernière publication -->
         <!-- Zone d'injection dynamique dernière publication par Javascript -->
         <div id="lastPost" class="last-post-container">
