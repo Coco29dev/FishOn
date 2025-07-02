@@ -125,4 +125,11 @@ class Utils {
     // Par défaut, essayer de construire l'URL backend avec fishPicture
     return `${API_BASE.replace('/api', '')}/fishPicture/${photoUrl}`;
   }
+
+  // Gestion redirection avec délai
+  static redirectTo(url, delay = 1500) {
+    setTimeout(() => {
+      window.location.href = url;
+    }, delay);
+  }
 }
