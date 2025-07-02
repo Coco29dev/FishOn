@@ -1,17 +1,23 @@
 <!DOCTYPE html>
-<html lang="fr">
+<!-- Spécification langue du contenu (important pour accessibilit et SEO)-->
+<html lang="fr"> 
+<!-- En-tête -->
 <head>
+    <!-- Encodage caractères -->
     <meta charset="UTF-8">
+    <!-- Configuration affichage sur mobile (viewport) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Texte affiché dans les résultats recherche Google -->
     <meta name="description" content="FishOn - Profil">
+    <!-- Titre affiché dans l'onglet du navigateur -->
     <title>FishOn - Profil</title>
     <link rel="stylesheet" href="../CSS/profile.css">
 </head>
 <body>
 <!-- ========== BARRE DE NAVIGATION ========== -->
 <!-- Barre de navigation fixe en haut de la page avec logo et boutons utilisateur -->
-<nav class="nav-bar">
-    <div class="nav-container">
+<nav class="nav-bar"> <!-- Container principal navigation -->
+    <div class="nav-container"> <!-- Container pour centrage/limite largeur-->
         <!-- Logo de l'application FishOn -->
         <div class="nav-logo">
             <span class="nav-brand">FishOn</span>
@@ -26,9 +32,73 @@
     </div>
 </nav>
 
-<!-- FOOTER -->
+<!-- ========== CONTENU PRINCIPAL ========== -->
+<!-- Container principal contenant photo de profil et informations personnelles -->
+<div class="profile-container">
+    <h1>Oyé mon capitaine voici ton navire !</h1>
+
+    <div class="profile-card">
+        <!-- Photo de profil utilisateur -->
+        <div class="profile-picture-container">
+            <img class="profile-picture" src="" alt="Photo de profil" loading="lazy">
+        </div>
+
+        <!-- Informations personnelles utilisateurs -->
+        <div class="profile-info">
+            <ul class="profile-details">
+                <li class="profile-detail-item">
+                    <span class="detail-label">Moussailon :</span>
+                    <span id="userName" class="detail-value">Chargement...</span>
+                </li>
+                <li class="profile-detail-item">
+                    <span class="detail-label">Ton île :</span>
+                    <span id="location" class="detail-value">Chargement...</span>
+                </li>
+                <li class="profile-detail-item">
+                    <span class="detail-label">Nombre de prises :</span>
+                    <span id="catches" class="detail-value">Chargement...</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Message d'erreur en cas de problème de chargement (caché par défaut) -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            Navré une erreur est survenue lors du chargement.
+        </div>
+
+        <!-- Container dernière publication -->
+        <!-- Zone d'injection dynamique dernière publication par Javascript -->
+        <div id="lastPost" class="last-post-container">
+            <!-- Ajout dynamique structure HTML de la dernière publication via template -->
+        </div>
+
+        <!-- Container souvenirs accès aux autres publications -->
+        <!-- Zone d'injection dynamique des autres publication par Javascript -->
+        <div id="otherPosts" class="all-posts-container">
+            <!-- Ajout dynamique structure HTML des autres publications(scrool horizontal) via template -->
+        </div>
+    </div>
+</div>
+
+<!-- ========== TEMPLATES HTML (INVISIBLES) ========== -->
+<!-- Ces templates sont utilisés par JavaScript pour créer dynamiquement le contenu -->
+
+<!-- ========== TEMPLATES DERNIÈRE PUBLICATION ========== -->
+<template id="lastTemplate">
+    <div class="title-last-post">
+        <h2>Pêche du jour!</h2>
+    </div>
+    <div class="picture-last-post">
+        <img class="fish-picture" src="" alt="Photo de poisson" loading="lazy">
+    </div>
+    <div class="details-last-post">
+        
+    </div>
+</template>
+
+<!-- ========== FOOTER ========== -->
 <footer>
-    <div class="footer-content">
+    <div class="footer-content"> <!-- Container principal -->
         <h3 class="footer-title">Suivez-nous !</h3>
 
         <!-- Icônes et liens vers les réseaux sociaux -->
@@ -46,7 +116,7 @@
 
 <!-- ========== SCRIPTS JAVASCRIPT ========== -->
 <!-- Chargement des scripts pour les fonctionnalités de l'application -->
-<script src="../JS/API.js"></script>     <!-- Gestion des appels API -->
-<script src="../JS/Profile.js"></script>    <!-- Logique du profil et interactions -->
+<script src="../JS/API.js"></script> <!-- Gestion des appels API -->
+<script src="../JS/Profile.js"></script> <!-- Logique du profil et interactions -->
 </body>
 </html>
