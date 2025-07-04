@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', function () {
       e.preventDefault();
       // Création objet à partir du formulaire
       const formData = {
-        email: registerForm.querySelector('input[name="email"]').value.trim(),
-        password: registerForm.querySelector('input[name="password"]').value.trim()
+        email: loginForm.querySelector('input[name="email"]').value.trim(),
+        password: loginForm.querySelector('input[name="password"]').value.trim()
       };
 
       const result = await APIService.login(formData);
