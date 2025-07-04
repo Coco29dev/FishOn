@@ -68,3 +68,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+// ========== MESSAGE DE DÉBOGAGE ==========
+console.log('Auth.js chargé - Version simplifiée avec APIService + Utils');
+
