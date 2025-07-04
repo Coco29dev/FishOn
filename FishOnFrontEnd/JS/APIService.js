@@ -4,7 +4,7 @@ class APIService {
   static async register(registerData) {
     // Vérification validité paramètres
     if (!registerData.email || !registerData.password || !registerData.userName ||
-      !registerData.firstName || !registerData.lastName || !registerData.age) {
+        !registerData.firstName || !registerData.lastName || !registerData.age) {
       return {success: false, error: 'Tous les champs sont obligatoires'};
     }
 
@@ -66,9 +66,25 @@ class APIService {
     }
   }
 
+  static async getCurrentUserPosts() {
+    try {
+      const userResult = await this.getProfile();
+      if (!userResult.success) return userResult;
+
+      const userName = userResult.data.userName;
+      const response = await API.get(`/posts/${userName}`);
+      const postsData = await response.json();
+
+      return { success: true, data: postsData };
+    } catch (error) {
+      const message = ErrorHandler.getErrorMessage(error, 'feed');
+      return { success: false, error: message };
+    }
+  }
+
   static async createPost(postData) {
     if (!postData.title || !postData.description || !postData.fishName || !postData.photoUrl) {
-      return { success: false, error: 'Tous les champs sont obligatoires' };
+      return { success: false, error: 'Tous les champs obligatoires doivent être remplis' };
     }
 
     try {
@@ -82,12 +98,13 @@ class APIService {
       return { success: false, error: message };
     }
   }
+
   static async updatePost(postId, postData) {
     // Validation paramètres
     if (!postId) {
       return { success: false, error: 'ID du post requis' };
     }
-    
+
     if (!postData.title || !postData.description || !postData.fishName) {
       return { success: false, error: 'Titre, description et nom du poisson sont obligatoires' };
     }
@@ -129,7 +146,7 @@ class APIService {
     if (!postId) {
       return { success: false, error: 'ID du post requis' };
     }
-    
+
     if (!commentData.content || commentData.content.trim() === '') {
       return { success: false, error: 'Le contenu du commentaire est obligatoire' };
     }
@@ -150,20 +167,20 @@ class APIService {
 
   static async getProfile() {
     try {
-      // Appel API
-      const response = await API.get('/users/profile');
-      // Extraction des données
-      const result = await response.json();
-      return { success: true, data: result };
+      const response = await API.get('/users/me');  // ou '/users/profile' selon ton API
+      const userData = await response.json();
+      return { success: true, data: userData };
     } catch (error) {
-      const message = ErrorHandler.getErrorMessage(error, 'auth');
+      // Gestion d'erreur plus générique avec ErrorHandler
+      const message = ErrorHandler.getErrorMessage(error, 'profile');
+
       return { success: false, error: message };
     }
   }
 
   static async updateProfile(profileData) {
     // Validation des champs obligatoires
-    if (!profileData.userName || !profileData.email || !profileData.firstName || 
+    if (!profileData.userName || !profileData.email || !profileData.firstName ||
         !profileData.lastName || !profileData.age) {
       return { success: false, error: 'Nom d\'utilisateur, email, prénom, nom et âge sont obligatoires' };
     }
