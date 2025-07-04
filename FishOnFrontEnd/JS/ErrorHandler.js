@@ -50,6 +50,8 @@ class ErrorHandler {
     }
     else if (context === 'feed') {
       return 'Erreur lors du chargement du feed';
+    } else if (context === 'logout') {
+      return 'Erreur survenu lors de la déconnexion';
     }
     else {
       return 'Une erreur inattendue est survenue';
