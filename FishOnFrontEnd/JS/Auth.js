@@ -1,19 +1,3 @@
-// ========== Fonction Message d'erreur ==========
-function message(message, type) {
-  // Gestion des messages d'erreur avec préfixe visuel
-  if (type === 'error') {
-    alert('Erreur: ' + message);
-  } 
-  // Gestion des messages de succès avec préfixe positif
-  else if (type === 'success') {
-    alert('Succès: ' + message);
-  } 
-  // Messages neutres sans préfixe
-  else {
-    alert(message);
-  }
-}
-
 // ========== Initialisation ========== 
 document.addEventListener('DOMContentLoaded', function () {
   // Récupération des références des formulaires depuis le DOM

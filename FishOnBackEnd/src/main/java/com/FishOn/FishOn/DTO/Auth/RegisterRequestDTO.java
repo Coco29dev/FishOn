@@ -29,7 +29,7 @@ public class RegisterRequestDTO {
     private String lastName;
 
     @NotNull(message = "L'âge est obligatoire")
-    @Min(value = 9, message = "Âge minimum 5 ans") // Validation valeurs numérique minimum
+    @Min(value = 9, message = "Âge minimum 9 ans") // Validation valeurs numérique minimum
     @Max(value = 99, message = "Âge maximum 99 ans") // Validation valeurs numérique maximum
     private Integer age;
 

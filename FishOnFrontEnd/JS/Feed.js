@@ -1,69 +1,3 @@
-// ========== Fonction Message d'erreur ==========
-function message(message, type) {
-    // Gestion des messages d'erreur avec préfixe visuel
-    if (type === 'error') {
-        alert('Erreur: ' + message);
-    }
-    // Gestion des messages de succès avec préfixe positif
-    else if (type === 'success') {
-        alert('Succès: ' + message);
-    }
-    // Messages neutres sans préfixe
-    else {
-        alert(message);
-    }
-}
-
-// ========== Configuration des chemins d'images ==========
-
-// Fonction pour obtenir l'URL correcte des avatars depuis le backend
-function getCorrectAvatarPath(profilePicture) {
-    // Si pas d'image de profil ou chemin invalide, utiliser l'avatar par défaut local
-    if (!profilePicture || profilePicture === 'null' || profilePicture === '') {
-        return '../IMG/Avatar-defaut.png';
-    }
-
-    // Si le chemin commence par "profilePicture/", construire l'URL complète du backend
-    if (profilePicture.startsWith('profilePicture/')) {
-        return `${API_BASE.replace('/api', '')}/${profilePicture}`; // Suppression du '/api' pour avoir l'URL racine du backend
-    }
-
-    // Si c'est déjà une URL complète, la retourner telle quelle
-    if (profilePicture.startsWith('http://') || profilePicture.startsWith('https://')) {
-        return profilePicture;
-    }
-
-    // Si le chemin est relatif frontend (../IMG/), le garder tel quel
-    if (profilePicture.startsWith('../IMG/') || profilePicture.startsWith('IMG/')) {
-        return profilePicture;
-    }
-
-    // Par défaut, essayer de construire l'URL backend
-    return `${API_BASE.replace('/api', '')}/profilePicture/${profilePicture}`;
-}
-
-// Fonction pour obtenir l'URL correcte des photos de poissons
-function getCorrectPhotoPath(photoUrl) {
-    // Si pas de photo ou chemin invalide, retourner null
-    if (!photoUrl || photoUrl === 'null' || photoUrl === '') {
-        return null;
-    }
-    // Si c'est déjà une URL complète, la retourner telle quelle
-    if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
-        return photoUrl;
-    }
-    // Si le chemin commence par "fishPicture/", construire l'URL complète du backend
-    if (photoUrl.startsWith('fishPicture/')) {
-        return `${API_BASE.replace('/api', '')}/${photoUrl}`; // Construction URL backend
-    }
-    // Si le chemin est relatif frontend, le garder tel quel
-    if (photoUrl.startsWith('../IMG/') || photoUrl.startsWith('IMG/')) {
-        return photoUrl;
-    }
-    // Par défaut, essayer de construire l'URL backend avec fishPicture
-    return `${API_BASE.replace('/api', '')}/fishPicture/${photoUrl}`;
-}
-
 // ========== Initialisation ==========
 document.addEventListener('DOMContentLoaded', function () {
     // Récupération des références des boutons de navigation depuis le DOM
@@ -479,37 +413,6 @@ async function getFeedAPI() {
                 window.location.href = 'login.html';
             }, 2000);
         } else if (error.message.includes('Impossible de contacter')) {
-            userMessage = 'Impossible de contacter le serveur';
-        } else if (error.message.includes('Erreur serveur')) {
-            userMessage = 'Erreur serveur, réessayez plus tard';
-        }
-
-        return { success: false, error: userMessage }; // Retour standardisé en cas d'erreur
-    }
-}
-
-// Fonction pour déconnecter l'utilisateur via l'API
-async function logoutAPI() {
-    try {
-        console.log('Déconnexion en cours...');
-
-        // Appel API pour déconnecter l'utilisateur
-        const response = await apiCall('/auth/logout', {
-            method: 'POST'
-        });
-
-        // Récupération de la réponse en texte brut
-        const result = await response.text();
-        console.log('Déconnexion réussie:', result);
-        return { success: true, data: result }; // Retour standardisé en cas de succès
-
-    } catch (error) {
-        console.error('Erreur logout:', error);
-
-        // Messages d'erreur spécifiques selon le type d'erreur
-        let userMessage = 'Une erreur est survenue lors de la déconnexion';
-
-        if (error.message.includes('Impossible de contacter')) {
             userMessage = 'Impossible de contacter le serveur';
         } else if (error.message.includes('Erreur serveur')) {
             userMessage = 'Erreur serveur, réessayez plus tard';
