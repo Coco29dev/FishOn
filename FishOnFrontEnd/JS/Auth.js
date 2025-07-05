@@ -1,39 +1,17 @@
-// ========== INITIALISATION ==========
+// ======== INITIALISATION ========
 document.addEventListener('DOMContentLoaded', function () {
-  // Récupération des références des formulaires depuis le DOM
-  const loginForm = document.getElementById('formLogin');
+  // Récupération références des formulaires
   const registerForm = document.getElementById('formRegister');
+  const loginForm = document.getElementById('formLogin');
 
-  // Gestionnaire pour le formulaire de connexion
-  if (loginForm) {
-    loginForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      // Extraction des données du formulaire
-      const loginData = {
-        email: loginForm.querySelector('input[name="email"]').value.trim(),
-        password: loginForm.querySelector('input[name="password"]').value
-      };
-
-      // Appel API via APIService
-      const result = await APIService.login(loginData);
-
-      if (result.success) {
-        Utils.message('Connexion réussie!', 'success');
-        Utils.redirectTo('feed.html', 1500);
-      } else {
-        Utils.message(result.error, 'error');
-      }
-    });
-  }
-
-  // Gestionnaire pour le formulaire d'inscription
+  // Gestionnaire formulaire d'inscription
   if (registerForm) {
-    registerForm.addEventListener('submit', async function(e) {
+    //Installation gestionnaire d'événements 'submit'
+    registerForm.addEventListener('submit', async function (e) {
+      // Empêche le rechargement de la page
       e.preventDefault();
-
-      // Extraction des données du formulaire
-      const registerData = {
+      // Création objet à partir du formulaire
+      const formData = {
         userName: registerForm.querySelector('input[name="username"]').value.trim(),
         email: registerForm.querySelector('input[name="email"]').value.trim(),
         password: registerForm.querySelector('input[name="password"]').value.trim(),
@@ -43,19 +21,53 @@ document.addEventListener('DOMContentLoaded', function () {
         profilePicture: registerForm.querySelector('input[name="profilepicture"]').value.trim()
       };
 
-      // Appel API via APIService
-      const result = await APIService.register(registerData);
+      const result = await APIService.register(formData);
 
+      // Cas de succès
       if (result.success) {
-        Utils.message('Inscription réussie!', 'success');
+        Utils.message('Inscription Réussi!', 'success');
+
+        // Nettoyage formulaire
         registerForm.reset();
+
+        // Rédirection vers page de connexion
+        // Délai augmenter pour que l'utilisateur puisse lire le message
         Utils.redirectTo('login.html', 2000);
-      } else {
+      }
+      // Cas d'échec
+      else {
+        Utils.message(result.error, 'error');
+      }
+    });
+  }
+
+  // Gestionnaire formulaire de connexion
+  if (loginForm) {
+    //Installation gestionnaire d'événements 'submit'
+    loginForm.addEventListener('submit', async function (e) {
+      // Empêche le rechargement de la page
+      e.preventDefault();
+      // Création objet à partir du formulaire
+      const formData = {
+        email: loginForm.querySelector('input[name="email"]').value.trim(),
+        password: loginForm.querySelector('input[name="password"]').value.trim()
+      };
+
+      const result = await APIService.login(formData);
+
+      // Cas de succès
+      if (result.success) {
+        Utils.message('Connexion Réussi!', 'success');
+        // Redirection vers fil d'actualité
+        Utils.redirectTo('feed.html', 2000);
+      }
+      // Cas d'échec
+      else {
         Utils.message(result.error, 'error');
       }
     });
   }
 });
-
 // ========== MESSAGE DE DÉBOGAGE ==========
 console.log('Auth.js chargé - Version simplifiée avec APIService + Utils');
+
