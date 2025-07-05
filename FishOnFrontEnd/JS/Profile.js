@@ -6,11 +6,11 @@ class Profile {
       // Affichage message d'état chargement
       document.getElementById('loadingMessage').style.display = 'block';
       // Configuration bouton de navigation(navbar)
-      this.setupNavigation();
+      Profile.setupNavigation();
       // Chargement des données utilisateur
-      await this.loadUserProfile();
+      await Profile.loadUserProfile();
       // Chargement des publications
-      await this.loadUserPosts();
+      await Profile.loadUserPosts();
       // Masquage message d'état chargement
       document.getElementById('loadingMessage').style.display = 'none';
     } catch (error) {
@@ -33,7 +33,7 @@ class Profile {
 
     if (feedBtn) feedBtn.onclick = () => Utils.redirectTo('feed.html');
     if (journalBtn) journalBtn.onclick = () => Utils.redirectTo('journal.html');
-    if (logoutBtn) logoutBtn.onclick = this.handleLogout;  
+    if (logoutBtn) logoutBtn.onclick = Profile.handleLogout;  
   }
 
   static async handleLogout() {
@@ -81,11 +81,11 @@ class Profile {
     const sortedPosts = Utils.sortPostsByDate(posts);
 
     // Affichage de la dernière publication
-    this.displayLastPost(sortedPosts[0]);
+    Profile.displayLastPost(sortedPosts[0]);
 
     // Affichage des souvenirs
     if (sortedPosts.length > 1) {
-      this.displayMemories(sortedPosts.slice(1));
+      Profile.displayMemories(sortedPosts.slice(1));
     }
   }
 
