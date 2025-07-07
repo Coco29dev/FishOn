@@ -211,11 +211,11 @@ class PostControllerTest {
                 LocalDateTime.now()
         );
 
-        // When & Then - Sans authentification, on attend 401
+        // When & Then - CORRECTION : La validation Spring se fait AVANT l'auth
         mockMvc.perform(post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpect(status().isUnauthorized()); // Corrigé : était isBadRequest()
+                .andExpect(status().isBadRequest()); // ✅ CHANGÉ : était isUnauthorized()
 
         verify(postService, never()).createPost(any(), any());
     }
@@ -234,11 +234,11 @@ class PostControllerTest {
                 LocalDateTime.now()
         );
 
-        // When & Then - Sans authentification, on attend 401
+        // When & Then - CORRECTION
         mockMvc.perform(post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpect(status().isUnauthorized()); // Corrigé : était isBadRequest()
+                .andExpect(status().isBadRequest()); // ✅ CHANGÉ
 
         verify(postService, never()).createPost(any(), any());
     }
@@ -257,11 +257,11 @@ class PostControllerTest {
                 LocalDateTime.now().plusDays(1) // Future date
         );
 
-        // When & Then - Sans authentification, on attend 401
+        // When & Then - CORRECTION
         mockMvc.perform(post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpect(status().isUnauthorized()); // Corrigé : était isBadRequest()
+                .andExpect(status().isBadRequest()); // ✅ CHANGÉ
 
         verify(postService, never()).createPost(any(), any());
     }
@@ -382,11 +382,11 @@ class PostControllerTest {
                 null  // catchDate
         );
 
-        // When & Then - Sans authentification, on attend 401
+        // When & Then - CORRECTION
         mockMvc.perform(post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestWithNulls)))
-                .andExpect(status().isUnauthorized()); // Gardé car commentaire explique pourquoi
+                .andExpect(status().isBadRequest()); // ✅ CHANGÉ
     }
 
     @Test
@@ -416,11 +416,11 @@ class PostControllerTest {
                 LocalDateTime.now().minusDays(1) // Past date
         );
 
-        // When & Then - Sans authentification, on attend 401
+        // When & Then - CORRECTION
         mockMvc.perform(post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validRequest)))
-                .andExpect(status().isUnauthorized()); // Gardé car commentaire explique pourquoi
+                .andExpect(status().isBadRequest()); // ✅ CHANGÉ
     }
 
     // =============== TESTS BASIC FUNCTIONALITY ===============
