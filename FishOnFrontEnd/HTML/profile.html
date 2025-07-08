@@ -35,9 +35,9 @@
 <!-- ========== CONTENU PRINCIPAL ========== -->
 <!-- Container principal contenant photo de profil et informations personnelles -->
 <div class="profile-container">
-    <h1>Oyé mon capitaine voici ton navire !</h1>
 
     <div class="profile-card">
+        <h1>Oyé mon capitaine voici ton navire !</h1>
         <!-- Photo de profil utilisateur -->
         <div class="profile-picture-container">
             <img class="profile-picture" src="" alt="Photo de profil" loading="lazy">
@@ -60,6 +60,7 @@
                 </li>
             </ul>
         </div>
+    </div>
 
         <!-- ========== MESSAGES D'ÉTAT ========== -->
         <!-- Message affiché pendant le chargement des publications -->
@@ -71,15 +72,18 @@
             Navré une erreur est survenue lors du chargement.
         </div>
 
-        <!-- ========== CONTAINER DYNAMIQUE ========== -->
-        <!-- Container dernière publication -->
-        <!-- Zone d'injection dynamique dernière publication par Javascript -->
+    <!-- ========== CONTAINER DYNAMIQUE ========== -->
+    <!-- Container dernière publication -->
+    <!-- Zone d'injection dynamique dernière publication par Javascript -->
+    <div class="last-post-card">
         <div id="lastPost" class="last-post-container">
             <!-- Ajout dynamique structure HTML de la dernière publication via template -->
         </div>
+    </div>
 
-        <!-- Container souvenirs accès aux autres publications -->
-        <!-- Zone d'injection dynamique des autres publication par Javascript -->
+    <!-- Container souvenirs accès aux autres publications -->
+    <!-- Zone d'injection dynamique des autres publication par Javascript -->
+    <div class="posts-memories-card">
         <div id="postsMemories" class="post-memories">
             <!-- Ajout dynamique structure HTML des autres publications(scrool horizontal) via template -->
         </div>

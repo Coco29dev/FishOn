@@ -31,8 +31,8 @@ class Profile {
     const journalBtn = document.getElementById('journalBtn');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    if (feedBtn) feedBtn.onclick = () => Utils.redirectTo('feed.html');
-    if (journalBtn) journalBtn.onclick = () => Utils.redirectTo('journal.html');
+    if (feedBtn) feedBtn.onclick = () => Utils.redirectTo('feed.html', 100);
+    if (journalBtn) journalBtn.onclick = () => Utils.redirectTo('journal.html', 100);
     if (logoutBtn) logoutBtn.onclick = Profile.handleLogout;  
   }
 
