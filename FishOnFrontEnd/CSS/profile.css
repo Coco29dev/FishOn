@@ -144,7 +144,6 @@ body {
 }
 
 /* ========== MESSAGES D'ÉTAT ========== */
-
 .loading-message,
 .error-message {
     text-align: center;
