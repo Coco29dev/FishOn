@@ -1,0 +1,345 @@
+/* ========== RESET ET BASE ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-image: url('../IMG/Login.webp');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+    padding-top: 80px;
+    padding-bottom: 140px;
+}
+
+/* ========== NAVIGATION ========== */
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    padding: 15px 0;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.nav-btn {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-logout {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.btn-logout:hover {
+    background: #c82333;
+}
+
+/* ========== CONTENU PRINCIPAL ========== */
+.profile-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-container h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.profile-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s ease;
+    margin-bottom: 20px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: center;
+}
+
+.profile-picture {
+    width: 300px;
+    height: 300px;
+    border-radius: 10px;
+}
+
+.profile-info ul {
+    list-style: none;
+}
+
+.detail-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.detail-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* ========== MESSAGES D'ÉTAT ========== */
+
+.loading-message,
+.error-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+.error-message {
+    color: #dc3545;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.6;
+}
+
+.empty-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 12px;
+}
+
+/* ========== DERNIÈRE PUBLICATION ========== */
+.last-post-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.title-last-post {
+    font-size: 32px;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.fish-picture {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.post-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.post-description {
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: 12px;
+}
+
+/* ========== SOUVENIRS ========== */
+.posts-memories-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 colonnes égales */
+    gap: 20px; /* Espacement entre les cartes */
+    margin-top: 20px;
+}
+
+/* Style pour chaque publication souvenir individuelle */
+.post-memories {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.post-memories:hover {
+    transform: translateY(-2px);
+}
+
+/* Titre pour les souvenirs */
+.title-memories {
+    font-size: 32px;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.title-last-post {
+    font-size: 32px;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.fish-picture {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.post-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.post-description {
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: 12px;
+}
+
+/* ========== FOOTER ========== */
+footer {
+    position: fixed; /* Positionnement fixe même lors du scroll */
+    bottom: 0; /* Positionné en bas de l'écran */
+    left: 0; /* Aligné à gauche */
+    right: 0; /* Aligné à droite (étend sur toute la largeur) */
+    background: rgba(255, 255, 255, 0.9); /* Fond blanc semi-transparent */
+    backdrop-filter: blur(10px); /* Effet de flou sur l'arrière-plan */
+    padding: 20px 0; /* Espacement intérieur vertical */
+    text-align: center; /* Centre le contenu */
+    border-top: 1px solid rgba(0, 0, 0, 0.05); /* Bordure supérieure subtile */
+}
+
+.footer-content {
+    max-width: 1200px; /* Largeur maximale du contenu */
+    margin: 0 auto; /* Centre le contenu horizontalement */
+    padding: 0 20px; /* Espacement intérieur horizontal */
+}
+
+.footer-title {
+    font-size: 16px; /* Taille de la police */
+    font-weight: 600; /* Épaisseur de la police */
+    color: #2c3e50; /* Couleur du texte */
+    margin-bottom: 12px; /* Espacement inférieur */
+}
+
+.social-links {
+    display: flex; /* Activation flexbox */
+    justify-content: center; /* Centre les éléments horizontalement */
+    gap: 20px; /* Espacement entre les liens */
+    margin-bottom: 12px; /* Espacement inférieur */
+    list-style: none; /* Suppression puces de liste */
+}
+
+.social-links img {
+    width: 24px; /* Largeur des icônes */
+    height: 24px; /* Hauteur des icônes */
+    opacity: 0.7; /* Transparence par défaut */
+    transition: opacity 0.2s ease; /* Animation fluide de l'opacité */
+}
+
+.social-links img:hover {
+    opacity: 1; /* Opacité complète au survol */
+}
+
+.footer-brand {
+    font-size: 18px; /* Taille de la police */
+    font-weight: 700; /* Épaisseur de la police */
+    color: #2c3e50; /* Couleur du texte */
+    margin-bottom: 4px; /* Espacement inférieur */
+}
+
+.footer-copyright {
+    font-size: 12px; /* Taille de la police */
+    color: #6c757d; /* Couleur du texte grise */
+}

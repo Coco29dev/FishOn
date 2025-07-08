@@ -60,29 +60,29 @@
                 </li>
             </ul>
         </div>
+    </div>
 
-        <!-- ========== MESSAGES D'ÉTAT ========== -->
-        <!-- Message affiché pendant le chargement des publications -->
-        <div id="loadingMessage" class="loading-message">
-            Chargement de ton navire !
-        </div>
-        <!-- Message d'erreur en cas de problème de chargement (caché par défaut) -->
-        <div id="errorMessage" class="error-message" style="display: none;">
-            Navré une erreur est survenue lors du chargement.
-        </div>
+    <!-- ========== MESSAGES D'ÉTAT ========== -->
+    <!-- Message affiché pendant le chargement des publications -->
+    <div id="loadingMessage" class="loading-message">
+        Chargement de ton navire !
+    </div>
+    <!-- Message d'erreur en cas de problème de chargement (caché par défaut) -->
+    <div id="errorMessage" class="error-message" style="display: none;">
+        Navré une erreur est survenue lors du chargement.
+    </div>
 
-        <!-- ========== CONTAINER DYNAMIQUE ========== -->
-        <!-- Container dernière publication -->
-        <!-- Zone d'injection dynamique dernière publication par Javascript -->
-        <div id="lastPost" class="last-post-container">
-            <!-- Ajout dynamique structure HTML de la dernière publication via template -->
-        </div>
+    <!-- ========== CONTAINER DYNAMIQUE ========== -->
+    <!-- Container dernière publication -->
+    <!-- Zone d'injection dynamique dernière publication par Javascript -->
+    <div id="lastPost" class="last-post-container">
+        <!-- Ajout dynamique structure HTML de la dernière publication via template -->
+    </div>
 
-        <!-- Container souvenirs accès aux autres publications -->
-        <!-- Zone d'injection dynamique des autres publication par Javascript -->
-        <div id="postsMemories" class="post-memories">
-            <!-- Ajout dynamique structure HTML des autres publications(scrool horizontal) via template -->
-        </div>
+    <!-- Container souvenirs accès aux autres publications -->
+    <!-- Zone d'injection dynamique des autres publication par Javascript -->
+    <div id="postsMemories" class="posts-memories-container">
+        <!-- Ajout dynamique structure HTML des autres publications via template -->
     </div>
 </div>
 
@@ -112,8 +112,6 @@
 
 <!-- ========== TEMPLATES AUTRES PUBLICATIONS ========== -->
 <template id="memoriesTemplate">
-    <div class="title-memories">
-    </div>
     <div class="picture-post-memories">
         <img class="fish-picture" src="" alt="" loading="lazy">
     </div>
@@ -127,7 +125,6 @@
         <div class="post-length"></div>
         <div class="post-location"></div>
         <div class="post-date"></div>
-    </div>
     </div>
 </template>
 

@@ -128,6 +128,10 @@ class Profile {
   
     // Boucle sur toutes les publications "souvenirs"
     posts.forEach(post => {
+      // Création d'un wrapper pour chaque publication
+      const memoryWrapper = document.createElement('div');
+      memoryWrapper.className = 'post-memories';
+  
       // Récupération template
       const memory = template.content.cloneNode(true);
   
@@ -154,8 +158,11 @@ class Profile {
       // Date de création
       memory.querySelector('.post-date').textContent = Utils.formatDate(post.createdAt);
   
-      // Injection dans le DOM
-      container.appendChild(memory);
+      // Ajout du contenu dans le wrapper
+      memoryWrapper.appendChild(memory);
+      
+      // Injection du wrapper dans le container principal
+      container.appendChild(memoryWrapper);
     });
   }
 }
