@@ -342,3 +342,67 @@ footer {
     font-size: 12px; /* Taille de la police */
     color: #6c757d; /* Couleur du texte grise */
 }
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablettes */
+@media (max-width: 768px) {
+    .profile-container {
+        max-width: 95%;
+        padding: 15px;
+    }
+
+    .profile-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .profile-picture {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+    }
+
+    .posts-memories-container {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-brand {
+        font-size: 20px;
+    }
+
+    .nav-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* Mobiles */
+@media (max-width: 480px) {
+    .profile-container h1 {
+        font-size: 24px;
+    }
+
+    .profile-card {
+        padding: 15px;
+    }
+
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+    }
+
+    .title-last-post {
+        font-size: 24px;
+    }
+
+    .fish-picture {
+        max-height: 200px;
+    }
+
+    .nav-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+}
