@@ -204,7 +204,12 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Photo (URL)</label>
-                    <input type="url" id="edit-post-photo" class="form-input">
+                    <input type="url" id="edit-post-photo" class="form-input"placeholder="https://example.com/photo.jpg"
+                           maxlength="10000" required>
+                    <small style="color: #6c757d; font-size: 12px;">
+                        URL directe vers image (maximum 2000 caractères)
+                        <br>Évitez les liens de partage Google Drive/Dropbox
+                    </small>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group">
