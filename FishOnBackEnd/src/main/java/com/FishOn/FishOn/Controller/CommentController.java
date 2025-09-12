@@ -7,47 +7,38 @@ import com.FishOn.FishOn.Model.CommentModel;
 import com.FishOn.FishOn.Exception.FishOnException.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import jakarta.validation.Valid;
 
 /**
  * Controller REST pour la gestion des commentaires
- * LOMBOK UTILISÉ :
- * @RequiredArgsConstructor : Injection par constructeur automatique
- * @Slf4j : Logger automatique
  */
 @RestController
 @RequestMapping("/api/comments")
-@RequiredArgsConstructor // LOMBOK : Remplace @Autowired
-@Slf4j // LOMBOK : Logger automatique
+@RequiredArgsConstructor
+@Slf4j
 public class CommentController {
 
     private final CommentService commentService;
 
+    /**
+     * Création d'un commentaire sur un post
+     */
     @PostMapping("/post/{postId}")
+    @PreAuthorize("isAuthenticated()")
     public CommentResponseDTO createComment(@PathVariable UUID postId, @Valid @RequestBody CommentCreateDTO commentCreateDTO,
                                             Authentication authentication)
             throws UserNotFoundById, PostNotFoundById {
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
-
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUserId = userDetails.getUser().getId();
 
-        // LOMBOK : Utilisation du Builder pattern
         var comment = CommentModel.builder()
                 .content(commentCreateDTO.getContent())
                 .build();
@@ -60,18 +51,14 @@ public class CommentController {
         return convertToResponseDTO(savedComment);
     }
 
+    /**
+     * Modification d'un commentaire
+     */
     @PutMapping("/{commentId}")
+    @PreAuthorize("isAuthenticated()")
     public CommentResponseDTO updateComment(@PathVariable UUID commentId, @Valid @RequestBody CommentUpdateDTO commentUpdateDTO,
                                             Authentication authentication)
             throws CommentNotFound, UnauthorizedAccess {
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUserId = userDetails.getUser().getId();
@@ -85,17 +72,13 @@ public class CommentController {
         return convertToResponseDTO(savedComment);
     }
 
+    /**
+     * Suppression d'un commentaire
+     */
     @DeleteMapping("/{commentId}")
+    @PreAuthorize("isAuthenticated()")
     public String deleteComment(@PathVariable UUID commentId, Authentication authentication)
             throws CommentNotFound, UnauthorizedAccess {
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUserId = userDetails.getUser().getId();
@@ -105,17 +88,13 @@ public class CommentController {
         return "Commentaire supprimé avec succès";
     }
 
+    /**
+     * Récupération des commentaires d'un utilisateur
+     */
     @GetMapping("/user/{userId}")
+    @PreAuthorize("isAuthenticated()")
     public List<CommentResponseDTO> getCommentsByUserId(@PathVariable UUID userId, Authentication authentication)
             throws UserNotFoundById {
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var comments = commentService.getByUserId(userId);
 
@@ -124,17 +103,13 @@ public class CommentController {
                 .toList();
     }
 
+    /**
+     * Récupération des commentaires d'un post
+     */
     @GetMapping("/post/{postId}")
+    @PreAuthorize("isAuthenticated()")
     public List<CommentResponseDTO> getCommentsByPostId(@PathVariable UUID postId, Authentication authentication)
             throws PostNotFoundById {
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var comments = commentService.getByPostId(postId);
 
@@ -149,24 +124,12 @@ public class CommentController {
      * Supprimer n'importe quel commentaire (ADMIN UNIQUEMENT)
      */
     @DeleteMapping("/admin/{commentId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteCommentByAdmin(@PathVariable UUID commentId, Authentication authentication)
             throws CommentNotFound {
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
-
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUser = userDetails.getUser();
-
-        // Vérification admin
-        if (!currentUser.isAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Accès réservé aux administrateurs");
-        }
 
         commentService.deleteCommentByAdmin(commentId);
         log.info("Admin {} a supprimé le commentaire {}", currentUser.getUserName(), commentId);

@@ -11,25 +11,21 @@ import jakarta.validation.Valid;
 import com.FishOn.FishOn.Model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Controller REST pour la gestion des publications
- * LOMBOK UTILISÉ :
- * @RequiredArgsConstructor : Injection par constructeur automatique
- * @Slf4j : Logger automatique
  */
 @RestController
 @RequestMapping("/api/posts")
-@RequiredArgsConstructor // LOMBOK : Remplace @Autowired
-@Slf4j // LOMBOK : Logger automatique
+@RequiredArgsConstructor
+@Slf4j
 public class PostController {
 
     private final PostService postService;
@@ -38,15 +34,8 @@ public class PostController {
      * Récupération du fil d'actualité global
      */
     @GetMapping("/feed")
+    @PreAuthorize("isAuthenticated()")
     public List<PostResponseDTO> getFeed(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
-
         var posts = postService.getAll();
 
         return posts.stream()
@@ -54,17 +43,13 @@ public class PostController {
                 .toList();
     }
 
+    /**
+     * Publications d'un utilisateur spécifique
+     */
     @GetMapping("/{userName}")
+    @PreAuthorize("isAuthenticated()")
     public List<PostResponseDTO> getPostsByUserName(Authentication authentication,
                                                     @PathVariable String userName) throws UserNotFoundByUserName {
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var postsUser = postService.getByUserUserName(userName);
 
@@ -73,21 +58,17 @@ public class PostController {
                 .toList();
     }
 
+    /**
+     * Création d'une nouvelle publication
+     */
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public PostResponseDTO createPost(@Valid @RequestBody PostCreateDTO postCreateDTO, Authentication authentication)
             throws MissingTitleException, MissingDescriptionException, MissingFishNameException, MissingPhotoException, UserNotFoundById {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUserId = userDetails.getUser().getId();
 
-        // LOMBOK : Utilisation du Builder pattern
         var post = PostModel.builder()
                 .title(postCreateDTO.getTitle())
                 .description(postCreateDTO.getDescription())
@@ -107,18 +88,15 @@ public class PostController {
         return convertToResponseDTO(createPost);
     }
 
+    /**
+     * Modification d'une publication
+     */
     @PutMapping("/{postId}")
+    @PreAuthorize("isAuthenticated()")
     public PostResponseDTO updatePost(@PathVariable UUID postId, @Valid @RequestBody PostUpdateDTO postUpdateDTO,
                                       Authentication authentication)
             throws MissingTitleException, MissingDescriptionException, MissingFishNameException, MissingPhotoException,
             UserNotFoundById, PostNotFoundById, UnauthorizedModificationPost {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUserId = userDetails.getUser().getId();
@@ -139,16 +117,13 @@ public class PostController {
         return convertToResponseDTO(updatePost);
     }
 
+    /**
+     * Suppression d'une publication
+     */
     @DeleteMapping("/{postId}")
+    @PreAuthorize("isAuthenticated()")
     public String deletePost(@PathVariable UUID postId, Authentication authentication)
             throws PostNotFoundById, UserNotFoundById, UnauthorizedModificationPost {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUserId = userDetails.getUser().getId();
@@ -164,24 +139,12 @@ public class PostController {
      * Supprimer n'importe quelle publication (ADMIN UNIQUEMENT)
      */
     @DeleteMapping("/admin/{postId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deletePostByAdmin(@PathVariable UUID postId, Authentication authentication)
             throws PostNotFoundById {
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
-
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUser = userDetails.getUser();
-
-        // Vérification admin
-        if (!currentUser.isAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Accès réservé aux administrateurs");
-        }
 
         postService.deletePostByAdmin(postId);
         log.info("Admin {} a supprimé la publication {}", currentUser.getUserName(), postId);

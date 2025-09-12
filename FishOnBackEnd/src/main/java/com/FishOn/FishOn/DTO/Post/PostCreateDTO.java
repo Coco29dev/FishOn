@@ -1,6 +1,8 @@
 package com.FishOn.FishOn.DTO.Post;
 
 import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -28,7 +30,9 @@ public class PostCreateDTO {
     private String photoUrl;
 
     // Optionnels
+    @Min(value = 0, message = "Le poids doit être positif")
     private Double weight;
+    @Min(value = 0, message = "La taille doit être positive")
     private Double length;
     private String location;
     private LocalDateTime catchDate;

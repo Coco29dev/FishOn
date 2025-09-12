@@ -9,26 +9,22 @@ import com.FishOn.FishOn.Exception.FishOnException.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.UUID;
 import java.util.List;
 
 /**
  * Controller REST pour la gestion des utilisateurs
- * LOMBOK UTILISÉ :
- * @RequiredArgsConstructor : Injection par constructeur automatique
- * @Slf4j : Logger automatique
  */
 @RestController
 @RequestMapping("/api/users")
-@RequiredArgsConstructor // LOMBOK : Remplace @Autowired
-@Slf4j // LOMBOK : Logger automatique
+@RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -37,15 +33,8 @@ public class UserController {
      * Récupération du profil de l'utilisateur connecté
      */
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public UpdateUserResponseDTO getUser(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
-
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var user = userDetails.getUser();
 
@@ -58,7 +47,7 @@ public class UserController {
                 .age(user.getAge())
                 .profilePicture(user.getProfilePicture())
                 .updatedAt(user.getUpdatedAt())
-                .isAdmin(user.getIsAdmin()) // Ajout du statut admin
+                .isAdmin(user.getIsAdmin())
                 .build();
     }
 
@@ -66,23 +55,15 @@ public class UserController {
      * Modification du profil de l'utilisateur connecté
      */
     @PutMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public UpdateUserResponseDTO updateUser(
             @Valid @RequestBody UpdateUserRequestDTO updateRequest,
             Authentication authentication)
             throws EmailAlreadyExists, UserAlreadyExists, UserNotFoundById {
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
-
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUserId = userDetails.getUser().getId();
 
-        // LOMBOK : Utilisation du Builder pattern
         var updatedUser = UserModel.builder()
                 .userName(updateRequest.getUserName())
                 .email(updateRequest.getEmail())
@@ -111,16 +92,9 @@ public class UserController {
      * Suppression du compte de l'utilisateur connecté
      */
     @DeleteMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public String deleteUser(Authentication authentication, HttpServletRequest request)
             throws UserNotFoundById {
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUserId = userDetails.getUser().getId();
@@ -165,23 +139,12 @@ public class UserController {
      * Liste tous les utilisateurs (ADMIN UNIQUEMENT)
      */
     @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UpdateUserResponseDTO> getAllUsers(Authentication authentication) {
-        // Vérification authentification
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
-
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUser = userDetails.getUser();
 
-        // Vérification admin
-        if (!currentUser.isAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Accès réservé aux administrateurs");
-        }
+        log.info("Admin {} consulte la liste de tous les utilisateurs", currentUser.getUserName());
 
         var users = userService.getAllUsers();
 
@@ -197,36 +160,24 @@ public class UserController {
                         .updatedAt(user.getUpdatedAt())
                         .isAdmin(user.getIsAdmin())
                         .build())
-                .toList(); // Java 16+ ou .collect(Collectors.toList())
+                .toList();
     }
 
     /**
      * Supprimer n'importe quel utilisateur (ADMIN UNIQUEMENT)
+     * ✅ UNIFORMISÉ : @PreAuthorize au lieu de vérifications manuelles
      */
     @DeleteMapping("/admin/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteUserByAdmin(@PathVariable UUID userId, Authentication authentication)
             throws UserNotFoundById {
-
-        // Vérification authentification
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
-        }
-
-        if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Type d'authentification invalide");
-        }
 
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
         var currentUser = userDetails.getUser();
 
-        // Vérification admin
-        if (!currentUser.isAdmin()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Accès réservé aux administrateurs");
-        }
-
         // Empêcher l'admin de se supprimer lui-même
         if (currentUser.getId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Impossible de supprimer son propre compte admin");
+            return "Impossible de supprimer son propre compte admin";
         }
 
         userService.deleteUser(userId);

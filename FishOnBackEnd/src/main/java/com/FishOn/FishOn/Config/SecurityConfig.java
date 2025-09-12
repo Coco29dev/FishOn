@@ -2,6 +2,7 @@ package com.FishOn.FishOn.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -34,7 +36,6 @@ public class SecurityConfig {
                 // Configuration des autorisations
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Routes d'auth publiques
-                        .requestMatchers("/api/users/search/**").permitAll() // Recherche publique
                         .anyRequest().authenticated()) // Tout le reste protégé
 
                 // Configuration des sessions
@@ -66,7 +67,7 @@ public class SecurityConfig {
         return (request, response, authException) -> {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("Utilisateur non authentifié");
+            response.getWriter().write("{\"error\":\"Utilisateur non authentifié\"}");
         };
     }
 
@@ -79,7 +80,7 @@ public class SecurityConfig {
         return (request, response, accessDeniedException) -> {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("Accès refusé");
+            response.getWriter().write("{\"error\":\"Accès refusé\"}");
         };
     }
 
