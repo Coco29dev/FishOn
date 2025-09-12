@@ -7,7 +7,6 @@ import com.FishOn.FishOn.Config.CustomUserDetails;
 import com.FishOn.FishOn.Exception.FishOnException.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,26 +17,29 @@ import jakarta.validation.Valid;
 
 /**
  * Controller REST pour la gestion de l'authentification
- * MODIFICATION MINIMALE : Ajout du champ isAdmin dans les réponses
+ * LOMBOK UTILISÉ :
+ * @RequiredArgsConstructor : Injection par constructeur automatique pour les champs final
+ * @Slf4j : Logger automatique disponible via log.info(), log.error(), etc.
  */
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
-@Slf4j
+@RequiredArgsConstructor // LOMBOK : Remplace @Autowired, génère constructeur avec champs final
+@Slf4j // LOMBOK : Logger automatique, variable 'log' disponible partout
 public class AuthController {
 
+    // LOMBOK : final + @RequiredArgsConstructor = injection automatique
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
 
     /**
      * Inscription d'un nouvel utilisateur
-     * MODIFICATION : Ajout isAdmin dans la réponse (toujours false)
      */
     @PostMapping("/register")
     public RegisterResponseDTO register(@Valid @RequestBody RegisterRequestDTO registerRequest)
             throws EmailAlreadyExists, UserAlreadyExists {
 
-        val user = UserModel.builder()
+        // LOMBOK : Utilisation du Builder pattern généré automatiquement
+        UserModel user = UserModel.builder()
                 .userName(registerRequest.getUserName())
                 .email(registerRequest.getEmail())
                 .firstName(registerRequest.getFirstName())
@@ -45,12 +47,15 @@ public class AuthController {
                 .age(registerRequest.getAge())
                 .password(registerRequest.getPassword())
                 .profilePicture(registerRequest.getProfilePicture())
-                // isAdmin = false par défaut (Builder.Default)
+                // isAdmin = false par défaut (Builder.Default dans UserModel)
                 .build();
 
-        val newUser = authService.register(user);
+        UserModel newUser = authService.register(user);
+
+        // LOMBOK : @Slf4j permet d'utiliser 'log' directement
         log.info("Nouvel utilisateur inscrit: {} (Admin: {})", newUser.getUserName(), newUser.isAdmin());
 
+        // LOMBOK : Utilisation du Builder pattern pour la réponse
         return RegisterResponseDTO.builder()
                 .id(newUser.getId())
                 .userName(newUser.getUserName())
@@ -60,19 +65,18 @@ public class AuthController {
                 .age(newUser.getAge())
                 .profilePicture(newUser.getProfilePicture())
                 .createdAt(newUser.getCreatedAt())
-                .isAdmin(newUser.getIsAdmin()) // ===== AJOUT =====
+                .isAdmin(newUser.getIsAdmin())
                 .build();
     }
 
     /**
      * Connexion d'un utilisateur existant
-     * MODIFICATION : Ajout isAdmin dans la réponse
      */
     @PostMapping("/login")
     public LoginResponseDTO login(@Valid @RequestBody LoginRequestDTO loginRequest,
                                   HttpServletRequest request) {
 
-        val authentication = authenticationManager.authenticate(
+        var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
                         loginRequest.getPassword()
@@ -80,11 +84,11 @@ public class AuthController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        val session = request.getSession(true);
+        var session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-        val userDetails = (CustomUserDetails) authentication.getPrincipal();
-        val user = userDetails.getUser();
+        var userDetails = (CustomUserDetails) authentication.getPrincipal();
+        var user = userDetails.getUser();
 
         log.info("Connexion réussie pour: {} (Admin: {})", user.getUserName(), user.isAdmin());
 
@@ -96,13 +100,13 @@ public class AuthController {
                 .lastName(user.getLastName())
                 .age(user.getAge())
                 .profilePicture(user.getProfilePicture())
-                .isAdmin(user.getIsAdmin()) // ===== AJOUT =====
+                .isAdmin(user.getIsAdmin())
                 .build();
     }
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
-        val session = request.getSession(false);
+        var session = request.getSession(false);
         if (session != null) {
             session.invalidate();
             log.info("Session invalidée pour déconnexion");
