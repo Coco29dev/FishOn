@@ -1,10 +1,20 @@
 package com.FishOn.FishOn.DTO.Auth;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
-
+/**
+ * DTO pour les requêtes de connexion
+ * LOMBOK UTILISÉ :
+ * @Data : Combinaison de @Getter + @Setter + @ToString + @EqualsAndHashCode + @RequiredArgsConstructor
+ * @NoArgsConstructor : Constructeur vide obligatoire pour Jackson (désérialisation JSON)
+ * @AllArgsConstructor : Constructeur avec tous les paramètres
+ * @Builder : Pattern Builder pour tests et création flexible
+ */
+@Data // LOMBOK : @Getter + @Setter + @ToString + @EqualsAndHashCode + @RequiredArgsConstructor
+@NoArgsConstructor // LOMBOK : Constructeur vide obligatoire pour Jackson
+@AllArgsConstructor // LOMBOK : Constructeur avec paramètres
+@Builder // LOMBOK : Pattern Builder
 public class LoginRequestDTO {
 
     @NotBlank(message = "L'email est obligatoire")
@@ -15,30 +25,8 @@ public class LoginRequestDTO {
     @Size(min = 5, message = "Le mot de passe doit contenir minimum 5 caractères")
     private String password;
 
-    // Constructeur par défaut
-    public LoginRequestDTO() {}
-
-    // Constructeur avec paramètres
-    public LoginRequestDTO(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-    // Getter
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    // Setter
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    // NOUVEAUX AVANTAGES :
+    // - Création : LoginRequestDTO.builder().email("test@test.com").password("pass").build()
+    // - Tous les getters/setters disponibles automatiquement
+    // - toString() automatique pour debug
 }

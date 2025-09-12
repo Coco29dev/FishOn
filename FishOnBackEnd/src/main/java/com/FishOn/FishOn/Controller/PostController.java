@@ -359,3 +359,4 @@ public class PostController {
         return "Publication supprimé";
     }
 }
+

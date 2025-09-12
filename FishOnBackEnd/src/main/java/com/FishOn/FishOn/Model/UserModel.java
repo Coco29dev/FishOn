@@ -1,26 +1,40 @@
 package com.FishOn.FishOn.Model;
 
-import com.FishOn.FishOn.Model.PostModel;
-import com.FishOn.FishOn.Model.CommentModel;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Entité JPA représentant un utilisateur de FishOn
+ *
+ * LOMBOK UTILISÉ :
+ * @Entity : Entité JPA (table users)
+ * @Getter @Setter : Génère tous les getters/setters automatiquement
+ * @NoArgsConstructor : Constructeur vide pour JPA
+ * @AllArgsConstructor : Constructeur avec tous les paramètres
+ * @ToString(exclude) : toString() en excluant les champs sensibles/collections
+ * @EqualsAndHashCode(exclude) : equals/hashCode en excluant collections (évite boucles infinies)
+ * @Builder : Pattern Builder pour construction flexible
+ */
 @Entity // Création d'un Model (entity) User
 @Table(name = "users") // Création d'une table users
-public class UserModel extends BaseModel { // Création d'une classe UserModel qui hérite de BaseModel
+@Getter @Setter // LOMBOK : Remplace tous les getters/setters (24 lignes économisées)
+@NoArgsConstructor // LOMBOK : Constructeur vide pour JPA
+@AllArgsConstructor // LOMBOK : Constructeur avec tous les paramètres
+@ToString(exclude = {"password", "posts", "comments"}) // LOMBOK : toString() sans données sensibles/collections
+@EqualsAndHashCode(callSuper = true, exclude = {"posts", "comments"}) // LOMBOK : equals/hashCode sans collections
+@Builder // LOMBOK : Pattern Builder pour création flexible
+public class UserModel extends BaseModel { // Héritage de BaseModel pour id, createdAt, updatedAt
 
     // Attribut unique et non null
     @Column(unique = true, nullable = false)
     private String userName;
 
-    // Attriut unique, non null et format adresse email
+    // Attribut unique, non null et format adresse email
     @Email
     @Column(unique = true, nullable = false)
     private String email;
@@ -35,27 +49,30 @@ public class UserModel extends BaseModel { // Création d'une classe UserModel q
     private Integer age;
 
     @Column(nullable = false)
-    @JsonIgnore
+    @JsonIgnore // Éviter l'inclusion du mot de passe dans la sérialisation JSON
     private String password;
-
 
     @Column(nullable = true)
     private String profilePicture;
 
-    // Relation one to many avec List, relation cascade
+    @Column(nullable = false)
+    @Builder.Default // Valeur par défaut avec Lombok Builder
+    private Boolean isAdmin = false; // Par défaut : utilisateur normal
+
+    // Relation one to many avec Post, relation cascade
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default // LOMBOK : Valeur par défaut pour le Builder
     private List<PostModel> posts = new ArrayList<>();
 
     // Relation one to many avec Comment, relation cascade
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default // LOMBOK : Valeur par défaut pour le Builder
     private List<CommentModel> comments = new ArrayList<>();
 
-    // Constructeur par défaut
-    public UserModel() {}
-
-    // Constructeur avec paramètre + héritage des attributs de BaseModel avec super()
+    // Constructeur personnalisé pour compatibilité avec le code existant
+    // Ce constructeur reste nécessaire car utilisé dans votre code actuel
     public UserModel(String userName, String email, String firstName, String lastName, Integer age, String password, String profilePicture) {
-        super();
+        super(); // Appel constructeur BaseModel
         this.userName = userName;
         this.email = email;
         this.firstName = firstName;
@@ -63,83 +80,25 @@ public class UserModel extends BaseModel { // Création d'une classe UserModel q
         this.age = age;
         this.password = password;
         this.profilePicture = profilePicture;
+        this.isAdmin = false;
+    }
+    /**
+     * Vérifie si l'utilisateur est administrateur
+     * @return true si admin, false sinon
+     */
+    public boolean isAdmin() {
+        return Boolean.TRUE.equals(isAdmin);
     }
 
-    //Getter
-
-    public String getEmail() {
-        return email;
+    /**
+     * Vérifie si l'utilisateur est un utilisateur normal
+     * @return true si utilisateur normal, false si admin
+     */
+    public boolean isUser() {
+        return !isAdmin();
     }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public List<PostModel> getPosts() {
-        return posts;
-    }
-
-    public List<CommentModel> getComments() {
-        return comments;
-    }
-
-    // Setter
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
-    public void setPosts(List<PostModel> posts) {
-        this.posts = posts;
-    }
-
-    public void setComments(List<CommentModel> comments) {
-        this.comments = comments;
-    }
+    // NOUVEAUX AVANTAGES AVEC LOMBOK :
+    // - Pattern Builder : UserModel.builder().userName("test").email("test@test.com").build()
+    // - toString() automatique sans révéler le mot de passe
+    // - equals/hashCode sans risque de boucle infinie avec les collections
 }

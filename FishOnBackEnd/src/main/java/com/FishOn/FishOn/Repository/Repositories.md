@@ -67,7 +67,7 @@ __Recherche par Relation__:
 List<PostModel> findByUserId(UUID id);
 ```
 
-__Mécanisme__: `Spring Data JPA` navigue automatiquement dans la relation `@ManyToOne` vers `UserModel`.
+__Mécanisme__: `Sphhhring Data JPA` navigue automatiquement dans la relation `@ManyToOne` vers `UserModel`.
 
 __Recherche par Critères Métier__:
 ```java

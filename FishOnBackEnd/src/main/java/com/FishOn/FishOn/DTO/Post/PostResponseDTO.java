@@ -3,9 +3,13 @@ package com.FishOn.FishOn.DTO.Post;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
+import lombok.*;
 import com.FishOn.FishOn.DTO.Comment.*;
 
+@Data // LOMBOK : Tous les getters/setters/toString/equals/hashCode automatiques
+@NoArgsConstructor // LOMBOK : Constructeur vide obligatoire pour Jackson
+@AllArgsConstructor // LOMBOK : Constructeur avec paramètres
+@Builder // LOMBOK : Pattern Builder
 public class PostResponseDTO {
 
     // Métadonnées
@@ -32,140 +36,4 @@ public class PostResponseDTO {
     // Liste commentaire
     private List<CommentResponseDTO> comments;
 
-    // Constructeur vide obligatoire pour Jackson
-    public PostResponseDTO() {
-
-    }
-
-// Constructeur paramétré
-    public PostResponseDTO(UUID id, LocalDateTime createdAt, LocalDateTime updatedAt,
-                        String title, String description, String fishName, String photoUrl,
-                        Double weight, Double length, String location, 
-                        LocalDateTime catchDate, String userName, String userProfilePicture,
-            List<CommentResponseDTO> comments) {
-        this.id = id;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.title = title;
-        this.description = description;
-        this.fishName = fishName;
-        this.photoUrl = photoUrl;
-        this.weight = weight; // ⚠️ Attention à la typo
-        this.length = length;
-        this.location = location;
-        this.catchDate = catchDate;
-        this.userName = userName;
-        this.userProfilePicture = userProfilePicture;
-        this.comments = comments;
-    }
-
-    // Getters
-    public UUID getId() {
-        return id;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getFishName() {
-        return fishName;
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public Double getWeight() {  // ⚠️ Corrigé "weight"
-        return weight;
-    }
-
-    public Double getLength() {
-        return length;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public LocalDateTime getCatchDate() {
-        return catchDate;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getUserProfilePicture() { return userProfilePicture; }
-
-    public List<CommentResponseDTO> getComments() {
-        return comments;
-    }
-
-    // Setters
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setFishName(String fishName) {
-        this.fishName = fishName;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public void setWeight(Double weight) {  // ⚠️ Corrigé "weight"
-        this.weight = weight;
-    }
-
-    public void setLength(Double length) {
-        this.length = length;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setCatchDate(LocalDateTime catchDate) {
-        this.catchDate = catchDate;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setUserProfilePicture(String userProfilePicture) { this.userProfilePicture = userProfilePicture; }
-
-    public void setComments(List<CommentResponseDTO> comments) {
-        this.comments = comments;
-    }
 }

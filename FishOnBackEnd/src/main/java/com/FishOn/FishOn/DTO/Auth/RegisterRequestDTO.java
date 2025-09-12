@@ -1,14 +1,17 @@
 package com.FishOn.FishOn.DTO.Auth;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
+/**
+ * DTO pour les requêtes d'inscription
+ * Contient toutes les données nécessaires pour créer un nouvel utilisateur
+ */
+@Data // LOMBOK : Génère automatiquement getters/setters/toString/equals/hashCode
+@NoArgsConstructor // LOMBOK : Constructeur vide obligatoire pour Jackson
+@AllArgsConstructor // LOMBOK : Constructeur avec tous les paramètres
+@Builder // LOMBOK : Pattern Builder pour tests et usage flexible
 public class RegisterRequestDTO {
-
 
     @NotBlank(message = "Le nom d'utilisateur est obligatoire") // Vérification champ n'est pas null, vide ou des espaces
     @Size(min = 1, max = 20, message = "Le nom d'utilisateur doit contenir entre 1 et 20 caractères") // Contrainte longueur
@@ -35,77 +38,15 @@ public class RegisterRequestDTO {
 
     private String profilePicture;
 
-    // Constructeur vide obligatoire pour Jackson
-    public RegisterRequestDTO() {
-
-    }
-
-    // Constructeur paramétré
-    public RegisterRequestDTO(String userName, String email, String firstName, 
-            String lastName, Integer age, String password) {
+    // Constructeur personnalisé pour compatibilité avec les tests existants
+    public RegisterRequestDTO(String userName, String email, String firstName,
+                              String lastName, Integer age, String password) {
         this.userName = userName;
         this.email = email;
-        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
-    }
-
-    // Getters
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    // Setters
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
 }

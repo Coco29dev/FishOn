@@ -1,8 +1,13 @@
 package com.FishOn.FishOn.DTO.User;
 
 import jakarta.validation.constraints.*;
+import lombok.*;
 
 
+@Data // LOMBOK : Tous les getters/setters/toString/equals/hashCode automatiques
+@NoArgsConstructor // LOMBOK : Constructeur vide obligatoire pour Jackson
+@AllArgsConstructor // LOMBOK : Constructeur avec paramètres
+@Builder // LOMBOK : Pattern Builder
 public class UpdateUserRequestDTO {
 
     @NotBlank(message = "Le nom d'utilisateur est obligatoire") // Vérification champ n'est pas null, vide ou des espaces
@@ -26,57 +31,4 @@ public class UpdateUserRequestDTO {
 
     private String profilePicture;
 
-    // Constructeur par défaut
-    public UpdateUserRequestDTO() {}
-
-    // Constructeur avec paramètres
-    public UpdateUserRequestDTO(String userName, String email, String firstName, String lastName, Integer age, String profilePicture) {
-        this.userName = userName;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.profilePicture = profilePicture;
-
-    }
-
-    // Getter
-    public String getUserName() {
-        return userName;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public String getFirstName() {
-        return firstName;
-    }
-    public String getLastName() {
-        return lastName;
-    }
-    public Integer getAge() {
-        return age;
-    }
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    // Setter
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
 }
