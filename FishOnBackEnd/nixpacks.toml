@@ -1,0 +1,16 @@
+# forcer le jdk21 lors du déploiement railway
+
+[phases.setup]
+nixPkgs = ["jdk21", "maven"]
+
+[phases.build]
+cmds = [
+    "chmod +x ./mvnw",
+    "./mvnw clean package -DskipTests"
+]
+
+[phases.start]
+cmd = "java -jar target/FishOn-0.0.1-SNAPSHOT.jar"
+
+[variables]
+JAVA_VERSION = "21"
