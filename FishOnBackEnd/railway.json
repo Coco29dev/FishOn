@@ -5,6 +5,6 @@
   },
   "deploy": {
     "startCommand": "java -jar target/FishOn-0.0.1-SNAPSHOT.jar",
-    "healthcheckPath": "/health"
+    "healthcheckPath": "/actuator/health"
   }
 }
