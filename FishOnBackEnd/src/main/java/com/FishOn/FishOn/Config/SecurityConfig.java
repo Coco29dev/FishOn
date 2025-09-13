@@ -35,6 +35,7 @@ public class SecurityConfig {
         return http
                 // Configuration des autorisations
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/health").permitAll()
                         .requestMatchers("/api/auth/**").permitAll() // Routes d'auth publiques
                         .anyRequest().authenticated()) // Tout le reste protégé
 
