@@ -3,6 +3,8 @@ package com.FishOn.FishOn.DTO.Comment;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.FishOn.FishOn.Model.CommentModel;
 import lombok.*;
 
 @Data // LOMBOK : @Getter + @Setter + @ToString + @EqualsAndHashCode + @RequiredArgsConstructor
@@ -18,4 +20,17 @@ public class CommentResponseDTO {
     private String userName;
     private String userProfilePicture;
 
+    /**
+     * Conversion depuis CommentModel vers CommentResponseDTO
+     */
+    public static CommentResponseDTO from(CommentModel comment) {
+        return CommentResponseDTO.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .createdAt(comment.getCreatedAt())
+                .updatedAt(comment.getUpdatedAt())
+                .userName(comment.getUser().getUserName())
+                .userProfilePicture(comment.getUser().getProfilePicture())
+                .build();
+    }
 }

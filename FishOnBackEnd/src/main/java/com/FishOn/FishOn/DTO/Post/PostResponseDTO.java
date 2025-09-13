@@ -3,6 +3,8 @@ package com.FishOn.FishOn.DTO.Post;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import com.FishOn.FishOn.Model.PostModel;
 import lombok.*;
 import com.FishOn.FishOn.DTO.Comment.*;
 
@@ -36,4 +38,27 @@ public class PostResponseDTO {
     // Liste commentaire
     private List<CommentResponseDTO> comments;
 
+    /**
+     * Conversion depuis PostModel vers PostResponseDTO
+     */
+    public static PostResponseDTO from(PostModel post) {
+        return PostResponseDTO.builder()
+                .id(post.getId())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .title(post.getTitle())
+                .description(post.getDescription())
+                .fishName(post.getFishName())
+                .photoUrl(post.getPhotoUrl())
+                .weight(post.getWeight())
+                .length(post.getLength())
+                .location(post.getLocation())
+                .catchDate(post.getCatchDate())
+                .userName(post.getUser().getUserName())
+                .userProfilePicture(post.getUser().getProfilePicture())
+                .comments(post.getComments().stream()
+                        .map(CommentResponseDTO::from)
+                        .toList())
+                .build();
+    }
 }

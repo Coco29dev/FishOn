@@ -152,31 +152,8 @@ public class PostController {
         return "Publication supprimée avec succès par l'administrateur";
     }
 
+
     private PostResponseDTO convertToResponseDTO(PostModel post) {
-        return PostResponseDTO.builder()
-                .id(post.getId())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .title(post.getTitle())
-                .description(post.getDescription())
-                .fishName(post.getFishName())
-                .photoUrl(post.getPhotoUrl())
-                .weight(post.getWeight())
-                .length(post.getLength())
-                .location(post.getLocation())
-                .catchDate(post.getCatchDate())
-                .userName(post.getUser().getUserName())
-                .userProfilePicture(post.getUser().getProfilePicture())
-                .comments(post.getComments().stream()
-                        .map(comment -> CommentResponseDTO.builder()
-                                .id(comment.getId())
-                                .content(comment.getContent())
-                                .createdAt(comment.getCreatedAt())
-                                .updatedAt(comment.getUpdatedAt())
-                                .userName(comment.getUser().getUserName())
-                                .userProfilePicture(comment.getUser().getProfilePicture())
-                                .build())
-                        .toList())
-                .build();
+        return PostResponseDTO.from(post);
     }
 }

@@ -1,5 +1,7 @@
 package com.FishOn.FishOn.Controller;
 
+import com.FishOn.FishOn.DTO.Post.PostResponseDTO;
+import com.FishOn.FishOn.Model.PostModel;
 import com.FishOn.FishOn.Service.CommentService;
 import com.FishOn.FishOn.Config.CustomUserDetails;
 import com.FishOn.FishOn.DTO.Comment.*;
@@ -137,14 +139,10 @@ public class CommentController {
         return "Commentaire supprimé avec succès par l'administrateur";
     }
 
+    /**
+     * Conversion CommentModel vers CommentResponseDTO
+     */
     private CommentResponseDTO convertToResponseDTO(CommentModel comment) {
-        return CommentResponseDTO.builder()
-                .id(comment.getId())
-                .content(comment.getContent())
-                .createdAt(comment.getCreatedAt())
-                .updatedAt(comment.getUpdatedAt())
-                .userName(comment.getUser().getUserName())
-                .userProfilePicture(comment.getUser().getProfilePicture())
-                .build();
+        return CommentResponseDTO.from(comment);
     }
 }
