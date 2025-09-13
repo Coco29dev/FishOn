@@ -1,179 +1,399 @@
 package com.FishOn.FishOn.Service;
 
-import com.FishOn.FishOn.Model.UserModel;
-import com.FishOn.FishOn.Repository.UserRepository;
-import com.FishOn.FishOn.Exception.FishOnException.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Test; // Création des tests
+import org.junit.jupiter.api.DisplayName; // Nommage tests
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*; // Outil de simulation
+import org.mockito.InjectMocks; // Injection des mocks
+import org.mockito.Mock; // Création objets simulés
+import static org.assertj.core.api.Assertions.*; // Outil de vérification
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.FishOn.FishOn.Repository.UserRepository;
+import com.FishOn.FishOn.Service.UserService;
+import com.FishOn.FishOn.Model.UserModel;
+
+import com.FishOn.FishOn.Exception.FishOnException.EmailAlreadyExists;
+import com.FishOn.FishOn.Exception.FishOnException.UserAlreadyExists;
+import com.FishOn.FishOn.Exception.FishOnException.UserNotFoundByEmail;
+import com.FishOn.FishOn.Exception.FishOnException.UserNotFoundById;
+import com.FishOn.FishOn.Exception.FishOnException.UserNotFoundByUserName;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-
-    @Mock
+    
+    @Mock // Simule UserRepository
     private UserRepository userRepository;
 
-    @Mock
+    @Mock // Simule PasswordEncoder
     private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
+    @InjectMocks // Injecte les mocks dans UserService
     private UserService userService;
 
-    private UserModel testUser;
-    private UUID testUserId;
-
-    @BeforeEach
-    void setUp() {
-        testUserId = UUID.randomUUID();
-        testUser = new UserModel(
-                "testuser",
-                "test@example.com",
-                "John",
-                "Doe",
+    private UserModel createUser() {
+        return new UserModel(
+                "user1",
+                "user1@fishon.com",
+                "J",
+                "D",
                 25,
-                "password123",
-                "profile.jpg"
-        );
-        testUser.setId(testUserId);
+                "userpassword",
+                "");
     }
 
+    // ========== TEST MÉTHODE CRUD ==========
+
+    // ========== TEST CRÉATION UTILISATEUR ==========
+
     @Test
-    void createUser_Success() throws Exception {
-        // Given
-        when(userRepository.existsByEmail(anyString())).thenReturn(false);
-        when(userRepository.existsByUserName(anyString())).thenReturn(false);
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
+    @DisplayName("Création utilisateur valide")
+    void createValidUser() throws EmailAlreadyExists, UserAlreadyExists {
+        // ARRANGE - Préparation données et mocks
+        UserModel user = createUser();
+        String encodePassword = "psswd_123"; // Simulation mot de passe encodé
 
-        // When
-        UserModel result = userService.createUser(testUser);
+        // Configuration mocks
+        when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
+        when(userRepository.existsByUserName(user.getUserName())).thenReturn(false);
+        when(passwordEncoder.encode(user.getPassword())).thenReturn(encodePassword);
+        when(userRepository.save(any(UserModel.class))).thenReturn(user);
 
-        // Then
-        assertNotNull(result);
-        assertEquals("testuser", result.getUserName());
-        verify(passwordEncoder).encode("password123");
-        verify(userRepository).save(testUser);
+        // ACT - Appel de la méthode à tester
+        UserModel result = userService.createUser(user);
+
+        // ASSERT - Vérifications
+        assertThat(result).isNotNull(); // Vérification résultat n'est pas null
+        assertThat(result.getEmail()).isEqualTo(user.getEmail()); // vérification email
+
+        // Vérifier que les bonnes méthodes ont été appelées
+        verify(userRepository).existsByEmail(user.getEmail());
+        verify(userRepository).existsByUserName(user.getUserName());
+        verify(passwordEncoder).encode("userpassword");
+        // Vérification que la méthode est appelé avec un UserModel
+        verify(userRepository).save(any(UserModel.class));
+    }
+    
+    @Test
+    @DisplayName("Création utilisateur - EmailAlreadyExist")
+    void createdEmailAlreadyExist() throws EmailAlreadyExists {
+        // ARANGE
+        UserModel user = createUser();
+        // Simulation email existant
+        when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
+
+        // ACT & ASSERT
+        // assertThatThrownBy : Fonction lançant une exception
+        assertThatThrownBy(() -> userService.createUser(user))
+                .isInstanceOf(EmailAlreadyExists.class) // Vérification type de l'exception
+                .hasMessage("L'email user1@fishon.com est déjà pris"); // Vérification message de l'exception
+        verify(userRepository, never()).save(any(UserModel.class)); // Vérification que la méthode de sauvegarde n'est jamais appelée
+    }
+    
+    @Test
+    @DisplayName("Création utilisateur - UserAlreadyExist")
+    void createUserAlreadyExist() throws UserAlreadyExists {
+        // ARRANGE
+        UserModel user = createUser();
+        // Simulation username déjà existant
+        when(userRepository.existsByUserName(user.getUserName())).thenReturn(true);
+
+        // ACT & ASSERT
+        assertThatThrownBy(() -> userService.createUser(user))
+                .isInstanceOf(UserAlreadyExists.class)
+                .hasMessage("L'username user1 est déjà pris");
+        verify(userRepository, never()).save(any(UserModel.class));
     }
 
-    @Test
-    void createUser_EmailAlreadyExists() {
-        // Given
-        when(userRepository.existsByEmail("test@example.com")).thenReturn(true);
-
-        // When & Then
-        assertThrows(EmailAlreadyExists.class, () -> {
-            userService.createUser(testUser);
-        });
-
-        verify(userRepository, never()).save(any());
-    }
+    // ========== TEST MAJ UTILISATEUR ==========
 
     @Test
-    void createUser_UserNameAlreadyExists() {
-        // Given
-        when(userRepository.existsByEmail(anyString())).thenReturn(false);
-        when(userRepository.existsByUserName("testuser")).thenReturn(true);
-
-        // When & Then
-        assertThrows(UserAlreadyExists.class, () -> {
-            userService.createUser(testUser);
-        });
-    }
-
-    @Test
-    void updateUser_Success() throws Exception {
-        // Given
+    @DisplayName("MAJ utilisateur - valide")
+    void updateValidUser() throws UserNotFoundById, EmailAlreadyExists, UserAlreadyExists {
+        // Préparation des données
+        UserModel user = createUser();
+        UUID userId = UUID.randomUUID();
         UserModel updatedUser = new UserModel(
-                "newusername",
-                "newemail@example.com",
-                "Jane",
-                "Smith",
+            "newUser",
+            "newuser@fishon.com",
+            "Ja",
+            "Do",
+            30,
+            null,
+            ""
+        );
+
+
+        // Configuration mocks
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        // findById : retourne toujours un Optional(Type standard Java)
+        // Optional.of() : créer un Optional contenant l'objet désiré 
+        when(userRepository.existsByEmail(updatedUser.getEmail())).thenReturn(false);
+        when(userRepository.existsByUserName(updatedUser.getUserName())).thenReturn(false);
+        when(userRepository.save(any(UserModel.class))).thenReturn(updatedUser);
+
+        // ACT - Appel méthodes à tester
+        UserModel result = userService.updateUser(userId, updatedUser);
+
+        // ASSERT - Vérification données
+        assertNotNull(result);
+        assertThat(result.getUserName()).isEqualTo("newUser");
+        assertThat(result.getEmail()).isEqualTo("newuser@fishon.com");
+        assertThat(result.getFirstName()).isEqualTo("Ja");
+        assertThat(result.getLastName()).isEqualTo("Do");
+        assertThat(result.getAge()).isEqualTo(30);
+
+        // ASSERT - Vérification méthodes
+        verify(userRepository).findById(userId);
+        verify(userRepository).existsByEmail(updatedUser.getEmail());
+        verify(userRepository).existsByUserName(updatedUser.getUserName());
+        verify(userRepository).save(any(UserModel.class));
+    }
+
+    @Test
+    @DisplayName("MAJ utilisateur - UserNotFoundById")
+    void updateUserNotFound() throws UserNotFoundById {
+        // Préparation des données
+        UUID userId = UUID.randomUUID();
+        UserModel updatedUser = new UserModel(
+                "newUser",
+                "newuser@fishon.com",
+                "Ja",
+                "Do",
                 30,
                 null,
-                "newprofile.jpg"
-        );
+                "");
 
-        when(userRepository.findById(testUserId)).thenReturn(Optional.of(testUser));
-        when(userRepository.existsByEmail("newemail@example.com")).thenReturn(false);
-        when(userRepository.existsByUserName("newusername")).thenReturn(false);
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
+        // Configuration mock
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // When
-        UserModel result = userService.updateUser(testUserId, updatedUser);
+        // ASSERT - Lancement exception
+        assertThatThrownBy(() -> userService.updateUser(userId, updatedUser))
+                .isInstanceOf(UserNotFoundById.class)
+                .hasMessage("L'utilisateur avec l'ID " + userId + " n'existe pas");
+        verify(userRepository, never()).save(any(UserModel.class));
+    }
+    
+    @Test
+    @DisplayName("MAJ utilisateur - EmailAlreadyExist")
+    void updateEmailAlreadyExist() throws EmailAlreadyExists {
+        // Préparation des données
+        UserModel user = createUser();
+        UUID userId = UUID.randomUUID();
+        UserModel updatedUser = new UserModel(
+                "newUser",
+                "newuser@fishon.com",
+                "Ja",
+                "Do",
+                30,
+                null,
+                "");
 
-        // Then
-        assertNotNull(result);
-        verify(userRepository).save(testUser);
+        // Configuration mock
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmail(updatedUser.getEmail())).thenReturn(true);
+
+        // ASSERT - Lancement exception
+        assertThatThrownBy(() -> userService.updateUser(userId, updatedUser))
+                .isInstanceOf(EmailAlreadyExists.class)
+                .hasMessage("L'email newuser@fishon.com est déjà pris");
+        verify(userRepository, never()).save(any(UserModel.class));
     }
 
     @Test
-    void updateUser_UserNotFound() {
-        // Given
-        when(userRepository.findById(testUserId)).thenReturn(Optional.empty());
+    @DisplayName("MAJ utilisateur - UserAlreadyExist")
+    void updateUserAlreadyExist() {
+        // Préparation des données
+        UserModel user = createUser();
+        UUID userId = UUID.randomUUID();
+        UserModel updatedUser = new UserModel(
+                "newUser",
+                "newuser@fishon.com",
+                "Ja",
+                "Do",
+                30,
+                null,
+                "");
 
-        // When & Then
-        assertThrows(UserNotFoundById.class, () -> {
-            userService.updateUser(testUserId, testUser);
-        });
+        // Configuration mock
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.existsByUserName(updatedUser.getUserName())).thenReturn(true);
+
+        // ASSERT - Lancement exception
+        assertThatThrownBy(() -> userService.updateUser(userId, updatedUser))
+                .isInstanceOf(UserAlreadyExists.class)
+                .hasMessage("L'username newUser est déjà pris");
+        verify(userRepository, never()).save(any(UserModel.class));
+    }
+    
+    // ========== DELETE UTILISATEUR ==========
+
+    @Test
+    @DisplayName("Suppression utilisateur")
+    void deleteUser() throws UserNotFoundById {
+        // Préparation des données
+        UUID userId = UUID.randomUUID();
+        UserModel user = createUser();
+
+        // Configuration mock
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        // ACT - Appel méthode
+        userService.deleteUser(userId);
+
+        // ASSERT - Vérification
+        verify(userRepository).delete(user);
     }
 
     @Test
-    void getByUserName_Success() throws Exception {
-        // Given
-        when(userRepository.findByUserName("testuser")).thenReturn(Optional.of(testUser));
+    @DisplayName("Suppression utilisateur - UserNotFoundById")
+    void deleteUserNotFoundById() throws UserNotFoundById {
+        // Préparation données
+        UUID userId = UUID.randomUUID();
+        UserModel user = createUser();
 
-        // When
-        UserModel result = userService.getByUserName("testuser");
+        // Configuration mock
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // Then
-        assertNotNull(result);
-        assertEquals("testuser", result.getUserName());
-        assertEquals("test@example.com", result.getEmail());
+        // ASSERT - Lancement exceptions
+        assertThatThrownBy(() -> userService.deleteUser(userId))
+                .isInstanceOf(UserNotFoundById.class)
+                .hasMessage("L'utilisateur avec l'ID " + userId + " n'existe pas");
+        verify(userRepository, never()).delete(user);
+    }
+
+    // ========== TEST MÉTHODE REPOSITORY ==========
+
+    // ========== TEST UTILISATEUR TROUVÉ ==========
+
+    @Test
+    @DisplayName("Utilisateur trouvé")
+    void getUserByUserName() throws UserNotFoundByUserName {
+        // Préparation données
+        UserModel user = createUser();
+
+        // Configuration mock
+        when(userRepository.findByUserName(user.getUserName())).thenReturn(Optional.of(user));
+
+        // ACT - Appel méthode
+        UserModel result = userService.getByUserName(user.getUserName());
+
+        // ASSERT - vérification données
+        assertThat(result).isNotNull();
+        assertThat(result.getUserName()).isEqualTo(user.getUserName());
     }
 
     @Test
-    void getByUserName_NotFound() {
-        // Given
-        when(userRepository.findByUserName("nonexistent")).thenReturn(Optional.empty());
+    @DisplayName("Utilisateur trouvé - UserNotFoundByUserName")
+    void userNotFoundByUserName() throws UserNotFoundByUserName {
+        // Préparation des données
+        String userName = "unknowUser";
 
-        // When & Then
-        assertThrows(UserNotFoundByUserName.class, () -> {
-            userService.getByUserName("nonexistent");
-        });
+        // Configuration mock
+        when(userRepository.findByUserName(userName)).thenReturn(Optional.empty());
+
+        // ASSERT - Lancement exception
+        assertThatThrownBy(() -> userService.getByUserName(userName))
+                .isInstanceOf(UserNotFoundByUserName.class)
+                .hasMessage("L'utilisateur " + userName + " n'existe pas");
+    }
+    
+    // ========== TEST EMAIL TROUVÉ ==========
+
+    @Test
+    @DisplayName("Email trouvé")
+    void getByEmail() throws UserNotFoundByEmail {
+        // Préparation des données
+        UserModel user = createUser();
+
+        // Configuration mock
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        // ACT - Appel méthode
+        UserModel result = userService.getByEmail(user.getEmail());
+
+        // ASSERT - vérification des données
+        assertThat(result).isNotNull();
+        assertThat(result.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
-    void deleteUser_Success() throws Exception {
-        // Given
-        when(userRepository.findById(testUserId)).thenReturn(Optional.of(testUser));
+    @DisplayName("Email trouvé - UserNotFoundByEmail")
+    void userNotFoundByEmail() throws UserNotFoundByEmail {
+        // Préparation des données
+        String email = "unknowEmail";
 
-        // When
-        userService.deleteUser(testUserId);
+        // Configuration mock
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        // Then
-        verify(userRepository).delete(testUser);
+        // ASSERT - Lancement exception
+        assertThatThrownBy(() -> userService.getByEmail(email))
+                .isInstanceOf(UserNotFoundByEmail.class)
+                .hasMessage("L'utilisateur " + email + " n'existe pas");
+    }
+
+    // ========== TEST NOM UTILISATEUR EXISTE ==========
+
+    @Test
+    @DisplayName("Nom utilisateur existe")
+    void userNameExistTrue() throws UserNotFoundByUserName {
+        // Préparation données
+        String userName = "user";
+
+        // Configuration mock
+        when(userRepository.existsByUserName(userName)).thenReturn(true);
+
+        // ACT - Appel méthode
+        boolean result = userService.userNameExists(userName);
+
+        // ASSERT - vérification données
+        assertThat(result).isTrue();
     }
 
     @Test
-    void deleteUser_NotFound() {
-        // Given
-        when(userRepository.findById(testUserId)).thenReturn(Optional.empty());
+    @DisplayName("Nom utilisateur n'existe pas")
+    void userNameExistFalse() throws UserNotFoundByUserName {
+        // Préparation données
+        String userName = "user";
 
-        // When & Then
-        assertThrows(UserNotFoundById.class, () -> {
-            userService.deleteUser(testUserId);
-        });
+        // Configuration mock
+        when(userRepository.existsByUserName(userName)).thenReturn(false);
+
+        // ASSERT - Lancement exception
+        assertThatThrownBy(() -> userService.userNameExists(userName))
+                .isInstanceOf(UserNotFoundByUserName.class)
+                .hasMessage("L'utilisateur " + userName + " n'existe pas");
+    }
+    
+    // ========== TEST EMAIL EXISTE ==========
+
+    @Test
+    @DisplayName("email existe")
+    void emailExistsTrue() throws UserNotFoundByEmail {
+        String email = "user1@fishon.com";
+        when(userRepository.existsByEmail(email)).thenReturn(true);
+    
+        boolean result = userService.emailExists(email);
+    
+        assertThat(result).isTrue();
+    }
+    
+    @Test
+    @DisplayName("email inexistant")
+    void emailExistsFalse() throws UserNotFoundByEmail {
+        String email = "unknown@fishon.com";
+        when(userRepository.existsByEmail(email)).thenReturn(false);
+    
+        assertThatThrownBy(() -> userService.emailExists(email))
+            .isInstanceOf(UserNotFoundByEmail.class)
+            .hasMessage("L'utilisateur " + email + " n'existe pas");
     }
 }
