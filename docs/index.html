@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FishOn - MVP Developed in 4 Weeks</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            color: #2d3748;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            letter-spacing: -0.025em;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #2b6cb0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #2b6cb0;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .hero-overview {
+            background: rgba(43, 108, 176, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-overview h3 {
+            font-size: 1rem;
+            color: #2b6cb0;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .feature-highlight {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            border: 1px solid rgba(43, 108, 176, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+        }
+
+        .feature-text {
+            font-size: 0.875rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        /* Section */
+        .section {
+            padding: 6rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: #4a5568;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        /* Card */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #cbd5e0;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: #2b6cb0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon span {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        /* Sprint Timeline */
+        .sprint-timeline {
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 4rem 0;
+        }
+
+        .sprint-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+        }
+
+        .sprint-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            border-left: 4px solid #2b6cb0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .sprint-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .sprint-number {
+            background: #2b6cb0;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+        }
+
+        .sprint-info h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .sprint-duration {
+            font-size: 0.875rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .sprint-achievements {
+            list-style: none;
+        }
+
+        .sprint-achievements li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+
+        .sprint-achievements li:last-child {
+            border-bottom: none;
+        }
+
+        .sprint-achievements li::before {
+            content: '✓';
+            color: #38a169;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Quality Metrics */
+        .quality-section {
+            background: linear-gradient(135deg, #2b6cb0 0%, #3182ce 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 4rem 3rem;
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .quality-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .quality-item {
+            text-align: center;
+        }
+
+        .quality-value {
+            font-size: 3rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .quality-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .quality-description {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* Architecture Flow */
+        .architecture-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 4rem 0;
+            position: relative;
+        }
+
+        .architecture-flow::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #e2e8f0 0%, #2b6cb0 50%, #e2e8f0 100%);
+            z-index: 1;
+        }
+
+        .arch-step {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            min-width: 180px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .arch-step:hover {
+            border-color: #2b6cb0;
+            transform: scale(1.05);
+        }
+
+        .arch-step-number {
+            width: 24px;
+            height: 24px;
+            background: #2b6cb0;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0 auto 1rem auto;
+        }
+
+        .arch-step h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .arch-step p {
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+
+        /* Tech Stack */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+        }
+
+        .tech-category {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 2rem;
+            border-left: 4px solid #2b6cb0;
+        }
+
+        .tech-category h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-list {
+            list-style: none;
+            space-y: 1rem;
+        }
+
+        .tech-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tech-item:last-child {
+            border-bottom: none;
+        }
+
+        .tech-name {
+            font-weight: 600;
+            color: #2b6cb0;
+            min-width: 120px;
+        }
+
+        .tech-description {
+            color: #4a5568;
+            font-size: 0.875rem;
+        }
+
+        /* Database Schema */
+        .db-schema {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 3rem;
+            margin: 3rem 0;
+        }
+
+        .db-entities {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .db-entity {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .db-entity-header {
+            background: #2b6cb0;
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .db-entity-body {
+            padding: 1.5rem;
+        }
+
+        .db-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.875rem;
+        }
+
+        .db-field:last-child {
+            border-bottom: none;
+        }
+
+        .field-name {
+            font-weight: 500;
+            color: #1a202c;
+        }
+
+        .field-type {
+            color: #4a5568;
+            font-family: 'Monaco', monospace;
+        }
+
+        .primary-key {
+            color: #e53e3e;
+        }
+
+        .foreign-key {
+            color: #d69e2e;
+        }
+
+        /* Testing Section */
+        .testing-showcase {
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 4rem 0;
+        }
+
+        .testing-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+        }
+
+        .testing-category {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .testing-category h4 {
+            color: #1a202c;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .testing-icon {
+            width: 32px;
+            height: 32px;
+            background: #2b6cb0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .test-list {
+            list-style: none;
+        }
+
+        .test-item {
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+            color: #4a5568;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .test-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a202c;
+            color: #a0aec0;
+            padding: 3rem 0 2rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: white;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #2d3748;
+            padding-top: 2rem;
+            font-size: 0.875rem;
+        }
+
+        /* Hero Stats */
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #718096;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-features {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .grid-2,
+            .grid-3,
+            .grid-4,
+            .tech-grid,
+            .db-entities,
+            .quality-grid,
+            .footer-content,
+            .sprint-container,
+            .testing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .architecture-flow {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .architecture-flow::before {
+                display: none;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section {
+                padding: 4rem 0;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">FishOn</div>
+            <ul class="nav-links">
+                <li><a href="#development">Development</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#tech">Technologies</a></li>
+                <li><a href="#testing">Testing</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>FishOn</h1>
+                <p>Modern social network for fishing enthusiasts. Complete MVP developed in 4 weeks with Spring Boot and rigorous MVC architecture.</p>
+                
+                <div class="hero-overview">
+                    <h3>MVP FishOn Demo Day</h3>
+                    <div class="hero-features">
+                        <div class="feature-highlight">
+                            <span class="feature-icon">🎣</span>
+                            <span class="feature-text">Personal Fishing Journal</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <span class="feature-icon">🌊</span>
+                            <span class="feature-text">Community Feed</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <span class="feature-icon">💬</span>
+                            <span class="feature-text">Interactive Social System</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <span class="feature-icon">🔐</span>
+                            <span class="feature-text">Spring Security</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Development Section -->
+    <section id="development" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Agile Development</h2>
+                <p class="section-subtitle">4 weeks of structured development in 2 sprints with Agile methodology</p>
+            </div>
+            <div class="sprint-timeline">
+                <div class="sprint-container">
+                    <div class="sprint-card fade-in">
+                        <div class="sprint-header">
+                            <div class="sprint-number">1</div>
+                            <div class="sprint-info">
+                                <h3>Complete Backend</h3>
+                                <div class="sprint-duration">Sprint 1 - 2 weeks</div>
+                            </div>
+                        </div>
+                        <ul class="sprint-achievements">
+                            <li>Complete Spring Boot architecture</li>
+                            <li>Models with BaseModel (User, Post, Comment)</li>
+                            <li>Spring Data JPA repositories</li>
+                            <li>Services with business logic</li>
+                            <li>REST API controllers</li>
+                            <li>Centralized exception handler</li>
+                            <li>Spring Security + PostgreSQL</li>
+                            <li>Unit tests JUnit 5 + Mockito</li>
+                            <li>Integration tests MockMvc</li>
+                        </ul>
+                    </div>
+                    <div class="sprint-card fade-in">
+                        <div class="sprint-header">
+                            <div class="sprint-number">2</div>
+                            <div class="sprint-info">
+                                <h3>Complete Frontend</h3>
+                                <div class="sprint-duration">Sprint 2 - 2 weeks</div>
+                            </div>
+                        </div>
+                        <ul class="sprint-achievements">
+                            <li>Modern JavaScript architecture</li>
+                            <li>5 responsive HTML pages</li>
+                            <li>Complete REST API integration</li>
+                            <li>Modern glassmorphism design</li>
+                            <li>State and error management</li>
+                            <li>Dynamic HTML templates</li>
+                            <li>Complete Postman tests</li>
+                            <li>Responsive design validation</li>
+                            <li>Systematic code reviews</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quality Metrics -->
+    <section class="quality-section">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Quality & Performance</h2>
+            <p style="font-size: 1.125rem; opacity: 0.9;">Quality metrics achieved with JaCoCo and automated testing</p>
+            <div class="quality-grid">
+                <div class="quality-item">
+                    <span class="quality-value">91%</span>
+                    <span class="quality-label">Services</span>
+                    <div class="quality-description">Excellent business logic</div>
+                </div>
+                <div class="quality-item">
+                    <span class="quality-value">94%</span>
+                    <span class="quality-label">Configuration</span>
+                    <div class="quality-description">Spring Security validated</div>
+                </div>
+                <div class="quality-item">
+                    <span class="quality-value">89%</span>
+                    <span class="quality-label">Models</span>
+                    <div class="quality-description">JPA entities tested</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Delivered Features</h2>
+                <p class="section-subtitle">Complete application with all modern social network features</p>
+            </div>
+            <div class="grid-3">
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>📝</span>
+                    </div>
+                    <h3>Personal Journal</h3>
+                    <p>Complete /journal.html page to create and manage fishing memories with all technical details.</p>
+                </div>
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>🌊</span>
+                    </div>
+                    <h3>Community Feed</h3>
+                    <p>/feed.html page with REST API to discover community posts in real-time.</p>
+                </div>
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>💬</span>
+                    </div>
+                    <h3>Comment System</h3>
+                    <p>Complete CommentService and CommentController with REST API for social interactions.</p>
+                </div>
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>🔐</span>
+                    </div>
+                    <h3>Secure Authentication</h3>
+                    <p>/login.html and /register.html pages with Spring Security and complete AuthService.</p>
+                </div>
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>👤</span>
+                    </div>
+                    <h3>User Profile</h3>
+                    <p>/profile.html page with UserService for complete user profile management.</p>
+                </div>
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>📱</span>
+                    </div>
+                    <h3>Responsive Design</h3>
+                    <p>Responsive CSS validated on Chrome, Firefox, Safari and Edge with mobile-first design.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Implemented MVC Architecture</h2>
+                <p class="section-subtitle">Layered architecture following Spring Boot best practices</p>
+            </div>
+            <div class="architecture-flow">
+                <div class="arch-step">
+                    <div class="arch-step-number">1</div>
+                    <h4>Frontend</h4>
+                    <p>5 HTML pages + CSS + JavaScript with API Service</p>
+                </div>
+                <div class="arch-step">
+                    <div class="arch-step-number">2</div>
+                    <h4>Controllers</h4>
+                    <p>AuthController, UserController, PostController, CommentController</p>
+                </div>
+                <div class="arch-step">
+                    <div class="arch-step-number">3</div>
+                    <h4>Services</h4>
+                    <p>AuthService, UserService, PostService, CommentService</p>
+                </div>
+                <div class="arch-step">
+                    <div class="arch-step-number">4</div>
+                    <h4>Repositories</h4>
+                    <p>Spring Data JPA with PostgreSQL on port 5432</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Technology Stack Used</h2>
+                <p class="section-subtitle">Modern technologies validated in production</p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-category">
+                    <h3>Backend (Spring Boot 3.5.0)</h3>
+                    <div class="tech-list">
+                        <div class="tech-item">
+                            <span class="tech-name">Java 21</span>
+                            <span class="tech-description">LTS version with modern features</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">Spring Boot 3.5</span>
+                            <span class="tech-description">Main framework with auto-configuration</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">Spring Security</span>
+                            <span class="tech-description">HTTP session authentication</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">Spring Data JPA</span>
+                            <span class="tech-description">ORM with Hibernate and PostgreSQL</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">Maven</span>
+                            <span class="tech-description">Build automation and dependency management</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tech-category">
+                    <h3>Frontend & Testing</h3>
+                    <div class="tech-list">
+                        <div class="tech-item">
+                            <span class="tech-name">HTML5 / CSS3</span>
+                            <span class="tech-description">Semantic structure and glassmorphism</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">Vanilla JavaScript</span>
+                            <span class="tech-description">Fetch API and ES6+ modules</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">PostgreSQL</span>
+                            <span class="tech-description">Robust relational database</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">JUnit 5 + Mockito</span>
+                            <span class="tech-description">150 unit tests with 68% coverage</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-name">TestContainers</span>
+                            <span class="tech-description">Integration tests with PostgreSQL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Database Section -->
+    <section id="database" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Implemented Data Model</h2>
+                <p class="section-subtitle">Relational schema with BaseModel and integrity constraints</p>
+            </div>
+            <div class="db-schema">
+                <div class="db-entities">
+                    <div class="db-entity">
+                        <div class="db-entity-header">UserModel</div>
+                        <div class="db-entity-body">
+                            <div class="db-field">
+                                <span class="field-name primary-key">🔑 id</span>
+                                <span class="field-type">UUID</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name">userName</span>
+                                <span class="field-type">String UNIQUE</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name">email</span>
+                                <span class="field-type">String UNIQUE</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name">password</span>
+                                <span class="field-type">String</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name">age</span>
+                                <span class="field-type">Integer</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="db-entity">
+                        <div class="db-entity-header">PostModel</div>
+                        <div class="db-entity-body">
+                            <div class="db-field">
+                                <span class="field-name primary-key">🔑 id</span>
+                                <span class="field-type">UUID</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name">title</span>
+                                <span class="field-type">String</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name">fishName</span>
+                                <span class="field-type">String</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name">weight</span>
+                                <span class="field-type">Double</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name foreign-key">🔗 userId</span>
+                                <span class="field-type">UUID</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="db-entity">
+                        <div class="db-entity-header">CommentModel</div>
+                        <div class="db-entity-body">
+                            <div class="db-field">
+                                <span class="field-name primary-key">🔑 id</span>
+                                <span class="field-type">UUID</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name">content</span>
+                                <span class="field-type">String</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name foreign-key">🔗 userId</span>
+                                <span class="field-type">UUID</span>
+                            </div>
+                            <div class="db-field">
+                                <span class="field-name foreign-key">🔗 postId</span>
+                                <span class="field-type">UUID</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testing Section -->
+    <section id="testing" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Testing & Validation</h2>
+                <p class="section-subtitle">68% coverage with automated testing and complete validation</p>
+            </div>
+            <div class="testing-showcase">
+                <div class="testing-grid">
+                    <div class="testing-category">
+                        <h4>
+                            <div class="testing-icon">🧪</div>
+                            Unit Tests (150 tests)
+                        </h4>
+                        <ul class="test-list">
+                            <li>AuthServiceTest.java - Authentication tests</li>
+                            <li>UserServiceTest.java - User management tests</li>
+                            <li>PostServiceTest.java - Post management tests</li>
+                            <li>CommentServiceTest.java - Comment tests</li>
+                            <li>JaCoCo configuration with 60% threshold</li>
+                            <li>Actual coverage: 68% (target exceeded)</li>
+                        </ul>
+                    </div>
+                    <div class="testing-category">
+                        <h4>
+                            <div class="testing-icon">🔗</div>
+                            Integration Tests
+                        </h4>
+                        <ul class="test-list">
+                            <li>AuthControllerTest.java - Authentication API</li>
+                            <li>UserControllerTest.java - User API</li>
+                            <li>PostControllerTest.java - Post API</li>
+                            <li>CommentControllerTest.java - Comment API</li>
+                            <li>TestContainers with PostgreSQL</li>
+                            <li>MockMvc tests for all endpoints</li>
+                        </ul>
+                    </div>
+                    <div class="testing-category">
+                        <h4>
+                            <div class="testing-icon">📡</div>
+                            Postman API Tests
+                        </h4>
+                        <ul class="test-list">
+                            <li>Complete collection all endpoints</li>
+                            <li>Register/login/logout scenarios</li>
+                            <li>CRUD Posts with validation</li>
+                            <li>Comment system</li>
+                            <li>Load and performance tests</li>
+                            <li>API Response Time < 200ms</li>
+                        </ul>
+                    </div>
+                    <div class="testing-category">
+                        <h4>
+                            <div class="testing-icon">🎯</div>
+                            Frontend Validation
+                        </h4>
+                        <ul class="test-list">
+                            <li>Manual user journey tests</li>
+                            <li>Responsive design validation</li>
+                            <li>Browser compatibility tests</li>
+                            <li>Chrome, Firefox, Safari, Edge</li>
+                            <li>Frontend Loading < 2s</li>
+                            <li>Mobile, tablet, desktop validated</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Production Environment -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Production Environment</h2>
+                <p class="section-subtitle">Deployed and operational application</p>
+            </div>
+            <div class="grid-2">
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>🖥️</span>
+                    </div>
+                    <h3>Spring Boot Backend</h3>
+                    <p><strong>URL:</strong> http://localhost:8080<br>
+                    <strong>Database:</strong> PostgreSQL port 5432<br>
+                    <strong>Configuration:</strong> application.properties production<br>
+                    <strong>Monitoring:</strong> Spring Boot logs + JaCoCo reports</p>
+                </div>
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>🌐</span>
+                    </div>
+                    <h3>Web Frontend Application</h3>
+                    <p><strong>Functional pages:</strong><br>
+                    • /login.html - Authentication<br>
+                    • /register.html - Registration<br>
+                    • /feed.html - News feed<br>
+                    • /journal.html - Personal journal<br>
+                    • /profile.html - User profile</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Development Metrics -->
+    <section class="section" style="background: #f7fafc;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Project Metrics Achieved</h2>
+                <p class="section-subtitle">Concrete development statistics over 4 weeks</p>
+            </div>
+            <div class="hero-metrics" style="background: white; border: 1px solid #e2e8f0;">
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">68%</span>
+                        <span class="stat-label">Code Coverage</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">150</span>
+                        <span class="stat-label">Unit Tests</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">30</span>
+                        <span class="stat-label">Pull Requests</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">2</span>
+                        <span class="stat-label">Agile Sprints</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>🔄</span>
+                    </div>
+                    <h3>Agile Process</h3>
+                    <p><strong>Methodology:</strong> 2 sprints of 2 weeks<br>
+                    <strong>Organization:</strong> Pair programming<br>
+                    <strong>Code Reviews:</strong> 100% of PRs reviewed<br>
+                    <strong>Pull Requests:</strong> 30 PRs created and validated</p>
+                </div>
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>📊</span>
+                    </div>
+                    <h3>Code Quality</h3>
+                    <p><strong>Coverage:</strong> >60% configured JaCoCo Maven<br>
+                    <strong>Auto Tests:</strong> Unit + Controller MockMvc<br>
+                    <strong>Validation:</strong> Complete Postman tests<br>
+                    <strong>Architecture:</strong> MVC + Spring Security</p>
+                </div>
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>⚡</span>
+                    </div>
+                    <h3>Performance</h3>
+                    <p><strong>API Response:</strong> < 200ms via Postman<br>
+                    <strong>Frontend Loading:</strong> < 2s all pages<br>
+                    <strong>Compatibility:</strong> 4 browsers tested<br>
+                    <strong>Responsive:</strong> Mobile, tablet, desktop</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Repository Links -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Resources & Documentation</h2>
+                <p class="section-subtitle">Access to technical resources and project documentation</p>
+            </div>
+            <div class="grid-2">
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>📂</span>
+                    </div>
+                    <h3>GitHub Repository</h3>
+                    <p><strong>Source Code:</strong> https://github.com/Akatsuki667/FishOn<br>
+                    <strong>Branch Strategy:</strong> main + features<br>
+                    <strong>Backend Tests:</strong> /src/test/java/com/FishOn/FishOn<br>
+                    <strong>Pull Requests:</strong> 30 PRs with code reviews</p>
+                </div>
+                <div class="card fade-in">
+                    <div class="card-icon">
+                        <span>🧪</span>
+                    </div>
+                    <h3>Postman Tests</h3>
+                    <p><strong>Collection:</strong> Tests for all endpoints<br>
+                    <strong>Workspace:</strong> My-Workspace Postman<br>
+                    <strong>Scenarios:</strong> Auth, CRUD, Comments, Profiles<br>
+                    <strong>Performance:</strong> Load tests validated</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>FishOn MVP</h3>
+                    <p>Complete social network developed in 4 weeks with Spring Boot 3.5.0, Java 21 and rigorous MVC architecture. Project built following software development best practices.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Technical Achievements</h3>
+                    <ul>
+                        <li>✓ Complete MVC architecture</li>
+                        <li>✓ Secure REST API</li>
+                        <li>✓ Optimized PostgreSQL database</li>
+                        <li>✓ 68% coverage JaCoCo tests</li>
+                        <li>✓ 150 successful unit tests</li>
+                        <li>✓ 30 validated Pull Requests</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Technical Stack</h3>
+                    <ul>
+                        <li>Spring Boot 3.5.0 + Java 21</li>
+                        <li>Spring Security + HTTP Session</li>
+                        <li>PostgreSQL + Spring Data JPA</li>
+                        <li>HTML5 + CSS3 + JavaScript</li>
+                        <li>JUnit 5 + Mockito + TestContainers</li>
+                        <li>Maven + JaCoCo + Postman</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FishOn - MVP Developed in 4 Weeks | Spring Boot MVC Architecture</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Active navigation highlight
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Add some dynamic content loading effect
+        window.addEventListener('load', () => {
+            const heroStats = document.querySelectorAll('.stat-number');
+            heroStats.forEach((stat, index) => {
+                setTimeout(() => {
+                    stat.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        stat.style.transform = 'scale(1)';
+                    }, 200);
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
