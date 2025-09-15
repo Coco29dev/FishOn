@@ -175,7 +175,7 @@ class UserServiceTest {
         // Configuration mock
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // ASSERT - Lancement exception
+        // ACT & ASSERT - Lancement exception
         assertThatThrownBy(() -> userService.updateUser(userId, updatedUser))
                 .isInstanceOf(UserNotFoundById.class)
                 .hasMessage("L'utilisateur avec l'ID " + userId + " n'existe pas");
