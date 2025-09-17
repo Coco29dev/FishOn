@@ -13,6 +13,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Executable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,6 +30,9 @@ import com.FishOn.FishOn.Exception.FishOnException.MissingTitleException;
 import com.FishOn.FishOn.Exception.FishOnException.PostNotFoundById;
 import com.FishOn.FishOn.Exception.FishOnException.UnauthorizedModificationPost;
 import com.FishOn.FishOn.Exception.FishOnException.UserNotFoundById;
+import com.FishOn.FishOn.Exception.FishOnException.UserNotFoundByUserName;
+import com.FishOn.FishOn.Exception.FishOnException.FishNameNotFound;
+import com.FishOn.FishOn.Exception.FishOnException.LocationNotFound;
 import com.FishOn.FishOn.Exception.FishOnException.MissingDescriptionException;
 import com.FishOn.FishOn.Exception.FishOnException.MissingFishNameException;
 import com.FishOn.FishOn.Exception.FishOnException.MissingPhotoException;
@@ -58,6 +63,8 @@ class PostServiceTest {
     @InjectMocks
     PostService postService;
 
+    // ========== FONCTION HELPER ==========
+
     private PostModel createPost() {
         return new PostModel(
                 "title",
@@ -72,6 +79,13 @@ class PostServiceTest {
                 "Magnifique prise1",
                 "Carpe1",
                 "fishPicture1");
+    }
+
+    private List<PostModel> createListPosts(PostModel post1, PostModel post2) {
+        List<PostModel> posts = new ArrayList<>();
+        posts.add(post1);
+        posts.add(post2);
+        return posts;
     }
 
     private UserModel createUser() {
@@ -429,11 +443,162 @@ class PostServiceTest {
 
         // ACT & ASSERT
         assertThatThrownBy(() -> postService.deletePost(VALID_USER_ID, INVALID_POST_ID))
-            .isInstanceOf(PostNotFoundById.class)
-            .hasMessage("La publication n'existe pas");
-        
+                .isInstanceOf(PostNotFoundById.class)
+                .hasMessage("La publication n'existe pas");
+
         // Vérification interractions
         verify(userRepository).findById(VALID_USER_ID);
         verify(postRepository).findById(INVALID_POST_ID);
+    }
+    
+    // ========== TEST REPOSITORY ==========
+
+    @Test
+    @DisplayName("Récupération de toutes les publications")
+    void displayAllPosts() {
+        // ARRANGE - Préparation des données
+        PostModel post1 = createPost();
+        PostModel post2 = createPost();
+        List<PostModel> posts = createListPosts(post1, post2);
+
+        // Configuratiuon mock
+        when(postRepository.findAll()).thenReturn(posts);
+
+        // ACT - Appel méthode
+        List<PostModel> result = postService.getAll();
+
+        // ASSERT - Vérification des données
+        assertNotNull(result);
+        assertEquals(posts, result);
+
+        // Vérification interractions
+        verify(postRepository).findAll();
+    }
+
+    @Test
+    @DisplayName("Récupération publication par UserName - valide")
+    void getPostByUserName() throws UserNotFoundByUserName {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
+        PostModel post1 = createPost();
+        PostModel post2 = createPost();
+        List<PostModel> posts = createListPosts(post1, post2);
+
+        // Configuration mock
+        when(userRepository.existsByUserName(user.getUserName())).thenReturn(true);
+        when(postRepository.findByUserUserName(user.getUserName())).thenReturn(posts);
+
+        // ACT - Appel méthode
+        List<PostModel> result = postService.getByUserUserName(user.getUserName());
+
+        // ASSERT - Vérification des données
+        assertNotNull(result);
+        assertEquals(posts, result);
+
+        // Vérification interractions
+        verify(userRepository).existsByUserName(user.getUserName());
+        verify(postRepository).findByUserUserName(user.getUserName());
+    }
+
+    @Test
+    @DisplayName("Récupération publication par UserName - UserNotFoundByUserName")
+    void getPostByUserNameNotFound() throws UserNotFoundByUserName {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
+
+        // Configuration mock
+        when(userRepository.existsByUserName(user.getUserName())).thenReturn(false);
+
+        // ACT & ASSERT
+        assertThatThrownBy(() -> postService.getByUserUserName(user.getUserName()))
+                .isInstanceOf(UserNotFoundByUserName.class)
+                .hasMessage("L'utilisateur " + user.getUserName() + " n'existe pas");
+
+        // Vérification interractions
+        verify(userRepository).existsByUserName(user.getUserName());
+        verify(postRepository, never()).findByUserUserName(any());
+    }
+
+    @Test
+    @DisplayName("Récupération publication par UserId - valide")
+    void getPostByUserId() throws UserNotFoundById {
+        // ARRANGE - <préparation des données
+        PostModel post1 = createPost();
+        PostModel post2 = createPost();
+        List<PostModel> posts = createListPosts(post1, post2);
+
+        // Configuration mocks
+        when(userRepository.existsById(VALID_USER_ID)).thenReturn(true);
+        when(postRepository.findByUserId(VALID_USER_ID)).thenReturn(posts);
+
+        // ACT - Appel méthode
+        List<PostModel> result = postService.getByUserId(VALID_USER_ID);
+
+        // ASSERT - Vérification des données
+        assertNotNull(posts);
+        assertEquals(posts, result);
+
+        // Vérification interractions
+        verify(userRepository).existsById(VALID_USER_ID);
+        verify(postRepository).findByUserId(VALID_USER_ID);
+    }
+
+    @Test
+    @DisplayName("Récupération publication par UserId - UserNotFoundById")
+    void getPostByUserIdNotFound() throws UserNotFoundById {
+        // ARRANGE - configuration mock
+        when(userRepository.existsById(INVALID_USER_ID)).thenReturn(false);
+
+        // ACT & ASSERT
+        assertThatThrownBy(() -> postService.getByUserId(INVALID_USER_ID))
+            .isInstanceOf(UserNotFoundById.class)
+                .hasMessage("L'utilisateur avec l'ID " + INVALID_USER_ID + " n'existe pas");
+        
+        // Vérification interractions
+        verify(userRepository).existsById(INVALID_USER_ID);
+        verify(postRepository, never()).findByUserId(INVALID_USER_ID);
+    }
+
+    @Test
+    @DisplayName("Récupération publication par fishName - valide")
+    void getPostByFishName() throws FishNameNotFound {
+        //ARRANGE - prpéparation des données
+        String fishName = "Carpe";
+        PostModel post1 = createPost();
+        PostModel post2 = createPost();
+        List<PostModel> posts = createListPosts(post1, post2);
+
+        // Configuration mocks
+        when(postRepository.existsByFishName(fishName)).thenReturn(true);
+        when(postRepository.findByFishName(fishName)).thenReturn(posts);
+
+        // ACT - Appel méthode
+        List<PostModel> result = postService.getByFishName(fishName);
+
+        // ASSERT - Vérification des données
+        assertNotNull(result);
+        assertEquals(posts, result);
+
+        // Vérification interractions
+        verify(postRepository).existsByFishName(fishName);
+        verify(postRepository).findByFishName(fishName);
+    }
+
+    @Test
+    @DisplayName("Récupération publication par fishName - FishNameNotFound")
+    void getPostByFishNameNotFound() throws FishNameNotFound {
+        // ARRANGE - Préparatio ndes données
+        String fishName = "notfound";
+
+        // Configuration mock
+        when(postRepository.existsByFishName(fishName)).thenReturn(false);
+
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> postService.getByFishName(fishName))
+                .isInstanceOf(FishNameNotFound.class)
+                .hasMessage("Ce poisson n'existe pas");
+
+        verify(postRepository).existsByFishName(fishName);
+        verify(postRepository, never()).findByFishName(fishName);
     }
 }
