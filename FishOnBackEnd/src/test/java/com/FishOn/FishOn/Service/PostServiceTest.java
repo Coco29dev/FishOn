@@ -1,499 +1,604 @@
 package com.FishOn.FishOn.Service;
 
-import com.FishOn.FishOn.Model.PostModel;
-import com.FishOn.FishOn.Model.UserModel;
-import com.FishOn.FishOn.Repository.PostRepository;
-import com.FishOn.FishOn.Repository.UserRepository;
-import com.FishOn.FishOn.Exception.FishOnException.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
+import java.lang.reflect.Executable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+
+import com.FishOn.FishOn.Exception.FishOnException.MissingTitleException;
+import com.FishOn.FishOn.Exception.FishOnException.PostNotFoundById;
+import com.FishOn.FishOn.Exception.FishOnException.UnauthorizedModificationPost;
+import com.FishOn.FishOn.Exception.FishOnException.UserNotFoundById;
+import com.FishOn.FishOn.Exception.FishOnException.UserNotFoundByUserName;
+import com.FishOn.FishOn.Exception.FishOnException.FishNameNotFound;
+import com.FishOn.FishOn.Exception.FishOnException.LocationNotFound;
+import com.FishOn.FishOn.Exception.FishOnException.MissingDescriptionException;
+import com.FishOn.FishOn.Exception.FishOnException.MissingFishNameException;
+import com.FishOn.FishOn.Exception.FishOnException.MissingPhotoException;
+import com.FishOn.FishOn.Model.PostModel;
+import com.FishOn.FishOn.Model.UserModel;
+import com.FishOn.FishOn.Repository.PostRepository;
+import com.FishOn.FishOn.Repository.UserRepository;
+import com.github.dockerjava.api.exception.UnauthorizedException;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceTest {
 
-    @Mock
-    private PostRepository postRepository;
+    // Constantes
+    private static final UUID VALID_USER_ID = UUID.randomUUID();
+    private static final UUID INVALID_USER_ID = UUID.randomUUID();
+    private static final UUID VALID_POST_ID = UUID.randomUUID();
+    private static final UUID INVALID_POST_ID = UUID.randomUUID();
 
     @Mock
-    private UserRepository userRepository;
+    PostRepository postRepository;
+
+    @Mock
+    UserRepository userRepository;
+
+    @Mock
+    PostModel postModel;
 
     @InjectMocks
-    private PostService postService;
+    PostService postService;
 
-    private UserModel testUser;
-    private UserModel otherUser;
-    private PostModel testPost;
-    private UUID userId;
-    private UUID otherUserId;
-    private UUID postId;
+    // ========== FONCTION HELPER ==========
 
-    @BeforeEach
-    void setUp() {
-        userId = UUID.randomUUID();
-        otherUserId = UUID.randomUUID();
-        postId = UUID.randomUUID();
+    private PostModel createPost() {
+        return new PostModel(
+                "title",
+                "Magnifique prise",
+                "Carpe",
+                "fishPicture");
+    }
 
-        testUser = new UserModel("testuser", "test@example.com", "John", "Doe", 25, "password", "profile.jpg");
-        testUser.setId(userId);
+    private PostModel updatedPost() {
+        return new PostModel(
+                "title1",
+                "Magnifique prise1",
+                "Carpe1",
+                "fishPicture1");
+    }
 
-        otherUser = new UserModel("otheruser", "other@example.com", "Jane", "Smith", 30, "password", "profile2.jpg");
-        otherUser.setId(otherUserId);
+    private List<PostModel> createListPosts(PostModel post1, PostModel post2) {
+        List<PostModel> posts = new ArrayList<>();
+        posts.add(post1);
+        posts.add(post2);
+        return posts;
+    }
 
-        // ✅ CORRECTION : Utiliser le constructeur avec 4 paramètres (title, description, fishName, photoUrl)
-        testPost = new PostModel("Superbe carpe", "Belle prise ce matin", "Carpe", "img/fish1.jpg");
-        testPost.setId(postId);
-        testPost.setUser(testUser);
+    private UserModel createUser() {
+        return new UserModel(
+                "user1",
+                "user1@fishon.com",
+                "J",
+                "D",
+                25,
+                "userpassword",
+                "");
+    }
+
+    // ========== MÉTHODE HELPER ==========
+    private void assertValidationThrowsException(
+            String title,
+            String description,
+            String fishName,
+            String photoUrl,
+            // Class équivalent Exception.class
+            // <?> = représente n'importe quelle classe
+            Class<? extends Exception> expectedExceptionType,
+            String expectedMessage) {
+        //ARRANGE
+        PostModel post = new PostModel(title, description, fishName, photoUrl);
+
+        //ACT & ASSERT
+        assertThatThrownBy(() -> postService.validateData(post))
+                .isInstanceOf(expectedExceptionType)
+                .hasMessage(expectedMessage);
+    }
+
+    private void assertUpdatePostThrowsException(
+        UUID userId, UUID postId, PostModel updatedPost,
+        Class <? extends Exception> expectedExceptionType,
+        String expectedMessage) {
+        // ACT & ASSERT
+        assertThatThrownBy(() -> postService.updatePost(userId, postId, updatedPost))
+                .isInstanceOf(expectedExceptionType)
+                .hasMessage(expectedMessage);
+    }
+
+    private void assertDeletePostThrowsException(UUID userId, UUID postId,
+        Class <? extends Exception> expectedExceptionType, String expectedMessage) {
+        // ACT & ASSERT
+        assertThatThrownBy(() -> postService.deletePost(userId, postId))
+        .isInstanceOf(expectedExceptionType)
+        .hasMessage(expectedMessage);
+    }
+
+    // ========== TEST MÉTHODE VALIDATION ==========
+
+    @Test
+    @DisplayName("Données valide")
+    void validData() {
+        // ARRANGE
+        PostModel post = createPost();
+
+        // ACT & ASSERT
+        assertDoesNotThrow(() -> postService.validateData(post));
     }
 
     @Test
-    void validateData_Success() {
-        // Given - testPost avec données valides
-
-        // When & Then - ne doit pas lancer d'exception
-        assertDoesNotThrow(() -> postService.validateData(testPost));
+    @DisplayName("Données invalide - Titre null")
+    void nullTitle() {
+        // Appel fonction helper
+        assertValidationThrowsException(
+            null,
+            "Magnifique prise",
+            "Carpe",
+            "fishPicture",
+            MissingTitleException.class,
+            "Titre obligatoire");
     }
 
     @Test
-    void validateData_MissingTitle() {
-        // Given
-        testPost.setTitle(null);
-
-        // When & Then
-        assertThrows(MissingTitleException.class, () -> {
-            postService.validateData(testPost);
-        });
+    @DisplayName("Données invalide - Titre vide")
+    void emptyTitle() {
+        // Appel fonction helper
+        assertValidationThrowsException(
+                "",
+                "Magnifique prise",
+                "Carpe",
+                "fishPicture",
+                MissingTitleException.class,
+                "Titre obligatoire");
+    }
+    
+    @Test
+    @DisplayName("Données invalide - Description null")
+    void nullDescription() {
+        // Appel fonction helper
+        assertValidationThrowsException(
+                "title",
+                null,
+                "Carpe",
+                "fishPicture",
+                MissingDescriptionException.class,
+                "Description obligatoire");
     }
 
     @Test
-    void validateData_EmptyDescription() {
-        // Given
-        testPost.setDescription("   "); // Espaces seulement
-
-        // When & Then
-        assertThrows(MissingDescriptionException.class, () -> {
-            postService.validateData(testPost);
-        });
+    @DisplayName("Données invalide - Description vide")
+    void emptyDescription() {
+        // Appel fonction helper
+        assertValidationThrowsException(
+                "title",
+                "",
+                "Carpe",
+                "fishPicture",
+                MissingDescriptionException.class,
+                "Description obligatoire");
     }
 
     @Test
-    void validateData_MissingFishName() {
-        // Given
-        testPost.setFishName("");
-
-        // When & Then
-        assertThrows(MissingFishNameException.class, () -> {
-            postService.validateData(testPost);
-        });
+    @DisplayName("Données invalide - fishName null")
+    void nullFishName() {
+        // Appel fonction helper
+        assertValidationThrowsException(
+                "title",
+                "Magnifique prise",
+                null,
+                "fishPicture",
+                MissingFishNameException.class,
+                "fishName obligatoire");
     }
 
     @Test
-    void validateData_MissingPhoto() {
-        // Given
-        testPost.setPhotoUrl(null);
-
-        // When & Then
-        assertThrows(MissingPhotoException.class, () -> {
-            postService.validateData(testPost);
-        });
+    @DisplayName("Données invalide - fishName vide")
+    void emptyFishName() {
+        // Appel fonction helper
+        assertValidationThrowsException(
+                "title",
+                "Magnifique prise",
+                "",
+                "fishPicture",
+                MissingFishNameException.class,
+                "fishName obligatoire");
     }
 
     @Test
-    void createPost_Success() throws Exception {
-        // Given
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.save(any(PostModel.class))).thenReturn(testPost);
+    @DisplayName("Données invalide - photoUrl null")
+    void nullPhotoUrl() {
+        // Appel fonction helper
+        assertValidationThrowsException(
+                "title",
+                "Magnifique prise",
+                "Carpe",
+                null,
+                MissingPhotoException.class,
+                "Photo obligatoire");
+    }
 
-        // When
-        PostModel result = postService.createPost(userId, testPost);
+    @Test
+    @DisplayName("Données invalide - photoUrl vide")
+    void emptyPhotoUrl() {
+        // Appel fonction helper
+        assertValidationThrowsException(
+                "title",
+                "Magnifique prise",
+                "Carpe",
+                "",
+                MissingPhotoException.class,
+                "Photo obligatoire");
+    }
 
-        // Then
+    // ========== TEST MÉTHODE CRUD ==========
+
+    // ========== TEST CRÉATION PUBLICATION ==========
+
+    @Test
+    @DisplayName("Création publication - valide")
+    void createPostValidDataSuccess() throws UserNotFoundById, MissingTitleException,
+            MissingDescriptionException, MissingFishNameException, MissingPhotoException {
+        // ARRANGE - Préparation des données
+        PostModel validPost = createPost();
+        PostModel savedPost = new PostModel( // ← Output du repository mock
+                "title", "description", "fishName", "photo");
+        UserModel mockUser = new UserModel(
+                "testUser", "test@email.com", "Test", "User", 25, "password", "profile.jpg");
+
+        // Configuration mocks
+        when(userRepository.findById(VALID_USER_ID)).thenReturn(Optional.of(mockUser));
+        when(postRepository.save(any(PostModel.class))).thenReturn(savedPost);
+
+        // ACT
+        PostModel result = postService.createPost(VALID_USER_ID, validPost);
+
+        // ASSERT - Vérification
         assertNotNull(result);
-        assertEquals("Superbe carpe", result.getTitle());
-        assertEquals(testUser, result.getUser());
-        verify(postRepository).save(testPost);
+        assertEquals(savedPost, result);
+
+        // Vérifications interractions méthodes
+        verify(userRepository).findById(VALID_USER_ID);
+        verify(postRepository).save(validPost);
+    }
+    
+    @Test
+    @DisplayName("Création Publication - UserNotFounById")
+    void creatPostUserNotFound() throws UserNotFoundById {
+        // ARRANGE - Préparation des données
+        PostModel validPost = createPost();
+
+        // Configuration mock
+        when(userRepository.findById(INVALID_USER_ID)).thenReturn(Optional.empty());
+
+        // ACT & ASSERT - Lancement excpetion
+        assertThatThrownBy(() -> postService.createPost(INVALID_USER_ID, validPost))
+                .isInstanceOf(UserNotFoundById.class)
+                .hasMessage("L'utilisateur avec l'ID " + INVALID_USER_ID + " n'existe pas");
+        verify(userRepository, never()).save(any(UserModel.class));
     }
 
     @Test
-    void createPost_UserNotFound() {
-        // Given
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+    @DisplayName("MAJ Publication - valide")
+    void updtaedPostValid() throws UserNotFoundById, PostNotFoundById, UnauthorizedModificationPost, MissingTitleException,
+            MissingDescriptionException, MissingFishNameException, MissingPhotoException {
+        // ARRANGE - Préparation de données
+        UserModel user = createUser();
+        PostModel post = createPost();
+        PostModel updatePost = updatedPost();
 
-        // When & Then
-        assertThrows(UserNotFoundById.class, () -> {
-            postService.createPost(userId, testPost);
-        });
-    }
+        // Configuration Setter
+        user.setId(VALID_USER_ID);
+        post.setUser(user);
+        post.setId(VALID_POST_ID);
 
-    @Test
-    void createPost_MissingTitle() {
-        // Given
-        testPost.setTitle(null);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
+        // Configuration mock
+        when(userRepository.findById(VALID_USER_ID)).thenReturn(Optional.of(user));
+        when(postRepository.findById(VALID_POST_ID)).thenReturn(Optional.of(post));
+        when(postRepository.save(any(PostModel.class))).thenReturn(updatePost);
 
-        // When & Then
-        assertThrows(MissingTitleException.class, () -> {
-            postService.createPost(userId, testPost);
-        });
+        // ACT - Appel méthode
+        PostModel result = postService.updatePost(VALID_USER_ID, VALID_POST_ID, updatePost);
 
-        verify(postRepository, never()).save(any());
-    }
-
-    @Test
-    void updatePost_Success() throws Exception {
-        // Given
-        // ✅ CORRECTION : Utiliser le constructeur avec 4 paramètres
-        PostModel updatedPost = new PostModel("Carpe modifiée", "Description mise à jour", "Carpe commune", "img/fish2.jpg");
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
-        when(postRepository.save(any(PostModel.class))).thenReturn(testPost);
-
-        // When
-        PostModel result = postService.updatePost(userId, postId, updatedPost);
-
-        // Then
+        // ASSERT - vérification des données
         assertNotNull(result);
-        verify(postRepository).save(testPost);
-        // Vérifier que les champs ont été mis à jour
-        assertEquals("Carpe modifiée", testPost.getTitle());
-        assertEquals("Description mise à jour", testPost.getDescription());
-        assertEquals("Carpe commune", testPost.getFishName());
-        assertEquals("img/fish2.jpg", testPost.getPhotoUrl());
+        assertThat(result.getTitle()).isEqualTo(updatePost.getTitle());
+        assertThat(result.getDescription()).isEqualTo(updatePost.getDescription());
+        assertThat(result.getFishName()).isEqualTo(updatePost.getFishName());
+        assertThat(result.getPhotoUrl()).isEqualTo(updatePost.getPhotoUrl());
+
+        // Vérification interractions
+        verify(userRepository).findById(VALID_USER_ID);
+        verify(postRepository).findById(VALID_POST_ID);
+        verify(postRepository).save(any(PostModel.class));
     }
 
     @Test
-    void updatePost_UnauthorizedUser() {
-        // Given
-        // ✅ CORRECTION : Utiliser le constructeur avec 4 paramètres
-        PostModel updatedPost = new PostModel("Titre", "Description", "Poisson", "img/fish3.jpg");
+    @DisplayName("MAJ Publication - UserNotFoundById")
+    void updatedPostUserNotFound() {
+        // ARRANGE
+        PostModel updatedPost = createPost();
 
-        when(userRepository.findById(otherUserId)).thenReturn(Optional.of(otherUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
+        // Configuration mock
+        when(userRepository.findById(INVALID_USER_ID)).thenReturn(Optional.empty());
 
-        // When & Then
-        assertThrows(UnauthorizedModificationPost.class, () -> {
-            postService.updatePost(otherUserId, postId, updatedPost);
-        });
-
-        verify(postRepository, never()).save(any());
+        // ACT & ASSERT - utilisation fonction helper
+        assertUpdatePostThrowsException(INVALID_USER_ID, VALID_POST_ID, updatedPost,
+                UserNotFoundById.class,
+                "L'utilisateur avec l'ID " + INVALID_USER_ID + " n'existe pas");
     }
 
     @Test
-    void updatePost_PostNotFound() {
-        // Given
-        PostModel updatedPost = new PostModel("Titre", "Description", "Poisson", "img/fish4.jpg");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.empty());
+    @DisplayName("MAJ Publication - PostNotFoundById")
+    void updatedPostNotFound() {
+        // ARRANGE
+        PostModel updatedPost = createPost();
+        UserModel user = createUser();
 
-        // When & Then
-        assertThrows(PostNotFoundById.class, () -> {
-            postService.updatePost(userId, postId, updatedPost);
-        });
+        // Configuration mock
+        when(userRepository.findById(VALID_USER_ID)).thenReturn(Optional.of(user));
+        when(postRepository.findById(INVALID_POST_ID)).thenReturn(Optional.empty());
 
-        verify(postRepository, never()).save(any());
+        // ACT & ASSERT - utilisation fonction helper
+        assertUpdatePostThrowsException(VALID_USER_ID, INVALID_POST_ID, updatedPost,
+                PostNotFoundById.class,
+                "La publication n'existe pas");
     }
 
     @Test
-    void updatePost_ValidationError() {
-        // Given
-        PostModel invalidPost = new PostModel("", "Description", "Poisson", "img/fish5.jpg"); // Titre vide
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
+    @DisplayName("MAJ Publication - UnauthorizedModificationPost")
+    void updatedPostUnauthorizedModification() {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser(); // Utilisateur qui tente la création
+        UserModel owner = createUser(); // Propriétaire réel du post
+        PostModel post = createPost(); // Post existant
+        PostModel updatedPost = updatedPost(); // Nouvelles données
+        UUID ownerId = UUID.randomUUID(); // ID propriétaire réel du post
+        UUID postId = UUID.randomUUID(); // ID post à modifier
 
-        // When & Then
-        assertThrows(MissingTitleException.class, () -> {
-            postService.updatePost(userId, postId, invalidPost);
-        });
+        // Configuraion Setter
+        user.setId(VALID_USER_ID);
+        owner.setId(ownerId);
+        post.setUser(owner);
 
-        verify(postRepository, never()).save(any());
+        // Configuration mock
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(postRepository.findById(postId)).thenReturn(Optional.of(post));
+
+        // ACT & ASSERT
+        assertThatThrownBy(() -> postService.updatePost(user.getId(), postId, updatedPost))
+                .isInstanceOf(UnauthorizedModificationPost.class)
+                .hasMessage("N'est pas autorisé à modifier cette publication");
+
+        // Vérification interractions
+        verify(userRepository).findById(user.getId());
+        verify(postRepository).findById(postId);
+        verify(postRepository, never()).save(any(PostModel.class));
+    }
+    
+    // ========== TEST SUPPRESSION PUBLICATION ==========
+
+    @Test
+    @DisplayName("Suppression publication - valide")
+    void deletedPost() throws UserNotFoundById, PostNotFoundById, UnauthorizedModificationPost {
+        // ARRANGE - Préparation de données
+        UserModel user = createUser();
+        PostModel post = createPost();
+
+        // Configuration Setter
+        user.setId(VALID_USER_ID);
+        post.setId(VALID_POST_ID);
+        post.setUser(user);
+
+        // Configuration mock
+        when(userRepository.findById(VALID_USER_ID)).thenReturn(Optional.of(user));
+        when(postRepository.findById(VALID_POST_ID)).thenReturn(Optional.of(post));
+
+        // ACT
+        postService.deletePost(VALID_USER_ID, VALID_POST_ID);
+
+        // ASSERT
+        verify(postRepository).delete(post);
     }
 
     @Test
-    void deletePost_Success() throws Exception {
-        // Given
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
-
-        // When
-        postService.deletePost(userId, postId);
-
-        // Then
-        verify(postRepository).delete(testPost);
+    @DisplayName("Suppression Publication - UserNotFoundById")
+    void deletedPostUserNotFound() {
+        assertDeletePostThrowsException(INVALID_USER_ID, VALID_POST_ID,
+                UserNotFoundById.class,
+                "L'utilisateur avec l'ID " + INVALID_USER_ID + " n'existe pas");
     }
+    
+    @Test
+    @DisplayName("Suppression Publication - PostNotFoundById")
+    void deletedPostNotFound() throws PostNotFoundById {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
+        user.setId(VALID_USER_ID);
+
+        // Configuration mocks
+        when(userRepository.findById(VALID_USER_ID)).thenReturn(Optional.of(user));
+        when(postRepository.findById(INVALID_POST_ID)).thenReturn(Optional.empty());
+
+        // ACT & ASSERT
+        assertThatThrownBy(() -> postService.deletePost(VALID_USER_ID, INVALID_POST_ID))
+                .isInstanceOf(PostNotFoundById.class)
+                .hasMessage("La publication n'existe pas");
+
+        // Vérification interractions
+        verify(userRepository).findById(VALID_USER_ID);
+        verify(postRepository).findById(INVALID_POST_ID);
+    }
+    
+    // ========== TEST REPOSITORY ==========
 
     @Test
-    void deletePost_UnauthorizedUser() {
-        // Given
-        when(userRepository.findById(otherUserId)).thenReturn(Optional.of(otherUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
+    @DisplayName("Récupération de toutes les publications")
+    void displayAllPosts() {
+        // ARRANGE - Préparation des données
+        PostModel post1 = createPost();
+        PostModel post2 = createPost();
+        List<PostModel> posts = createListPosts(post1, post2);
 
-        // When & Then
-        assertThrows(UnauthorizedModificationPost.class, () -> {
-            postService.deletePost(otherUserId, postId);
-        });
-
-        verify(postRepository, never()).delete(any());
-    }
-
-    @Test
-    void deletePost_PostNotFound() {
-        // Given
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(PostNotFoundById.class, () -> {
-            postService.deletePost(userId, postId);
-        });
-
-        verify(postRepository, never()).delete(any());
-    }
-
-    @Test
-    void deletePost_UserNotFound() {
-        // Given
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(UserNotFoundById.class, () -> {
-            postService.deletePost(userId, postId);
-        });
-
-        verify(postRepository, never()).delete(any());
-    }
-
-    @Test
-    void getAll_Success() {
-        // Given
-        List<PostModel> posts = Arrays.asList(testPost);
+        // Configuratiuon mock
         when(postRepository.findAll()).thenReturn(posts);
 
-        // When
+        // ACT - Appel méthode
         List<PostModel> result = postService.getAll();
 
-        // Then
-        assertEquals(1, result.size());
-        assertEquals(testPost, result.get(0));
-    }
-
-    @Test
-    void getAll_EmptyList() {
-        // Given
-        when(postRepository.findAll()).thenReturn(Arrays.asList());
-
-        // When
-        List<PostModel> result = postService.getAll();
-
-        // Then
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void getByUserUserName_Success() throws Exception {
-        // Given
-        List<PostModel> posts = Arrays.asList(testPost);
-        when(userRepository.existsByUserName("testuser")).thenReturn(true);
-        when(postRepository.findByUserUserName("testuser")).thenReturn(posts);
-
-        // When
-        List<PostModel> result = postService.getByUserUserName("testuser");
-
-        // Then
-        assertEquals(1, result.size());
-        assertEquals(testPost, result.get(0));
-    }
-
-    @Test
-    void getByUserUserName_UserNotFound() {
-        // Given
-        when(userRepository.existsByUserName("nonexistent")).thenReturn(false);
-
-        // When & Then
-        assertThrows(UserNotFoundByUserName.class, () -> {
-            postService.getByUserUserName("nonexistent");
-        });
-    }
-
-    @Test
-    void getByFishName_Success() throws Exception {
-        // Given
-        List<PostModel> posts = Arrays.asList(testPost);
-        when(postRepository.existsByFishName("Carpe")).thenReturn(true);
-        when(postRepository.findByFishName("Carpe")).thenReturn(posts);
-
-        // When
-        List<PostModel> result = postService.getByFishName("Carpe");
-
-        // Then
-        assertEquals(1, result.size());
-        assertEquals("Carpe", result.get(0).getFishName());
-    }
-
-    @Test
-    void getByFishName_NotFound() {
-        // Given
-        when(postRepository.existsByFishName("Requin")).thenReturn(false);
-
-        // When & Then
-        assertThrows(FishNameNotFound.class, () -> {
-            postService.getByFishName("Requin");
-        });
-    }
-
-    @Test
-    void getByUserId_Success() throws Exception {
-        // Given
-        List<PostModel> posts = Arrays.asList(testPost);
-        when(userRepository.existsById(userId)).thenReturn(true);
-        when(postRepository.findByUserId(userId)).thenReturn(posts);
-
-        // When
-        List<PostModel> result = postService.getByUserId(userId);
-
-        // Then
-        assertEquals(1, result.size());
-        assertEquals(testPost, result.get(0));
-    }
-
-    @Test
-    void getByUserId_UserNotFound() {
-        // Given
-        when(userRepository.existsById(userId)).thenReturn(false);
-
-        // When & Then
-        assertThrows(UserNotFoundById.class, () -> {
-            postService.getByUserId(userId);
-        });
-    }
-
-    @Test
-    void getByLocation_Success() throws Exception {
-        // Given
-        testPost.setLocation("Lac de Annecy");
-        List<PostModel> posts = Arrays.asList(testPost);
-        when(postRepository.existsByLocation("Lac de Annecy")).thenReturn(true);
-        when(postRepository.findByLocation("Lac de Annecy")).thenReturn(posts);
-
-        // When
-        List<PostModel> result = postService.getByLocation("Lac de Annecy");
-
-        // Then
-        assertEquals(1, result.size());
-        assertEquals("Lac de Annecy", result.get(0).getLocation());
-    }
-
-    @Test
-    void getByLocation_NotFound() {
-        // Given
-        when(postRepository.existsByLocation("Ocean Pacifique")).thenReturn(false);
-
-        // When & Then
-        assertThrows(LocationNotFound.class, () -> {
-            postService.getByLocation("Ocean Pacifique");
-        });
-    }
-
-    // =============== TESTS AVANCÉS ===============
-
-    @Test
-    void updatePost_WithOptionalFields() throws Exception {
-        // Given
-        PostModel updatedPost = new PostModel("Titre MAJ", "Description MAJ", "Brochet", "img/pike.jpg");
-        updatedPost.setWeight(3.5);
-        updatedPost.setLength(65.0);
-        updatedPost.setLocation("Lac du Bourget");
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
-        when(postRepository.save(any(PostModel.class))).thenReturn(testPost);
-
-        // When
-        PostModel result = postService.updatePost(userId, postId, updatedPost);
-
-        // Then
+        // ASSERT - Vérification des données
         assertNotNull(result);
-        verify(postRepository).save(testPost);
-        assertEquals(3.5, testPost.getWeight());
-        assertEquals(65.0, testPost.getLength());
-        assertEquals("Lac du Bourget", testPost.getLocation());
+        assertEquals(posts, result);
+
+        // Vérification interractions
+        verify(postRepository).findAll();
     }
 
     @Test
-    void createPost_WithNullOptionalFields() throws Exception {
-        // Given
-        PostModel postWithNulls = new PostModel("Titre", "Description", "Truite", "img/trout.jpg");
-        // Les champs optionnels restent null par défaut
+    @DisplayName("Récupération publication par UserName - valide")
+    void getPostByUserName() throws UserNotFoundByUserName {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
+        PostModel post1 = createPost();
+        PostModel post2 = createPost();
+        List<PostModel> posts = createListPosts(post1, post2);
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.save(any(PostModel.class))).thenReturn(postWithNulls);
+        // Configuration mock
+        when(userRepository.existsByUserName(user.getUserName())).thenReturn(true);
+        when(postRepository.findByUserUserName(user.getUserName())).thenReturn(posts);
 
-        // When
-        PostModel result = postService.createPost(userId, postWithNulls);
+        // ACT - Appel méthode
+        List<PostModel> result = postService.getByUserUserName(user.getUserName());
 
-        // Then
+        // ASSERT - Vérification des données
         assertNotNull(result);
-        assertNull(result.getWeight());
-        assertNull(result.getLength());
-        assertNull(result.getLocation());
-        verify(postRepository).save(postWithNulls);
+        assertEquals(posts, result);
+
+        // Vérification interractions
+        verify(userRepository).existsByUserName(user.getUserName());
+        verify(postRepository).findByUserUserName(user.getUserName());
     }
 
-    // =============== TESTS DES CONSTRUCTEURS ALTERNATIFS ===============
+    @Test
+    @DisplayName("Récupération publication par UserName - UserNotFoundByUserName")
+    void getPostByUserNameNotFound() throws UserNotFoundByUserName {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
+
+        // Configuration mock
+        when(userRepository.existsByUserName(user.getUserName())).thenReturn(false);
+
+        // ACT & ASSERT
+        assertThatThrownBy(() -> postService.getByUserUserName(user.getUserName()))
+                .isInstanceOf(UserNotFoundByUserName.class)
+                .hasMessage("L'utilisateur " + user.getUserName() + " n'existe pas");
+
+        // Vérification interractions
+        verify(userRepository).existsByUserName(user.getUserName());
+        verify(postRepository, never()).findByUserUserName(any());
+    }
 
     @Test
-    void createPost_WithConstructorNoArgs() throws Exception {
-        // Given
-        PostModel emptyPost = new PostModel(); // Constructeur vide
-        emptyPost.setTitle("Titre via setter");
-        emptyPost.setDescription("Description via setter");
-        emptyPost.setFishName("Poisson via setter");
-        emptyPost.setPhotoUrl("img/setter.jpg");
+    @DisplayName("Récupération publication par UserId - valide")
+    void getPostByUserId() throws UserNotFoundById {
+        // ARRANGE - <préparation des données
+        PostModel post1 = createPost();
+        PostModel post2 = createPost();
+        List<PostModel> posts = createListPosts(post1, post2);
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.save(any(PostModel.class))).thenReturn(emptyPost);
+        // Configuration mocks
+        when(userRepository.existsById(VALID_USER_ID)).thenReturn(true);
+        when(postRepository.findByUserId(VALID_USER_ID)).thenReturn(posts);
 
-        // When
-        PostModel result = postService.createPost(userId, emptyPost);
+        // ACT - Appel méthode
+        List<PostModel> result = postService.getByUserId(VALID_USER_ID);
 
-        // Then
+        // ASSERT - Vérification des données
+        assertNotNull(posts);
+        assertEquals(posts, result);
+
+        // Vérification interractions
+        verify(userRepository).existsById(VALID_USER_ID);
+        verify(postRepository).findByUserId(VALID_USER_ID);
+    }
+
+    @Test
+    @DisplayName("Récupération publication par UserId - UserNotFoundById")
+    void getPostByUserIdNotFound() throws UserNotFoundById {
+        // ARRANGE - configuration mock
+        when(userRepository.existsById(INVALID_USER_ID)).thenReturn(false);
+
+        // ACT & ASSERT
+        assertThatThrownBy(() -> postService.getByUserId(INVALID_USER_ID))
+            .isInstanceOf(UserNotFoundById.class)
+                .hasMessage("L'utilisateur avec l'ID " + INVALID_USER_ID + " n'existe pas");
+        
+        // Vérification interractions
+        verify(userRepository).existsById(INVALID_USER_ID);
+        verify(postRepository, never()).findByUserId(INVALID_USER_ID);
+    }
+
+    @Test
+    @DisplayName("Récupération publication par fishName - valide")
+    void getPostByFishName() throws FishNameNotFound {
+        //ARRANGE - prpéparation des données
+        String fishName = "Carpe";
+        PostModel post1 = createPost();
+        PostModel post2 = createPost();
+        List<PostModel> posts = createListPosts(post1, post2);
+
+        // Configuration mocks
+        when(postRepository.existsByFishName(fishName)).thenReturn(true);
+        when(postRepository.findByFishName(fishName)).thenReturn(posts);
+
+        // ACT - Appel méthode
+        List<PostModel> result = postService.getByFishName(fishName);
+
+        // ASSERT - Vérification des données
         assertNotNull(result);
-        assertEquals("Titre via setter", result.getTitle());
-        verify(postRepository).save(emptyPost);
+        assertEquals(posts, result);
+
+        // Vérification interractions
+        verify(postRepository).existsByFishName(fishName);
+        verify(postRepository).findByFishName(fishName);
     }
 
     @Test
-    void validateData_NullPost() {
-        // Given
-        PostModel nullPost = null;
+    @DisplayName("Récupération publication par fishName - FishNameNotFound")
+    void getPostByFishNameNotFound() throws FishNameNotFound {
+        // ARRANGE - Préparatio ndes données
+        String fishName = "notfound";
 
-        // When & Then
-        assertThrows(NullPointerException.class, () -> {
-            postService.validateData(nullPost);
-        });
-    }
+        // Configuration mock
+        when(postRepository.existsByFishName(fishName)).thenReturn(false);
 
-    @Test
-    void validateData_AllNullFields() {
-        // Given
-        PostModel nullFieldsPost = new PostModel();
-        // Tous les champs restent null
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> postService.getByFishName(fishName))
+                .isInstanceOf(FishNameNotFound.class)
+                .hasMessage("Ce poisson n'existe pas");
 
-        // When & Then
-        assertThrows(MissingTitleException.class, () -> {
-            postService.validateData(nullFieldsPost);
-        });
+        verify(postRepository).existsByFishName(fishName);
+        verify(postRepository, never()).findByFishName(fishName);
     }
 }
