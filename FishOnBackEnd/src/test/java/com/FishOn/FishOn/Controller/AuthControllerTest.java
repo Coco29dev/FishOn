@@ -129,7 +129,7 @@ class AuthControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerRequest)))
-                .andExpect(status().isBadRequest()); // ✅ CORRIGÉ : andExpect au lieu de andExpected
+                .andExpect(status().isBadRequest());
     }
 
     @Test
