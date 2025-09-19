@@ -6,7 +6,6 @@ import com.FishOn.FishOn.Model.UserModel;
 import com.FishOn.FishOn.Model.PostModel;
 import com.FishOn.FishOn.DTO.Comment.*;
 import com.FishOn.FishOn.Config.CustomUserDetails;
-import com.FishOn.FishOn.Exception.FishOnException.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,23 +87,23 @@ class CommentControllerTest {
         otherUser.setId(otherUserId);
 
         testPost = new PostModel(
-                "Amazing catch",
-                "Great day fishing",
-                "Trout",
+                "belle prise",
+                "bonne  journée",
+                "Truite",
                 ""
         );
         testPost.setId(postId);
         testPost.setUser(testUser);
 
-        testComment = new CommentModel("Great catch! Where did you fish?");
+        testComment = new CommentModel("Belle prise, tu l'as pris comment ?");
         testComment.setId(commentId);
         testComment.setCreatedAt(LocalDateTime.now());
         testComment.setUpdatedAt(LocalDateTime.now());
         testComment.setUser(testUser);
         testComment.setPost(testPost);
 
-        createCommentRequest = new CommentCreateDTO("This is an amazing catch!");
-        updateCommentRequest = new CommentUpdateDTO("Updated comment content");
+        createCommentRequest = new CommentCreateDTO("belle prise !!");
+        updateCommentRequest = new CommentUpdateDTO("commentaire mis à jour");
 
         CustomUserDetails userDetails = new CustomUserDetails(testUser);
         authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -112,10 +111,11 @@ class CommentControllerTest {
 
     // =============== TESTS VALIDATION CREATE COMMENT ===============
 
+    // commentaire vide
     @Test
     void createComment_ValidationError_EmptyContent() throws Exception {
         // Given
-        CommentCreateDTO invalidRequest = new CommentCreateDTO(""); // Empty content
+        CommentCreateDTO invalidRequest = new CommentCreateDTO("");
 
         // When & Then - La validation Spring se déclenche AVANT l'authentification
         mockMvc.perform(post("/api/comments/post/{postId}", postId)
@@ -126,10 +126,11 @@ class CommentControllerTest {
         verify(commentService, never()).createComment(any(), any(), any());
     }
 
+    // commentaire avec null
     @Test
     void createComment_ValidationError_NullContent() throws Exception {
         // Given
-        CommentCreateDTO invalidRequest = new CommentCreateDTO(null); // Null content
+        CommentCreateDTO invalidRequest = new CommentCreateDTO(null);
 
         // When & Then - La validation Spring se déclenche AVANT l'authentification
         mockMvc.perform(post("/api/comments/post/{postId}", postId)
@@ -140,6 +141,7 @@ class CommentControllerTest {
         verify(commentService, never()).createComment(any(), any(), any());
     }
 
+    // création d'un commentaire qui dépasse la limite de caractères
     @Test
     void createComment_ValidationError_TooLongContent() throws Exception {
         // Given - Créer un contenu de plus de 1000 caractères
@@ -157,6 +159,7 @@ class CommentControllerTest {
 
     // =============== TESTS VALIDATION UPDATE COMMENT ===============
 
+    // mettre à jour un commentaire avec texte vide
     @Test
     void updateComment_ValidationError_EmptyContent() throws Exception {
         // Given
@@ -171,6 +174,7 @@ class CommentControllerTest {
         verify(commentService, never()).updateComment(any(), any(), any());
     }
 
+    // mettre à jour un commentaire avec un texte trop long
     @Test
     void updateComment_ValidationError_TooLongContent() throws Exception {
         // Given
@@ -188,6 +192,7 @@ class CommentControllerTest {
 
     // =============== TESTS UNAUTHENTICATED ===============
 
+    // créer un commentaire sans être login
     @Test
     void createComment_Unauthenticated() throws Exception {
         // When & Then - Données valides mais pas d'authentification
@@ -199,6 +204,7 @@ class CommentControllerTest {
         verify(commentService, never()).createComment(any(), any(), any());
     }
 
+    // mettre à jour un commentaire sans être login
     @Test
     void updateComment_Unauthenticated() throws Exception {
         // When & Then - Données valides mais pas d'authentification
@@ -210,6 +216,7 @@ class CommentControllerTest {
         verify(commentService, never()).updateComment(any(), any(), any());
     }
 
+    // supprimer un commentaire sans être login
     @Test
     void deleteComment_Unauthenticated() throws Exception {
         // When & Then
@@ -219,6 +226,7 @@ class CommentControllerTest {
         verify(commentService, never()).deleteComment(any(), any());
     }
 
+    // chercher les commentaires par l'id user sans être login
     @Test
     void getCommentsByUserId_Unauthenticated() throws Exception {
         // When & Then
@@ -228,6 +236,7 @@ class CommentControllerTest {
         verify(commentService, never()).getByUserId(any());
     }
 
+    // chercher les commentaires par l'id post sans être login
     @Test
     void getCommentsByPostId_Unauthenticated() throws Exception {
         // When & Then
@@ -239,6 +248,7 @@ class CommentControllerTest {
 
     // =============== TESTS AVEC AUTHENTIFICATION (SUCCÈS ATTENDUS) ===============
 
+    // créer un commentaire en éant login
     @Test
     void createComment_WithAuthentication_Success() throws Exception {
         // Given
@@ -263,6 +273,7 @@ class CommentControllerTest {
         verify(commentService, never()).createComment(any(), any(), any());
     }
 
+    // mettre à jour un commentaire en étant login
     @Test
     void updateComment_WithAuthentication_Success() throws Exception {
         // Given
@@ -286,6 +297,7 @@ class CommentControllerTest {
         verify(commentService, never()).updateComment(any(), any(), any());
     }
 
+    // supprimer un commentaire en étant login
     @Test
     void deleteComment_WithAuthentication_Success() throws Exception {
         // Given
@@ -299,6 +311,7 @@ class CommentControllerTest {
         verify(commentService, never()).deleteComment(any(), any());
     }
 
+    // chercher les commentaires par id user en étant login
     @Test
     void getCommentsByUserId_WithAuthentication_Success() throws Exception {
         // Given
@@ -325,6 +338,7 @@ class CommentControllerTest {
         verify(commentService, never()).getByUserId(any());
     }
 
+    // chercher les commentaires par id post en étant login
     @Test
     void getCommentsByPostId_WithAuthentication_Success() throws Exception {
         // Given
@@ -353,6 +367,7 @@ class CommentControllerTest {
 
     // =============== TESTS EDGE CASES ===============
 
+    // créer un commentaire avec la valeur minimal
     @Test
     void createComment_WithValidMinimalContent() throws Exception {
         // Given
@@ -367,6 +382,7 @@ class CommentControllerTest {
         verify(commentService, never()).createComment(any(), any(), any());
     }
 
+    // créer un commentaire avec la valeur maximum
     @Test
     void createComment_WithValidMaximalContent() throws Exception {
         // Given
@@ -382,6 +398,7 @@ class CommentControllerTest {
         verify(commentService, never()).createComment(any(), any(), any());
     }
 
+    // mettre à jour un commentaire avec des caractères spéciaux
     @Test
     void updateComment_WithSpecialCharacters() throws Exception {
         // Given
@@ -398,6 +415,7 @@ class CommentControllerTest {
 
     // =============== TESTS AVEC DIFFÉRENTS PARAMÈTRES ===============
 
+    // créer un commentaire avec un post id différent
     @Test
     void createComment_WithDifferentPostId() throws Exception {
         // Given
@@ -412,6 +430,7 @@ class CommentControllerTest {
         verify(commentService, never()).createComment(any(), any(), any());
     }
 
+    // chercher les commentaires par id user avec un id user différent
     @Test
     void getCommentsByUserId_WithDifferentUserId() throws Exception {
         // Given
@@ -424,6 +443,7 @@ class CommentControllerTest {
         verify(commentService, never()).getByUserId(any());
     }
 
+    // mettre à jour un commentaire avec un id comment différent
     @Test
     void updateComment_WithDifferentCommentId() throws Exception {
         // Given
@@ -438,6 +458,7 @@ class CommentControllerTest {
         verify(commentService, never()).updateComment(any(), any(), any());
     }
 
+    // supprimer un commentaire avec un id comment différent
     @Test
     void deleteComment_WithDifferentCommentId() throws Exception {
         // Given
@@ -452,6 +473,7 @@ class CommentControllerTest {
 
     // =============== TESTS MALFORMED JSON ===============
 
+    // créer un commentaire avec du json mal formaté
     @Test
     void createComment_WithMalformedJson() throws Exception {
         // Given
@@ -466,6 +488,7 @@ class CommentControllerTest {
         verify(commentService, never()).createComment(any(), any(), any());
     }
 
+    // modifier un commentaire avec du json mal formaté
     @Test
     void updateComment_WithMalformedJson() throws Exception {
         // Given
