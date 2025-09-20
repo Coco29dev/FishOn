@@ -75,6 +75,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- BDD embarqué test d'intégration Repository -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Testcontainers pour tests d'intégration avec PostgreSQL (optionnel) -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
