@@ -35,11 +35,11 @@ class UserRepositoryTest {
                 "encodePassword",
                 "porfilePicture");
     }
-
     // ========== MÉTHODE REPOSITORY ==========
 
     @Test
     @DisplayName("Recherche par userName - valide")
+
     void userFindByUserName() {
         // ARRANGE - Préparation des données
         UserModel user = createUser();

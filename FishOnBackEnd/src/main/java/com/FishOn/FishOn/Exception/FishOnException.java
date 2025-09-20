@@ -86,7 +86,7 @@ public class FishOnException {
     // ============= CommentException =============
     public static class CommentNotFound extends Exception {
         public CommentNotFound(UUID commentId) {
-            super("le commentaire " + commentId + " n'existe pas");
+            super("Le commentaire " + commentId + " n'existe pas");
         }
     }
 

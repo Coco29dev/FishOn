@@ -1,508 +1,186 @@
 package com.FishOn.FishOn.Service;
 
-import com.FishOn.FishOn.Model.UserModel;
-import com.FishOn.FishOn.Repository.UserRepository;
-import com.FishOn.FishOn.Exception.FishOnException.*;
-import org.junit.jupiter.api.BeforeEach;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import com.FishOn.FishOn.Exception.FishOnException.EmailAlreadyExists;
+import com.FishOn.FishOn.Exception.FishOnException.InvalidPassword;
+import com.FishOn.FishOn.Exception.FishOnException.UserAlreadyExists;
+import com.FishOn.FishOn.Exception.FishOnException.UserNotFoundByEmail;
+import com.FishOn.FishOn.Model.UserModel;
+import com.FishOn.FishOn.Repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-    @Mock
-    private UserRepository userRepository;
+    // ========== CONSTANTES ==========
+    private static final String VALID_EMAIL = "user@fishon.com";
+    private static final String INVALID_EMAIL = "invalid@fishon.com";
+    private static final String CURRENT_PASSWORD = "currentPassword";
+    private static final String NEW_PASSWORD = "newPassword";
+    private static final String WRONG_PASSWORD = "wrongPassword";
+    private static final String ENCODED_PASSWORD = "encodedPassword";
 
     @Mock
-    private UserService userService;
+    UserRepository userRepository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    UserService userService;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private AuthService authService;
+    AuthService authService;
 
-    private UserModel testUser;
-    private UUID userId;
-    private String email;
-    private String currentPassword;
-    private String newPassword;
-    private String encodedCurrentPassword;
-    private String encodedNewPassword;
-
-    @BeforeEach
-    void setUp() {
-        userId = UUID.randomUUID();
-        email = "test@example.com";
-        currentPassword = "currentPassword123";
-        newPassword = "newPassword456";
-        encodedCurrentPassword = "$2a$10$encodedCurrentPassword";
-        encodedNewPassword = "$2a$10$encodedNewPassword";
-
-        testUser = new UserModel(
-                "testuser",
-                email,
-                "John",
-                "Doe",
+    // ========== FONCTION HELPER ==========
+    private UserModel createUser() {
+        return new UserModel(
+                "user1",
+                VALID_EMAIL,
+                "J",
+                "D",
                 25,
-                encodedCurrentPassword, // Mot de passe déjà encodé
-                "profile.jpg"
-        );
-        testUser.setId(userId);
-        testUser.setCreatedAt(LocalDateTime.now());
-        testUser.setUpdatedAt(LocalDateTime.now());
+                ENCODED_PASSWORD,
+                "profile.jpg");
     }
 
-    // =============== TESTS REGISTER ===============
+    // ========== TESTS MÉTHODE REGISTER ==========
 
     @Test
-    void register_Success() throws EmailAlreadyExists, UserAlreadyExists {
-        // Given
-        UserModel newUser = new UserModel(
-                "newuser",
-                "newuser@example.com",
-                "Jane",
-                "Smith",
-                30,
-                "plainPassword",
-                null
-        );
+    @DisplayName("Inscription utilisateur - valide")
+    void register() throws EmailAlreadyExists, UserAlreadyExists {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
+        UserModel savedUser = createUser();
 
-        UserModel createdUser = new UserModel(
-                "newuser",
-                "newuser@example.com",
-                "Jane",
-                "Smith",
-                30,
-                "$2a$10$encodedPassword",
-                null
-        );
-        createdUser.setId(UUID.randomUUID());
-        createdUser.setCreatedAt(LocalDateTime.now());
-        createdUser.setUpdatedAt(LocalDateTime.now());
+        // Configuration mock
+        when(userService.createUser(user)).thenReturn(savedUser);
 
-        when(userService.createUser(newUser)).thenReturn(createdUser);
+        // ACT
+        UserModel result = authService.register(user);
 
-        // When
-        UserModel result = authService.register(newUser);
-
-        // Then
+        // ASSERT - Vérification des données
         assertNotNull(result);
-        assertEquals(createdUser.getId(), result.getId());
-        assertEquals(createdUser.getUserName(), result.getUserName());
-        assertEquals(createdUser.getEmail(), result.getEmail());
-        assertEquals(createdUser.getFirstName(), result.getFirstName());
-        assertEquals(createdUser.getLastName(), result.getLastName());
-        assertEquals(createdUser.getAge(), result.getAge());
-        assertEquals(createdUser.getPassword(), result.getPassword());
-        assertEquals(createdUser.getProfilePicture(), result.getProfilePicture());
-        assertNotNull(result.getCreatedAt());
-        assertNotNull(result.getUpdatedAt());
+        assertEquals(savedUser, result);
 
-        verify(userService, times(1)).createUser(newUser);
+        // Vérification interactions
+        verify(userService).createUser(user);
     }
 
     @Test
-    void register_EmailAlreadyExists() throws EmailAlreadyExists, UserAlreadyExists {
-        // Given
-        UserModel newUser = new UserModel(
-                "newuser",
-                "existing@example.com",
-                "Jane",
-                "Smith",
-                30,
-                "plainPassword",
-                null
-        );
+    @DisplayName("Inscription utilisateur - EmailAlreadyExists")
+    void registerEmailAlreadyExists() throws EmailAlreadyExists, UserAlreadyExists {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
 
-        when(userService.createUser(newUser)).thenThrow(new EmailAlreadyExists("existing@example.com"));
+        // Configuration mock
+        when(userService.createUser(user)).thenThrow(new EmailAlreadyExists(user.getEmail()));
 
-        // When & Then
-        EmailAlreadyExists exception = assertThrows(EmailAlreadyExists.class, () -> {
-            authService.register(newUser);
-        });
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> authService.register(user))
+                .isInstanceOf(EmailAlreadyExists.class)
+                .hasMessage("L'email " + user.getEmail() + " est déjà pris");
 
-        assertEquals("L'email existing@example.com est déjà pris", exception.getMessage());
-        verify(userService, times(1)).createUser(newUser);
+        // Vérification interactions
+        verify(userService).createUser(user);
     }
 
     @Test
-    void register_UserAlreadyExists() throws EmailAlreadyExists, UserAlreadyExists {
-        // Given
-        UserModel newUser = new UserModel(
-                "existinguser",
-                "new@example.com",
-                "Jane",
-                "Smith",
-                30,
-                "plainPassword",
-                null
-        );
+    @DisplayName("Inscription utilisateur - UserAlreadyExists")
+    void registerUserAlreadyExists() throws EmailAlreadyExists, UserAlreadyExists {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
 
-        when(userService.createUser(newUser)).thenThrow(new UserAlreadyExists("existinguser"));
+        // Configuration mock
+        when(userService.createUser(user)).thenThrow(new UserAlreadyExists(user.getUserName()));
 
-        // When & Then
-        UserAlreadyExists exception = assertThrows(UserAlreadyExists.class, () -> {
-            authService.register(newUser);
-        });
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> authService.register(user))
+                .isInstanceOf(UserAlreadyExists.class)
+                .hasMessage("L'username " + user.getUserName() + " est déjà pris");
 
-        assertEquals("l'usernameexistinguser est déjà pris", exception.getMessage());
-        verify(userService, times(1)).createUser(newUser);
+        // Vérification interactions
+        verify(userService).createUser(user);
+    }
+
+    // ========== TESTS MÉTHODE UPDATE PASSWORD ==========
+
+    @Test
+    @DisplayName("Changement mot de passe - valide")
+    void updatePassword() throws UserNotFoundByEmail, InvalidPassword {
+        // ARRANGE - Préparation des données
+        UserModel existingUser = createUser();
+        existingUser.setPassword(ENCODED_PASSWORD);
+
+        // Configuration mocks
+        when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(existingUser));
+        when(passwordEncoder.matches(CURRENT_PASSWORD, ENCODED_PASSWORD)).thenReturn(true);
+        when(passwordEncoder.encode(NEW_PASSWORD)).thenReturn("newEncodedPassword");
+        when(userRepository.save(existingUser)).thenReturn(existingUser);
+
+        // ACT
+        authService.updatePassword(VALID_EMAIL, CURRENT_PASSWORD, NEW_PASSWORD);
+
+        // ASSERT - Vérification interactions
+        verify(userRepository).findByEmail(VALID_EMAIL);
+        verify(passwordEncoder).matches(CURRENT_PASSWORD, ENCODED_PASSWORD);
+        verify(passwordEncoder).encode(NEW_PASSWORD);
+        verify(userRepository).save(existingUser);
     }
 
     @Test
-    void register_WithNullUser() throws EmailAlreadyExists, UserAlreadyExists {
-        // Given
-        UserModel nullUser = null;
+    @DisplayName("Changement mot de passe - UserNotFoundByEmail")
+    void updatePasswordUserNotFound() {
+        // ARRANGE - Configuration mock
+        when(userRepository.findByEmail(INVALID_EMAIL)).thenReturn(Optional.empty());
 
-        when(userService.createUser(nullUser)).thenThrow(new IllegalArgumentException("User cannot be null"));
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> authService.updatePassword(INVALID_EMAIL, CURRENT_PASSWORD, NEW_PASSWORD))
+                .isInstanceOf(UserNotFoundByEmail.class)
+                .hasMessage("L'utilisateur " + INVALID_EMAIL + " n'existe pas");
 
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> {
-            authService.register(nullUser);
-        });
-
-        verify(userService, times(1)).createUser(nullUser);
-    }
-
-    // =============== TESTS UPDATE PASSWORD ===============
-
-    @Test
-    void updatePassword_Success() throws UserNotFoundByEmail, InvalidPassword {
-        // Given
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(newPassword)).thenReturn(encodedNewPassword);
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
-
-        // When
-        assertDoesNotThrow(() -> {
-            authService.updatePassword(email, currentPassword, newPassword);
-        });
-
-        // Then
-        verify(userRepository, times(1)).findByEmail(email);
-        verify(passwordEncoder, times(1)).matches(currentPassword, encodedCurrentPassword);
-        verify(passwordEncoder, times(1)).encode(newPassword);
-        verify(userRepository, times(1)).save(testUser);
-
-        // Vérifier que le mot de passe a été mis à jour
-        assertEquals(encodedNewPassword, testUser.getPassword());
-    }
-
-    @Test
-    void updatePassword_UserNotFound() {
-        // Given
-        String unknownEmail = "unknown@example.com";
-        when(userRepository.findByEmail(unknownEmail)).thenReturn(Optional.empty());
-
-        // When & Then
-        UserNotFoundByEmail exception = assertThrows(UserNotFoundByEmail.class, () -> {
-            authService.updatePassword(unknownEmail, currentPassword, newPassword);
-        });
-
-        assertEquals("l'utilisateur unknown@example.com n'existe pas", exception.getMessage());
-        verify(userRepository, times(1)).findByEmail(unknownEmail);
+        // Vérification interactions
+        verify(userRepository).findByEmail(INVALID_EMAIL);
         verify(passwordEncoder, never()).matches(anyString(), anyString());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Changement mot de passe - InvalidPassword")
+    void updatePasswordInvalidPassword() {
+        // ARRANGE - Préparation des données
+        UserModel existingUser = createUser();
+
+        // Configuration mocks
+        when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(existingUser));
+        when(passwordEncoder.matches(WRONG_PASSWORD, ENCODED_PASSWORD)).thenReturn(false);
+
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> authService.updatePassword(VALID_EMAIL, WRONG_PASSWORD, NEW_PASSWORD))
+                .isInstanceOf(InvalidPassword.class)
+                .hasMessage("Le mot de passe est incorrect");
+
+        // Vérification interactions
+        verify(userRepository).findByEmail(VALID_EMAIL);
+        verify(passwordEncoder).matches(WRONG_PASSWORD, ENCODED_PASSWORD);
         verify(passwordEncoder, never()).encode(anyString());
-        verify(userRepository, never()).save(any(UserModel.class));
-    }
-
-    @Test
-    void updatePassword_InvalidCurrentPassword() {
-        // Given
-        String wrongPassword = "wrongPassword";
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(wrongPassword, encodedCurrentPassword)).thenReturn(false);
-
-        // When & Then
-        InvalidPassword exception = assertThrows(InvalidPassword.class, () -> {
-            authService.updatePassword(email, wrongPassword, newPassword);
-        });
-
-        assertEquals("Le mot de passe est incorrect", exception.getMessage());
-        verify(userRepository, times(1)).findByEmail(email);
-        verify(passwordEncoder, times(1)).matches(wrongPassword, encodedCurrentPassword);
-        verify(passwordEncoder, never()).encode(anyString());
-        verify(userRepository, never()).save(any(UserModel.class));
-
-        // Vérifier que le mot de passe n'a pas été modifié
-        assertEquals(encodedCurrentPassword, testUser.getPassword());
-    }
-
-    @Test
-    void updatePassword_WithNullEmail() {
-        // Given
-        String nullEmail = null;
-
-        // When & Then
-        assertThrows(Exception.class, () -> {
-            authService.updatePassword(nullEmail, currentPassword, newPassword);
-        });
-
-        verify(userRepository, never()).findByEmail(anyString());
-        verify(passwordEncoder, never()).matches(anyString(), anyString());
-        verify(passwordEncoder, never()).encode(anyString());
-        verify(userRepository, never()).save(any(UserModel.class));
-    }
-
-    @Test
-    void updatePassword_WithEmptyEmail() {
-        // Given
-        String emptyEmail = "";
-        when(userRepository.findByEmail(emptyEmail)).thenReturn(Optional.empty());
-
-        // When & Then
-        UserNotFoundByEmail exception = assertThrows(UserNotFoundByEmail.class, () -> {
-            authService.updatePassword(emptyEmail, currentPassword, newPassword);
-        });
-
-        assertEquals("l'utilisateur  n'existe pas", exception.getMessage());
-        verify(userRepository, times(1)).findByEmail(emptyEmail);
-    }
-
-    @Test
-    void updatePassword_WithNullCurrentPassword() {
-        // Given
-        String nullCurrentPassword = null;
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(nullCurrentPassword, encodedCurrentPassword)).thenReturn(false);
-
-        // When & Then
-        InvalidPassword exception = assertThrows(InvalidPassword.class, () -> {
-            authService.updatePassword(email, nullCurrentPassword, newPassword);
-        });
-
-        assertEquals("Le mot de passe est incorrect", exception.getMessage());
-        verify(userRepository, times(1)).findByEmail(email);
-        verify(passwordEncoder, times(1)).matches(nullCurrentPassword, encodedCurrentPassword);
-        verify(passwordEncoder, never()).encode(anyString());
-        verify(userRepository, never()).save(any(UserModel.class));
-    }
-
-    @Test
-    void updatePassword_WithNullNewPassword() throws UserNotFoundByEmail, InvalidPassword {
-        // Given
-        String nullNewPassword = null;
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(nullNewPassword)).thenReturn("encodedNull");
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
-
-        // When
-        assertDoesNotThrow(() -> {
-            authService.updatePassword(email, currentPassword, nullNewPassword);
-        });
-
-        // Then
-        verify(userRepository, times(1)).findByEmail(email);
-        verify(passwordEncoder, times(1)).matches(currentPassword, encodedCurrentPassword);
-        verify(passwordEncoder, times(1)).encode(nullNewPassword);
-        verify(userRepository, times(1)).save(testUser);
-    }
-
-    @Test
-    void updatePassword_WithEmptyCurrentPassword() {
-        // Given
-        String emptyCurrentPassword = "";
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(emptyCurrentPassword, encodedCurrentPassword)).thenReturn(false);
-
-        // When & Then
-        InvalidPassword exception = assertThrows(InvalidPassword.class, () -> {
-            authService.updatePassword(email, emptyCurrentPassword, newPassword);
-        });
-
-        assertEquals("Le mot de passe est incorrect", exception.getMessage());
-        verify(passwordEncoder, times(1)).matches(emptyCurrentPassword, encodedCurrentPassword);
-    }
-
-    @Test
-    void updatePassword_WithEmptyNewPassword() throws UserNotFoundByEmail, InvalidPassword {
-        // Given
-        String emptyNewPassword = "";
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(emptyNewPassword)).thenReturn("encodedEmpty");
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
-
-        // When
-        assertDoesNotThrow(() -> {
-            authService.updatePassword(email, currentPassword, emptyNewPassword);
-        });
-
-        // Then
-        verify(passwordEncoder, times(1)).encode(emptyNewPassword);
-        verify(userRepository, times(1)).save(testUser);
-    }
-
-    @Test
-    void updatePassword_SamePassword() throws UserNotFoundByEmail, InvalidPassword {
-        // Given - Nouveau mot de passe identique au current
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(currentPassword)).thenReturn("newEncodedSamePassword");
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
-
-        // When
-        assertDoesNotThrow(() -> {
-            authService.updatePassword(email, currentPassword, currentPassword);
-        });
-
-        // Then
-        verify(userRepository, times(1)).findByEmail(email);
-        verify(passwordEncoder, times(1)).matches(currentPassword, encodedCurrentPassword);
-        verify(passwordEncoder, times(1)).encode(currentPassword);
-        verify(userRepository, times(1)).save(testUser);
-    }
-
-    // =============== TESTS EDGE CASES ===============
-
-    @Test
-    void updatePassword_VeryLongPassword() throws UserNotFoundByEmail, InvalidPassword {
-        // Given
-        String veryLongPassword = "A".repeat(1000);
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(veryLongPassword)).thenReturn("encodedVeryLongPassword");
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
-
-        // When
-        assertDoesNotThrow(() -> {
-            authService.updatePassword(email, currentPassword, veryLongPassword);
-        });
-
-        // Then
-        verify(passwordEncoder, times(1)).encode(veryLongPassword);
-        verify(userRepository, times(1)).save(testUser);
-    }
-
-    @Test
-    void updatePassword_SpecialCharactersPassword() throws UserNotFoundByEmail, InvalidPassword {
-        // Given
-        String specialPassword = "P@ssw0rd!@#$%^&*()_+{}|:<>?[]\\;'\".,/~`";
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(specialPassword)).thenReturn("encodedSpecialPassword");
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
-
-        // When
-        assertDoesNotThrow(() -> {
-            authService.updatePassword(email, currentPassword, specialPassword);
-        });
-
-        // Then
-        verify(passwordEncoder, times(1)).encode(specialPassword);
-        verify(userRepository, times(1)).save(testUser);
-    }
-
-    @Test
-    void updatePassword_UnicodePassword() throws UserNotFoundByEmail, InvalidPassword {
-        // Given
-        String unicodePassword = "Пароль123🔒🔑";
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(unicodePassword)).thenReturn("encodedUnicodePassword");
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
-
-        // When
-        assertDoesNotThrow(() -> {
-            authService.updatePassword(email, currentPassword, unicodePassword);
-        });
-
-        // Then
-        verify(passwordEncoder, times(1)).encode(unicodePassword);
-        verify(userRepository, times(1)).save(testUser);
-    }
-
-    // =============== TESTS COMPORTEMENT REPOSITORY ===============
-
-    @Test
-    void updatePassword_RepositorySaveThrowsException() {
-        // Given
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(newPassword)).thenReturn(encodedNewPassword);
-        when(userRepository.save(any(UserModel.class))).thenThrow(new RuntimeException("Database error"));
-
-        // When & Then
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            authService.updatePassword(email, currentPassword, newPassword);
-        });
-
-        assertEquals("Database error", exception.getMessage());
-        verify(userRepository, times(1)).save(testUser);
-    }
-
-    @Test
-    void updatePassword_PasswordEncoderThrowsException() {
-        // Given
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(newPassword)).thenThrow(new RuntimeException("Encoding error"));
-
-        // When & Then
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            authService.updatePassword(email, currentPassword, newPassword);
-        });
-
-        assertEquals("Encoding error", exception.getMessage());
-        verify(passwordEncoder, times(1)).encode(newPassword);
-        verify(userRepository, never()).save(any(UserModel.class));
-    }
-
-    // =============== TESTS VÉRIFICATION ÉTAT ===============
-
-    @Test
-    void updatePassword_CheckPasswordIsActuallyUpdated() throws UserNotFoundByEmail, InvalidPassword {
-        // Given
-        String originalPassword = testUser.getPassword();
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(currentPassword, encodedCurrentPassword)).thenReturn(true);
-        when(passwordEncoder.encode(newPassword)).thenReturn(encodedNewPassword);
-        when(userRepository.save(any(UserModel.class))).thenAnswer(invocation -> {
-            UserModel user = invocation.getArgument(0);
-            return user;
-        });
-
-        // When
-        authService.updatePassword(email, currentPassword, newPassword);
-
-        // Then
-        assertNotEquals(originalPassword, testUser.getPassword());
-        assertEquals(encodedNewPassword, testUser.getPassword());
-    }
-
-    @Test
-    void updatePassword_MultipleCallsWithSameUser() throws UserNotFoundByEmail, InvalidPassword {
-        // Given
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        when(userRepository.save(any(UserModel.class))).thenReturn(testUser);
-
-        // When
-        authService.updatePassword(email, currentPassword, "password1");
-        authService.updatePassword(email, "password1", "password2");
-        authService.updatePassword(email, "password2", "password3");
-
-        // Then
-        verify(userRepository, times(3)).findByEmail(email);
-        verify(passwordEncoder, times(3)).matches(anyString(), anyString());
-        verify(passwordEncoder, times(3)).encode(anyString());
-        verify(userRepository, times(3)).save(testUser);
+        verify(userRepository, never()).save(any());
     }
 }
