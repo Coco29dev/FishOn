@@ -60,6 +60,11 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- =================== DÉPENDANCES DE TEST =================== -->
 		<!-- Spring Boot Test Starter (inclut JUnit 5, Mockito, AssertJ, etc.) -->
 		<dependency>
