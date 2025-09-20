@@ -3,7 +3,7 @@ Vérification qu'__une seule unité de code__(__méthode__,__classe__) fonctionn
 
 # FIRST
 - __Fast__: Rapide à exécuter.
-- __Independant__: Indépendant des auytres tests.
+- __Independant__: Indépendant des autres tests.
 - __Repeatable__: Résultat identiue à chaque exécution.
 - __Self-validating__: Résultat binaire(succès/échec).
 - __Timely__: Écrit au bon moment.
