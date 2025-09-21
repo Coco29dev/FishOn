@@ -2,7 +2,6 @@ package com.FishOn.FishOn.Config;
 
 import com.FishOn.FishOn.Model.UserModel;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -37,15 +36,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // gestion des rôles basée sur isAdmin
-        if (user.isAdmin()) {
-            return List.of(
-                    new SimpleGrantedAuthority("ROLE_ADMIN"),
-                    new SimpleGrantedAuthority("ROLE_USER")
-            );
-        } else {
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        }
+        return List.of(); // Pas d'autorités pour l'instant
     }
 
     @Override

@@ -22,42 +22,42 @@ public class CommentDataInitializer {
 
         // ==== CRÉATION TEMPLATES ====
         String[] commentsTemplates = {
-            "Magnifique prise ! Félicitations !",                 // 0
-            "Quel combat ça a dû être !",                         // 1
-            "Superbe technique, bravo !",                         // 2
-            "Tu peux partager ton spot ? 😉",                     // 3
-            "Respect pour cette belle prise !",                   // 4
-            "Ça donne envie d'y retourner !",                     // 5
-            "Belle session de pêche !",                           // 6
-            "Impressionnant ce spécimen !",                       // 7
-            "Tu as utilisé quel appât ?",                         // 8
-            "Quelle taille exactement ?",                         // 9
-            "Le rêve de tout pêcheur !",                          // 10
-            "Chapeau pour cette réussite !",                      // 11
-            "Elle a bien lutté dis donc !",                       // 12
-            "Parfait pour un barbecue !",                         // 13
-            "Tu l'as remise à l'eau ?",                           // 14
-            "Technique au top !",                                 // 15
-            "Quelle patience il faut avoir !",                    // 16
-            "Le poisson du siècle !",                             // 17
-            "Bravo pour cette persévérance !",                    // 18
-            "Ça c'est de la pêche !",                             // 19
-            "Tu me donnes tes conseils ?",                        // 20
-            "Incroyable cette prise !",                           // 21
-            "Le spot de rêve !",                                  // 22
-            "Tu as eu de la chance !",                            // 23
-            "Superbe photo en plus !",                            // 24
-            "Quel matériel tu utilises ?",                        // 25
-            "Elle est magnifique !",                              // 26
-            "Première fois que j'en vois une si grosse !",        // 27
-            "Tu m'emmènes la prochaine fois ?",                   // 28
-            "Légende vivante de la pêche !"                       // 29
+                "Magnifique prise ! Félicitations !",                 // 0
+                "Quel combat ça a dû être !",                         // 1
+                "Superbe technique, bravo !",                         // 2
+                "Tu peux partager ton spot ? 😉",                     // 3
+                "Respect pour cette belle prise !",                   // 4
+                "Ça donne envie d'y retourner !",                     // 5
+                "Belle session de pêche !",                           // 6
+                "Impressionnant ce spécimen !",                       // 7
+                "Tu as utilisé quel appât ?",                         // 8
+                "Quelle taille exactement ?",                         // 9
+                "Le rêve de tout pêcheur !",                          // 10
+                "Chapeau pour cette réussite !",                      // 11
+                "Elle a bien lutté dis donc !",                       // 12
+                "Parfait pour un barbecue !",                         // 13
+                "Tu l'as remise à l'eau ?",                           // 14
+                "Technique au top !",                                 // 15
+                "Quelle patience il faut avoir !",                    // 16
+                "Le poisson du siècle !",                             // 17
+                "Bravo pour cette persévérance !",                    // 18
+                "Ça c'est de la pêche !",                             // 19
+                "Tu me donnes tes conseils ?",                        // 20
+                "Incroyable cette prise !",                           // 21
+                "Le spot de rêve !",                                  // 22
+                "Tu as eu de la chance !",                            // 23
+                "Superbe photo en plus !",                            // 24
+                "Quel matériel tu utilises ?",                        // 25
+                "Elle est magnifique !",                              // 26
+                "Première fois que j'en vois une si grosse !",        // 27
+                "Tu m'emmènes la prochaine fois ?",                   // 28
+                "Légende vivante de la pêche !"                       // 29
         };
 
         // ==== CRÉATION COMMENTAIRES ====
         // Boucle principale : parcours des 30 publications
         Integer i = 0; // Index du post (0 à 29)
-        
+
         for (PostModel post : posts) { // Pour chaque publication
 
             // Création de 2 commentaires par publication
