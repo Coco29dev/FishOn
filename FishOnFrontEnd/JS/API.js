@@ -1,5 +1,5 @@
 // Définition URL + préfixe API Spring Boot
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = 'https://fishon-production.up.railway.app/';
 
 class API {
   // Fonction asynchrone générique appel API
