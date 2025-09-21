@@ -2,6 +2,7 @@ package com.FishOn.FishOn.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.FishOn.FishOn.Model.PostModel;
 import com.FishOn.FishOn.Model.UserModel;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional // Important pour gérer les sessions Hibernate
 public class PostService {
 
     @Autowired
@@ -121,25 +123,40 @@ public class PostService {
         System.out.println("Publication supprimé");
     }
 
-    // ========= Méthode Repository =========
+    // ========= Méthode Repository AVEC GESTION LAZY LOADING =========
+
+    /**
+     * Récupération de tous les posts avec commentaires (pour le feed)
+     * Utilise FETCH JOIN pour éviter LazyInitializationException
+     */
+    @Transactional(readOnly = true)
     public List<PostModel> getAll() {
-        return postRepository.findAll();
+        return postRepository.findAllWithCommentsAndUsers();
     }
 
+    /**
+     * Récupération des posts d'un utilisateur avec commentaires
+     */
+    @Transactional(readOnly = true)
     public List<PostModel> getByUserUserName(String userName) throws UserNotFoundByUserName {
         if (!userRepository.existsByUserName(userName)) {
             throw new UserNotFoundByUserName(userName);
         }
-        return postRepository.findByUserUserName(userName);
+        return postRepository.findByUserUserNameWithComments(userName);
     }
 
+    /**
+     * Récupération des posts d'un utilisateur par ID avec commentaires
+     */
+    @Transactional(readOnly = true)
     public List<PostModel> getByUserId(UUID userId) throws UserNotFoundById {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundById(userId);
         }
-        return postRepository.findByUserId(userId);
+        return postRepository.findByUserIdWithComments(userId);
     }
 
+    // Méthodes originales conservées pour compatibilité
     public List<PostModel> getByFishName(String fishName) throws FishNameNotFound {
         if (!postRepository.existsByFishName(fishName)) {
             throw new FishNameNotFound(fishName);
