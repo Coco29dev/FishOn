@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/HTML/login.html" },
+    { "source": "/register.html", "destination": "/HTML/register.html" },
+    { "source": "/feed.html", "destination": "/HTML/feed.html" },
+    { "source": "/journal.html", "destination": "/HTML/journal.html" },
+    { "source": "/profile.html", "destination": "/HTML/profile.html" }
+  ]
+}

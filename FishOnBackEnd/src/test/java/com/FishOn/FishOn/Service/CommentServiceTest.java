@@ -1,471 +1,411 @@
 package com.FishOn.FishOn.Service;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+import java.util.UUID;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.FishOn.FishOn.Exception.FishOnException.CommentNotFound;
+import com.FishOn.FishOn.Exception.FishOnException.PostNotFoundById;
+import com.FishOn.FishOn.Exception.FishOnException.UnauthorizedAccess;
+import com.FishOn.FishOn.Exception.FishOnException.UserNotFoundById;
 import com.FishOn.FishOn.Model.CommentModel;
 import com.FishOn.FishOn.Model.PostModel;
 import com.FishOn.FishOn.Model.UserModel;
 import com.FishOn.FishOn.Repository.CommentRepository;
 import com.FishOn.FishOn.Repository.PostRepository;
 import com.FishOn.FishOn.Repository.UserRepository;
-import com.FishOn.FishOn.Exception.FishOnException.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
 
-    @Mock
-    private CommentRepository commentRepository;
+    // ========== CONSTANTE ==========
+    private static final UUID VALID_USER_ID = UUID.randomUUID();
+    private static final UUID INVALID_USER_ID = UUID.randomUUID();
+    private static final UUID INVALID_POST_ID = UUID.randomUUID();
+    private static final UUID INVALID_COMMENT_ID = UUID.randomUUID();
 
     @Mock
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Mock
-    private PostRepository postRepository;
+    PostRepository postRepository;
+
+    @Mock
+    CommentRepository commentRepository;
 
     @InjectMocks
-    private CommentService commentService;
+    CommentService commentService;
 
-    private UserModel testUser;
-    private UserModel otherUser;
-    private PostModel testPost;
-    private CommentModel testComment;
-    private UUID userId;
-    private UUID otherUserId;
-    private UUID postId;
-    private UUID commentId;
-
-    @BeforeEach
-    void setUp() {
-        userId = UUID.randomUUID();
-        otherUserId = UUID.randomUUID();
-        postId = UUID.randomUUID();
-        commentId = UUID.randomUUID();
-
-        // Création utilisateur principal
-        testUser = new UserModel("testuser", "test@example.com", "John", "Doe", 25, "password", "profile.jpg");
-        testUser.setId(userId);
-
-        // Création autre utilisateur pour tests d'autorisation
-        otherUser = new UserModel("otheruser", "other@example.com", "Jane", "Smith", 30, "password", "profile2.jpg");
-        otherUser.setId(otherUserId);
-
-        // ✅ CORRECTION : Utiliser le constructeur PostModel avec 4 paramètres (title, description, fishName, photoUrl)
-        testPost = new PostModel("Superbe carpe", "Belle prise ce matin", "Carpe", "img/carpe.jpg");
-        testPost.setId(postId);
-        testPost.setUser(testUser);
-
-        // Création commentaire de test
-        testComment = new CommentModel("Très belle prise, félicitations !");
-        testComment.setId(commentId);
-        testComment.setUser(testUser);
-        testComment.setPost(testPost);
+    // ========== FONCTION HELPER ==========
+    private CommentModel createdComment() {
+        return new CommentModel(
+                "Commentaires d'un utilisateur");
     }
 
-    // =============== TESTS CRUD ===============
+    private CommentModel updatedComment() {
+        return new CommentModel(
+            "Commentaires MAJ"
+        );
+    }
+    
+    private UserModel createUser() {
+        return new UserModel(
+                "user1",
+                "user1@fishon.com",
+                "J",
+                "D",
+                25,
+                "userpassword",
+                "");
+    }
+
+    private PostModel createPost() {
+        return new PostModel(
+                "title",
+                "Magnifique prise",
+                "Carpe",
+                "fishPicture");
+    }
+
+    private void assertDeleteCommentThrowsException(
+        UUID commentId,
+        UUID userId,
+        Class <? extends Exception> expectedExceptionType,
+        String expectedMessage) {
+        
+        assertThatThrownBy(() -> commentService.deleteComment(commentId, userId))
+            .isInstanceOf(expectedExceptionType)
+            .hasMessage(expectedMessage);
+    }
+
+    // ========== TEST MÉTHODE CRUD ==========
 
     @Test
-    void createComment_Success() throws Exception {
-        // Given
-        CommentModel newComment = new CommentModel("Super commentaire !");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
-        when(commentRepository.save(any(CommentModel.class))).thenReturn(testComment);
+    @DisplayName("Création commentaire - valide")
+    void createComment() throws UserNotFoundById, PostNotFoundById {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
+        UUID userId = user.getId();
+        PostModel post = createPost();
+        UUID postId = post.getId();
+        CommentModel comment = createdComment();
 
-        // When
-        CommentModel result = commentService.createComment(newComment, userId, postId);
+        // Configuration mock
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(postRepository.findById(postId)).thenReturn(Optional.of(post));
+        when(commentRepository.save(any(CommentModel.class))).thenReturn(comment);
 
-        // Then
+        // ACT
+        CommentModel result = commentService.createComment(comment, userId, postId);
+
+        // ASSERT - vérification des données
         assertNotNull(result);
-        assertEquals(testComment.getContent(), result.getContent());
-        assertEquals(testUser, result.getUser());
-        assertEquals(testPost, result.getPost());
+        assertEquals(comment, result);
+        assertEquals(user, result.getUser());
+        assertEquals(post, result.getPost());
 
-        // Vérification que les associations ont été définies
-        verify(commentRepository).save(newComment);
-        assertEquals(testUser, newComment.getUser());
-        assertEquals(testPost, newComment.getPost());
+        // Vérification interractions
+        verify(userRepository).findById(userId);
+        verify(postRepository).findById(postId);
+        verify(commentRepository).save(any(CommentModel.class));
     }
 
     @Test
-    void createComment_UserNotFound() {
-        // Given
-        CommentModel newComment = new CommentModel("Commentaire test");
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+    @DisplayName("Création commentaire - UserNotFoundById")
+    void createdCommentUserNotFound() throws UserNotFoundById {
+        // ARRANGE - Préparation des données
+        PostModel post = createPost();
+        UUID postId = post.getId();
+        CommentModel comment = createdComment();
 
-        // When & Then
-        assertThrows(UserNotFoundById.class, () -> {
-            commentService.createComment(newComment, userId, postId);
-        });
+        // Configuration mocks
+        when(userRepository.findById(INVALID_USER_ID)).thenReturn(Optional.empty());
 
-        verify(commentRepository, never()).save(any());
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> commentService.createComment(comment, INVALID_USER_ID, postId))
+                .isInstanceOf(UserNotFoundById.class)
+                .hasMessage("L'utilisateur avec l'ID " + INVALID_USER_ID + " n'existe pas");
+
+        verify(userRepository).findById(INVALID_USER_ID);
+        verifyNoInteractions(postRepository);
+        verify(commentRepository, never()).save(any(CommentModel.class));
+    }
+    
+    @Test
+    @DisplayName("Création commentaire - PostNotFoundById")
+    void createdCommentPostNotFound() throws PostNotFoundById {
+        // ARRANGE - Préparation des données
+        UserModel user = createUser();
+        UUID userId = user.getId();
+        CommentModel comment = createdComment();
+
+        // Configuration mock
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(postRepository.findById(INVALID_POST_ID)).thenReturn(Optional.empty());
+
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> commentService.createComment(comment, userId, INVALID_POST_ID))
+            .isInstanceOf(PostNotFoundById.class)
+            .hasMessage("La publication n'existe pas");
+            
+        verify(userRepository).findById(userId);
+        verify(postRepository).findById(INVALID_POST_ID);
+        verify(commentRepository, never()).save(any(CommentModel.class));
     }
 
     @Test
-    void createComment_PostNotFound() {
-        // Given
-        CommentModel newComment = new CommentModel("Commentaire test");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.empty());
+    @DisplayName("MAJ commentaire - valide")
+    void updateComment() throws CommentNotFound, UnauthorizedAccess {
+        // ARRANGE - Préparation des données
+        UUID commentId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
 
-        // When & Then
-        assertThrows(PostNotFoundById.class, () -> {
-            commentService.createComment(newComment, userId, postId);
-        });
+        UserModel user = createUser();
+        user.setId(userId); // ← Important : définir l'ID
 
-        verify(commentRepository, never()).save(any());
-    }
+        CommentModel existingComment = createdComment();
+        existingComment.setId(commentId);
+        existingComment.setUser(user); // ← Le commentaire appartient à user
+        existingComment.setContent("Ancien contenu");
 
-    @Test
-    void updateComment_Success() throws Exception {
-        // Given
-        CommentModel updatedComment = new CommentModel("Commentaire modifié");
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(testComment));
-        when(commentRepository.save(any(CommentModel.class))).thenReturn(testComment);
+        CommentModel updatedData = updatedComment(); // Nouvelles données
 
-        // When
-        CommentModel result = commentService.updateComment(commentId, updatedComment, userId);
+        CommentModel savedComment = createdComment();
+        savedComment.setContent(updatedData.getContent());
+        savedComment.setUser(user);
 
-        // Then
+        // Configuration mocks
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(existingComment));
+        when(commentRepository.save(existingComment)).thenReturn(savedComment);
+
+        // ACT
+        CommentModel result = commentService.updateComment(commentId, updatedData, userId);
+
+        // ASSERT - Vérification des données
         assertNotNull(result);
-        verify(commentRepository).save(testComment);
-        // Vérifier que le contenu a été mis à jour
-        assertEquals("Commentaire modifié", testComment.getContent());
+        assertEquals(updatedData.getContent(), existingComment.getContent()); // Contenu mis à jour
+
+        // Vérification interactions
+        verify(commentRepository).findById(commentId);
+        verify(commentRepository).save(existingComment);
     }
-
+    
     @Test
-    void updateComment_CommentNotFound() {
-        // Given
-        CommentModel updatedComment = new CommentModel("Commentaire modifié");
-        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+    @DisplayName("MAJ commentaire - CommentNotFound")
+    void updateCommentNotFound() {
+        // ARRANGE - Préparation des données
+        UUID nonExistentCommentId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        CommentModel updatedData = updatedComment();
 
-        // When & Then
-        assertThrows(CommentNotFound.class, () -> {
-            commentService.updateComment(commentId, updatedComment, userId);
-        });
+        // Configuration mock
+        when(commentRepository.findById(nonExistentCommentId)).thenReturn(Optional.empty());
 
+        // ACT & ASSERT
+        assertThatThrownBy(() -> commentService.updateComment(nonExistentCommentId, updatedData, userId))
+                .isInstanceOf(CommentNotFound.class)
+                .hasMessage("Le commentaire " + nonExistentCommentId + " n'existe pas");
+
+        verify(commentRepository).findById(nonExistentCommentId);
+        verify(commentRepository, never()).save(any(CommentModel.class));
+    }
+    
+    @Test
+    @DisplayName("MAJ commentaire - UnauthorizedAccess")
+    void updateCommentUnauthorized() {
+        // ARRANGE - Préparation des données
+        UUID commentId = UUID.randomUUID();
+        UUID commentOwnerId = UUID.randomUUID(); // Vrai propriétaire
+        UUID attemptingUserId = UUID.randomUUID(); // Utilisateur qui tente
+
+        UserModel commentOwner = createUser();
+        commentOwner.setId(commentOwnerId);
+
+        CommentModel existingComment = createdComment();
+        existingComment.setId(commentId);
+        existingComment.setUser(commentOwner); // ← Appartient à commentOwner
+
+        CommentModel updatedData = updatedComment();
+
+        // Configuration mock
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(existingComment));
+
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> commentService.updateComment(commentId, updatedData, attemptingUserId))
+                .isInstanceOf(UnauthorizedAccess.class)
+                .hasMessage("N'est pas autorisé à modifier");
+
+        verify(commentRepository).findById(commentId);
         verify(commentRepository, never()).save(any());
     }
-
+    
     @Test
-    void updateComment_UnauthorizedAccess() {
-        // Given
-        CommentModel updatedComment = new CommentModel("Commentaire modifié");
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(testComment));
+    @DisplayName("Suppression commentaire - valide")
+    void deleteComment() throws CommentNotFound, UnauthorizedAccess {
+        // ARRANGE - Préparation des données
+        UUID commentId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
 
-        // When & Then - otherUserId essaie de modifier le commentaire de testUser
-        assertThrows(UnauthorizedAccess.class, () -> {
-            commentService.updateComment(commentId, updatedComment, otherUserId);
-        });
+        UserModel user = createUser();
+        user.setId(userId);
 
-        verify(commentRepository, never()).save(any());
-    }
+        CommentModel existingComment = createdComment();
+        existingComment.setId(commentId);
+        existingComment.setUser(user); // ← Le commentaire appartient à user
 
-    @Test
-    void deleteComment_Success() throws Exception {
-        // Given
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(testComment));
+        // Configuration mock
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(existingComment));
 
-        // When
+        // ACT
         commentService.deleteComment(commentId, userId);
 
-        // Then
-        verify(commentRepository).delete(testComment);
+        // ASSERT - Vérification interactions
+        verify(commentRepository).findById(commentId);
+        verify(commentRepository).delete(existingComment);
     }
 
     @Test
-    void deleteComment_CommentNotFound() {
-        // Given
-        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+    @DisplayName("Suppression commentaires - CommentNotFound")
+    void deleteCommentNotFound() throws CommentNotFound {
+        // ARRANGE - Configuration mock
+        when(commentRepository.findById(INVALID_COMMENT_ID)).thenReturn(Optional.empty());
 
-        // When & Then
-        assertThrows(CommentNotFound.class, () -> {
-            commentService.deleteComment(commentId, userId);
-        });
+        // ACT & ASSERT - Lancement exception
+        assertDeleteCommentThrowsException(INVALID_COMMENT_ID, VALID_USER_ID,
+                CommentNotFound.class,
+                "Le commentaire " + INVALID_COMMENT_ID + " n'existe pas");
 
+        // Vérification interractions
+        verify(commentRepository).findById(INVALID_COMMENT_ID);
+    }
+    
+    @Test
+    @DisplayName("Suppression commentaire - UnauthorizedAccess")
+    void deleteCommentUnauthorized() {
+        // ARRANGE - Préparation des données
+        UUID commentId = UUID.randomUUID();
+        UUID commentOwnerId = UUID.randomUUID();
+        UUID attemptingUserId = UUID.randomUUID();
+
+        UserModel commentOwner = createUser();
+        commentOwner.setId(commentOwnerId);
+
+        CommentModel existingComment = createdComment();
+        existingComment.setId(commentId);
+        existingComment.setUser(commentOwner);
+
+        // Configuration mock
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(existingComment));
+
+        // ACT & ASSERT - Lancement exception
+        assertDeleteCommentThrowsException(commentId, attemptingUserId,
+                UnauthorizedAccess.class,
+                "N'est pas autorisé à modifier");
+
+        // Vérification interractions
+        verify(commentRepository).findById(commentId);
         verify(commentRepository, never()).delete(any());
     }
+    
+    // ========== TESTS MÉTHODES REPOSITORY ==========
 
     @Test
-    void deleteComment_UnauthorizedAccess() {
-        // Given
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(testComment));
+    @DisplayName("Récupération commentaires par userId - valide")
+    void getCommentsByUserId() throws UserNotFoundById {
+        // ARRANGE - Préparation des données
+        UUID userId = UUID.randomUUID();
+        CommentModel comment1 = createdComment();
+        CommentModel comment2 = createdComment();
+        List<CommentModel> expectedComments = Arrays.asList(comment1, comment2);
 
-        // When & Then - otherUserId essaie de supprimer le commentaire de testUser
-        assertThrows(UnauthorizedAccess.class, () -> {
-            commentService.deleteComment(commentId, otherUserId);
-        });
-
-        verify(commentRepository, never()).delete(any());
-    }
-
-    // =============== TESTS DE RECHERCHE ===============
-
-    @Test
-    void getByUserId_Success() throws Exception {
-        // Given
-        CommentModel comment2 = new CommentModel("Autre commentaire");
-        comment2.setUser(testUser);
-        List<CommentModel> comments = Arrays.asList(testComment, comment2);
-
+        // Configuration mocks
         when(userRepository.existsById(userId)).thenReturn(true);
-        when(commentRepository.findByUserId(userId)).thenReturn(comments);
+        when(commentRepository.findByUserId(userId)).thenReturn(expectedComments);
 
-        // When
+        // ACT
         List<CommentModel> result = commentService.getByUserId(userId);
 
-        // Then
+        // ASSERT - Vérification des données
         assertNotNull(result);
+        assertEquals(expectedComments, result);
         assertEquals(2, result.size());
-        assertEquals(testComment, result.get(0));
-        assertEquals(comment2, result.get(1));
+
+        // Vérification interactions
+        verify(userRepository).existsById(userId);
+        verify(commentRepository).findByUserId(userId);
     }
 
     @Test
-    void getByUserId_UserNotFound() {
-        // Given
-        when(userRepository.existsById(userId)).thenReturn(false);
+    @DisplayName("Récupération commentaires par userId - UserNotFoundById")
+    void getCommentsByUserIdNotFound() {
+        // ARRANGE - Configuration mock
+        when(userRepository.existsById(INVALID_USER_ID)).thenReturn(false);
 
-        // When & Then
-        assertThrows(UserNotFoundById.class, () -> {
-            commentService.getByUserId(userId);
-        });
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> commentService.getByUserId(INVALID_USER_ID))
+            .isInstanceOf(UserNotFoundById.class)
+            .hasMessage("L'utilisateur avec l'ID " + INVALID_USER_ID + " n'existe pas");
 
+        // Vérification interactions
+        verify(userRepository).existsById(INVALID_USER_ID);
         verify(commentRepository, never()).findByUserId(any());
     }
 
     @Test
-    void getByUserId_EmptyList() throws Exception {
-        // Given
-        when(userRepository.existsById(userId)).thenReturn(true);
-        when(commentRepository.findByUserId(userId)).thenReturn(Arrays.asList());
+    @DisplayName("Récupération commentaires par postId - valide")
+    void getCommentsByPostId() throws PostNotFoundById {
+        // ARRANGE - Préparation des données
+        UUID postId = UUID.randomUUID();
+        CommentModel comment1 = createdComment();
+        CommentModel comment2 = createdComment();
+        List<CommentModel> expectedComments = Arrays.asList(comment1, comment2);
 
-        // When
-        List<CommentModel> result = commentService.getByUserId(userId);
-
-        // Then
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void getByPostId_Success() throws Exception {
-        // Given
-        CommentModel comment2 = new CommentModel("Deuxième commentaire");
-        comment2.setUser(otherUser);
-        comment2.setPost(testPost);
-        List<CommentModel> comments = Arrays.asList(testComment, comment2);
-
+        // Configuration mocks
         when(postRepository.existsById(postId)).thenReturn(true);
-        when(commentRepository.findByPostId(postId)).thenReturn(comments);
+        when(commentRepository.findByPostId(postId)).thenReturn(expectedComments);
 
-        // When
+        // ACT
         List<CommentModel> result = commentService.getByPostId(postId);
 
-        // Then
+        // ASSERT - Vérification des données
         assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(testComment, result.get(0));
-        assertEquals(comment2, result.get(1));
+        assertEquals(expectedComments, result);
+
+        // Vérification interactions
+        verify(postRepository).existsById(postId);
+        verify(commentRepository).findByPostId(postId);
     }
 
     @Test
-    void getByPostId_PostNotFound() {
-        // Given
-        when(postRepository.existsById(postId)).thenReturn(false);
+    @DisplayName("Récupération commentaires par postId - PostNotFoundById")
+    void getCommentsByPostIdNotFound() {
+        // ARRANGE - Configuration mock
+        when(postRepository.existsById(INVALID_POST_ID)).thenReturn(false);
 
-        // When & Then
-        assertThrows(PostNotFoundById.class, () -> {
-            commentService.getByPostId(postId);
-        });
+        // ACT & ASSERT - Lancement exception
+        assertThatThrownBy(() -> commentService.getByPostId(INVALID_POST_ID))
+            .isInstanceOf(PostNotFoundById.class)
+            .hasMessage("La publication n'existe pas");
 
+        // Vérification interactions
+        verify(postRepository).existsById(INVALID_POST_ID);
         verify(commentRepository, never()).findByPostId(any());
-    }
-
-    @Test
-    void getByPostId_EmptyList() throws Exception {
-        // Given
-        when(postRepository.existsById(postId)).thenReturn(true);
-        when(commentRepository.findByPostId(postId)).thenReturn(Arrays.asList());
-
-        // When
-        List<CommentModel> result = commentService.getByPostId(postId);
-
-        // Then
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-    }
-
-    // =============== TESTS DE CAS LIMITES ===============
-
-    @Test
-    void createComment_WithNullContent() throws Exception {
-        // Given
-        CommentModel newComment = new CommentModel(null);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
-        when(commentRepository.save(any(CommentModel.class))).thenReturn(newComment);
-
-        // When
-        CommentModel result = commentService.createComment(newComment, userId, postId);
-
-        // Then
-        assertNotNull(result);
-        verify(commentRepository).save(newComment);
-    }
-
-    @Test
-    void updateComment_WithEmptyContent() throws Exception {
-        // Given
-        CommentModel updatedComment = new CommentModel("");
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(testComment));
-        when(commentRepository.save(any(CommentModel.class))).thenReturn(testComment);
-
-        // When
-        CommentModel result = commentService.updateComment(commentId, updatedComment, userId);
-
-        // Then
-        assertNotNull(result);
-        assertEquals("", testComment.getContent());
-        verify(commentRepository).save(testComment);
-    }
-
-    @Test
-    void createComment_WithLongContent() throws Exception {
-        // Given
-        String longContent = "a".repeat(1000); // 1000 caractères
-        CommentModel newComment = new CommentModel(longContent);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
-        when(commentRepository.save(any(CommentModel.class))).thenReturn(newComment);
-
-        // When
-        CommentModel result = commentService.createComment(newComment, userId, postId);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(longContent, result.getContent());
-        verify(commentRepository).save(newComment);
-    }
-
-    // =============== TESTS AVANCÉS ===============
-
-    @Test
-    void createComment_WithSpecialCharacters() throws Exception {
-        // Given
-        String specialContent = "Commentaire avec émojis 🎣🐟 et caractères spéciaux äöüß@#$%^&*()";
-        CommentModel newComment = new CommentModel(specialContent);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
-        when(commentRepository.save(any(CommentModel.class))).thenReturn(newComment);
-
-        // When
-        CommentModel result = commentService.createComment(newComment, userId, postId);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(specialContent, result.getContent());
-        verify(commentRepository).save(newComment);
-    }
-
-    @Test
-    void createComment_MultipleCommentsOnSamePost() throws Exception {
-        // Given
-        CommentModel comment1 = new CommentModel("Premier commentaire");
-        CommentModel comment2 = new CommentModel("Deuxième commentaire");
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
-        when(commentRepository.save(any(CommentModel.class)))
-                .thenReturn(comment1)
-                .thenReturn(comment2);
-
-        // When
-        CommentModel result1 = commentService.createComment(comment1, userId, postId);
-        CommentModel result2 = commentService.createComment(comment2, userId, postId);
-
-        // Then
-        assertNotNull(result1);
-        assertNotNull(result2);
-        assertNotEquals(result1.getContent(), result2.getContent());
-        verify(commentRepository, times(2)).save(any(CommentModel.class));
-    }
-
-    @Test
-    void updateComment_SameContentMultipleTimes() throws Exception {
-        // Given
-        CommentModel updatedComment = new CommentModel("Contenu identique");
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(testComment));
-        when(commentRepository.save(any(CommentModel.class))).thenReturn(testComment);
-
-        // When
-        CommentModel result1 = commentService.updateComment(commentId, updatedComment, userId);
-        CommentModel result2 = commentService.updateComment(commentId, updatedComment, userId);
-
-        // Then
-        assertNotNull(result1);
-        assertNotNull(result2);
-        assertEquals("Contenu identique", testComment.getContent());
-        verify(commentRepository, times(2)).save(testComment);
-    }
-
-    @Test
-    void createComment_WithMaxContentLength() throws Exception {
-        // Given - Test avec contenu très long (limite probable de la DB)
-        String maxContent = "a".repeat(5000); // 5000 caractères
-        CommentModel newComment = new CommentModel(maxContent);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
-        when(commentRepository.save(any(CommentModel.class))).thenReturn(newComment);
-
-        // When
-        CommentModel result = commentService.createComment(newComment, userId, postId);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(maxContent, result.getContent());
-        assertEquals(5000, result.getContent().length());
-        verify(commentRepository).save(newComment);
-    }
-
-    @Test
-    void getByUserId_WithMultipleUsers() throws Exception {
-        // Given
-        CommentModel userComment = new CommentModel("Commentaire de testUser");
-        userComment.setUser(testUser);
-
-        CommentModel otherComment = new CommentModel("Commentaire de otherUser");
-        otherComment.setUser(otherUser);
-
-        List<CommentModel> userComments = Arrays.asList(userComment);
-        List<CommentModel> otherComments = Arrays.asList(otherComment);
-
-        when(userRepository.existsById(userId)).thenReturn(true);
-        when(userRepository.existsById(otherUserId)).thenReturn(true);
-        when(commentRepository.findByUserId(userId)).thenReturn(userComments);
-        when(commentRepository.findByUserId(otherUserId)).thenReturn(otherComments);
-
-        // When
-        List<CommentModel> userResult = commentService.getByUserId(userId);
-        List<CommentModel> otherResult = commentService.getByUserId(otherUserId);
-
-        // Then
-        assertEquals(1, userResult.size());
-        assertEquals(1, otherResult.size());
-        assertEquals("Commentaire de testUser", userResult.get(0).getContent());
-        assertEquals("Commentaire de otherUser", otherResult.get(0).getContent());
-        assertNotEquals(userResult.get(0).getUser().getId(), otherResult.get(0).getUser().getId());
     }
 }

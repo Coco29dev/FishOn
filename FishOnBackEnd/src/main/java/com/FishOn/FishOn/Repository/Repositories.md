@@ -33,7 +33,7 @@ __Fonctionnalités héritées automatiquement__:
 
 # UserRepository - Gestion des Utilisateurs
 __Authentification et Sécurité__:
-```jav
+```java
 javaOptional<UserModel> findByUserName(String userName);
 Optional<UserModel> findByEmail(String email);
 ```
