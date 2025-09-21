@@ -1,5 +1,7 @@
-// Définition URL + préfixe API Spring Boot
-const API_BASE = '/api';
+// Configuration automatique de l'URL de base selon l'environnement
+const API_BASE = window.location.hostname === 'localhost'
+    ? '/api'  // Développement local
+    : '/api'; // Production (même serveur)
 
 class API {
     // Fonction asynchrone générique appel API
@@ -14,12 +16,14 @@ class API {
 
         // Fusionner les options
         const finalOptions = { ...defaultOptions, ...options };
-        // ... = opérateur spread pour fusion
-        // ...options = copie propréités de `options`(écrasse celle de `defaultOptions`)
 
         try {
+            // Construction URL complète
+            const url = `${API_BASE}${endpoint}`;
+            console.log(`API Call: ${options.method || 'GET'} ${url}`); // Debug
+
             // Appel API
-            const response = await fetch(`${API_BASE}${endpoint}`, finalOptions);
+            const response = await fetch(url, finalOptions);
 
             // Vérification la réponse est une erreur
             if (!response.ok) {
@@ -43,7 +47,7 @@ class API {
         }
     }
 
-    // Méthode spécialisées
+    // Méthodes spécialisées (inchangées)
     static get(endpoint) {
         return this.apiCall(endpoint, {
             method: 'GET'
@@ -53,7 +57,7 @@ class API {
     static post(endpoint, data) {
         return this.apiCall(endpoint, {
             method: 'POST',
-            body: JSON.stringify(data) // Conversion objet -> Chaîne JSON
+            body: JSON.stringify(data)
         });
     }
 
