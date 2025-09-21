@@ -1,7 +1,6 @@
-// Configuration automatique de l'URL de base selon l'environnement
-const API_BASE = window.location.hostname === 'localhost'
-    ? '/api'  // Développement local
-    : '/api'; // Production (même serveur)
+const API_BASE = window.location.hostname.includes('railway.app')
+    ? '/api'  // Production Railway
+    : '/api'; // Développement local
 
 class API {
     // Fonction asynchrone générique appel API

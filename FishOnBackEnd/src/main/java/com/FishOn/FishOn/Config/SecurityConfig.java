@@ -91,7 +91,7 @@ public class SecurityConfig {
 
         // IMPORTANT : Ajoutez l'URL de votre app Railway
         configuration.setAllowedOriginPatterns(Arrays.asList(
-                "https://fishon-production.up.railway.app/",  // Remplacez par votre vraie URL Railway
+                "https://*.up.railway.app",
                 "http://localhost:*"  // Pour le développement local
         ));
 
