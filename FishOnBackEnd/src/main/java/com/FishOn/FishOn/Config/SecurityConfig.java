@@ -35,8 +35,26 @@ public class SecurityConfig {
         return http
                 // Configuration des autorisations
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Routes d'auth publiques
-                        .requestMatchers("/api/users/search/**").permitAll() // Recherche publique
+                        // ========== RESSOURCES STATIQUES PUBLIQUES ==========
+                        .requestMatchers("/", "/index.html").permitAll()
+                        .requestMatchers("/HTML/**").permitAll()    // Toutes les pages HTML
+                        .requestMatchers("/CSS/**").permitAll()     // Tous les fichiers CSS
+                        .requestMatchers("/JS/**").permitAll()      // Tous les fichiers JavaScript
+                        .requestMatchers("/IMG/**").permitAll()     // Toutes les images
+                        .requestMatchers("/favicon.ico").permitAll() // Favicon
+
+                        // ========== RESSOURCES BACKEND PUBLIQUES ==========
+                        .requestMatchers("/profilePicture/**").permitAll() // Images de profil
+                        .requestMatchers("/fishPicture/**").permitAll()    // Images de poissons
+
+                        // ========== ROUTES PUBLIQUES ==========
+                        .requestMatchers("/api/auth/**").permitAll()          // Routes d'authentification
+                        .requestMatchers("/api/users/search/**").permitAll()  // Recherche publique
+
+                        // ========== ROUTES WEB CONTROLLER ==========
+                        .requestMatchers("/login", "/register", "/feed", "/profile", "/journal").permitAll()
+
+                        // ========== TOUT LE RESTE PROTÉGÉ ==========
                         .anyRequest().authenticated()) // Tout le reste protégé
 
                 // Configuration des sessions
@@ -48,7 +66,7 @@ public class SecurityConfig {
                 // Désactiver CSRF pour API REST
                 .csrf(AbstractHttpConfigurer::disable)
 
-                // Configuration CORS pour React
+                // Configuration CORS pour Railway
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 // Gestion des exceptions d'authentification
@@ -89,10 +107,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // IMPORTANT : Ajoutez l'URL de votre app Railway
+        // Configuration CORS pour Railway et développement
         configuration.setAllowedOriginPatterns(Arrays.asList(
-                "https://*.up.railway.app",
-                "http://localhost:*"  // Pour le développement local
+                "https://*.up.railway.app",    // Tous les sous-domaines Railway
+                "https://fishon-production.up.railway.app",  // Votre domaine spécifique
+                "http://localhost:*",          // Développement local
+                "http://127.0.0.1:*"          // Développement local
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -100,7 +120,7 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", configuration);
+        source.registerCorsConfiguration("/**", configuration); // Applique à toutes les routes
         return source;
     }
 

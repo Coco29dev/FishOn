@@ -2,7 +2,6 @@ package com.FishOn.FishOn.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class WebController {
@@ -42,27 +41,5 @@ public class WebController {
     @GetMapping("/journal")
     public String journal() {
         return "redirect:/HTML/journal.html";
-    }
-
-    /**
-     * Gestion des routes SPA - important pour Railway
-     * Toutes les routes non-API retournent index.html
-     */
-    @RequestMapping(value = {
-            "/HTML/{path:^(?!.*\\.).*$}",
-            "/CSS/{path:^(?!.*\\.).*$}",
-            "/JS/{path:^(?!.*\\.).*$}",
-            "/IMG/{path:^(?!.*\\.).*$}"
-    })
-    public String forward() {
-        return "forward:/";
-    }
-
-    /**
-     * Fallback pour toutes les autres routes non-API
-     */
-    @RequestMapping(value = "/{path:^(?!api).*$}")
-    public String redirect() {
-        return "redirect:/";
     }
 }
