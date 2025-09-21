@@ -1,29 +1,16 @@
-package com.FishOn.FishOn.Model;
+package com.FishOn.FishOn.Model; // Défintion espace noms de projet, organisation arborescence projet
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.*; // Importation annotations JPA
+
+import java.util.*;
+
+import java.time.LocalDateTime;// Importation classe utilitaires (UUID)
+
+// Importation annotations spécifique hibernate pour gestion automatique
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-/**
- * Classe de base abstraite pour tous les modèles
- * Fournit les champs communs : id, createdAt, updatedAt
- * LOMBOK UTILISÉ :
- * @Getter @Setter : Génère automatiquement tous les getters/setters
- * @NoArgsConstructor : Génère constructeur vide obligatoire pour JPA
- * @AllArgsConstructor : Génère constructeur avec tous les paramètres
- * @ToString : Génère méthode toString() automatique
- * @EqualsAndHashCode : Génère equals() et hashCode() automatiques
- */
 @MappedSuperclass // Marque cette classe comme super classe pour JPA
-@Getter @Setter // LOMBOK : Génère automatiquement tous les getters et setters
-@NoArgsConstructor // LOMBOK : Génère constructeur vide public BaseModel() {}
-@AllArgsConstructor // LOMBOK : Génère constructeur avec tous les paramètres
-@ToString // LOMBOK : Génère toString() automatique
-@EqualsAndHashCode // LOMBOK : Génère equals() et hashCode() automatiques
 public abstract class BaseModel {
 
     @Id // Marque attribut comme clé primaire
@@ -36,4 +23,41 @@ public abstract class BaseModel {
     @UpdateTimestamp // Hibernate MAJ automatiquement ce champ à chaque modification
     private LocalDateTime updatedAt;
 
+    // Constructeur vide obligatoire pour JPA
+    public BaseModel() {
+
+    }
+
+    // Constructeur paramétré
+    public BaseModel(UUID id, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    // Getters
+    public UUID getId() {
+        return id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    // Setters
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

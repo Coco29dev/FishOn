@@ -12,25 +12,25 @@ public class FishOnException {
     }
     public static class UserAlreadyExists extends Exception {
         public UserAlreadyExists(String userName) {
-            super("l'username" + userName + " est déjà pris");
+            super("L'username " + userName + " est déjà pris");
         }
     }
 
     public static class UserNotFoundById extends Exception {
         public UserNotFoundById(UUID userId) {
-            super("l'utilisateur avec l'ID " + userId + " n'existe pas");
+            super("L'utilisateur avec l'ID " + userId + " n'existe pas");
         }
     }
 
     public static class UserNotFoundByUserName extends Exception {
         public UserNotFoundByUserName(String userName) {
-            super("l'utilisateur " + userName + " n'existe pas");
+            super("L'utilisateur " + userName + " n'existe pas");
         }
     }
 
     public static class UserNotFoundByEmail extends Exception {
         public UserNotFoundByEmail(String email) {
-            super("l'utilisateur " + email + " n'existe pas");
+            super("L'utilisateur " + email + " n'existe pas");
         }
     }
 
@@ -86,7 +86,7 @@ public class FishOnException {
     // ============= CommentException =============
     public static class CommentNotFound extends Exception {
         public CommentNotFound(UUID commentId) {
-            super("le commentaire " + commentId + " n'existe pas");
+            super("Le commentaire " + commentId + " n'existe pas");
         }
     }
 

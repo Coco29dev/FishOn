@@ -2,9 +2,9 @@ package com.FishOn.FishOn.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,10 +19,10 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -35,8 +35,8 @@ public class SecurityConfig {
         return http
                 // Configuration des autorisations
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/health").permitAll()
                         .requestMatchers("/api/auth/**").permitAll() // Routes d'auth publiques
+                        .requestMatchers("/api/users/search/**").permitAll() // Recherche publique
                         .anyRequest().authenticated()) // Tout le reste protégé
 
                 // Configuration des sessions
@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .maxSessionsPreventsLogin(false))
 
                 // Désactiver CSRF pour API REST
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
 
                 // Configuration CORS pour React
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -68,7 +68,7 @@ public class SecurityConfig {
         return (request, response, authException) -> {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"error\":\"Utilisateur non authentifié\"}");
+            response.getWriter().write("Utilisateur non authentifié");
         };
     }
 
@@ -81,16 +81,16 @@ public class SecurityConfig {
         return (request, response, accessDeniedException) -> {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"error\":\"Accès refusé\"}");
+            response.getWriter().write("Accès refusé");
         };
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://127.0.0.1:3000"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("https://fish-on-eight.vercel.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

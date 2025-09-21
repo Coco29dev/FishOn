@@ -12,7 +12,7 @@ import com.FishOn.FishOn.Exception.FishOnException.*;
 public class FishOnExceptionHandler {
 
     // ========= UserException =========
-    
+
     // HttpStatus.CONFLICT = 409 CONFLICT : Email déjà pris
     @ExceptionHandler(EmailAlreadyExists.class)
     public ResponseEntity<String> handleEmailAlreadyExists(EmailAlreadyExists e) {
@@ -44,7 +44,7 @@ public class FishOnExceptionHandler {
     }
 
     // ========= AuthException =========
-    
+
     // HttpStatus.UNAUTHORIZED = 401 UNAUTHORIZED : Login incorrect (mot de passe)
     @ExceptionHandler(InvalidPassword.class)
     public ResponseEntity<String> handleInvalidPassword(InvalidPassword e) {
@@ -52,7 +52,7 @@ public class FishOnExceptionHandler {
     }
 
     // ========= PostException =========
-    
+
     // HttpStatus.BAD_REQUEST = 400 BAD_REQUEST : Titre manquant
     @ExceptionHandler(MissingTitleException.class)
     public ResponseEntity<String> handleMissingTitleException(MissingTitleException e) {
@@ -101,7 +101,7 @@ public class FishOnExceptionHandler {
     }
 
     // ========= CommentException =========
-    
+
     // HttpStatus.NOT_FOUND = 404 NOT_FOUND : Commentaire inexistant
     @ExceptionHandler(CommentNotFound.class)
     public ResponseEntity<String> handleCommentNotFound(CommentNotFound e) {

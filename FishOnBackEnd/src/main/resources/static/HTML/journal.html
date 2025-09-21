@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FishOn - Journal de bord personnel">
+    <title>FishOn - Journal de Bord</title>
+    <link rel="stylesheet" href="../CSS/journal.css">
+</head>
+<body>
+
+<!-- ========== NAVIGATION ========== -->
+<nav class="nav-bar">
+    <div class="nav-container">
+        <div class="nav-logo">
+            <span class="nav-brand">FishOn</span>
+        </div>
+        <div class="nav-buttons">
+            <button id="feedBtn" class="nav-btn">À l'aventure !</button>
+            <button id="profileBtn" class="nav-btn">Ton navire !</button>
+            <button id="logoutBtn" class="nav-btn btn-logout">Déconnexion</button>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== CONTENU PRINCIPAL ========== -->
+<div class="main-container">
+    <div class="main-card">
+
+        <!-- ========== TITRE ========== -->
+        <div class="page-title">
+            <h1>Ton Journal de Bord</h1>
+            <p class="page-subtitle">Gère tes souvenirs de pêche</p>
+        </div>
+
+        <!-- ========== BOUTON CRÉATION ========== -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button id="toggleCreatePostBtn" class="btn btn-primary">
+                ➕ Créer un nouveau souvenir
+            </button>
+        </div>
+
+        <!-- ========== FORMULAIRE CRÉATION ========== -->
+        <div id="createPostForm" class="post-card hidden">
+            <h3 style="margin-bottom: 20px; text-align: center;">Nouveau Souvenir</h3>
+            <form id="postForm">
+                <div class="form-group">
+                    <label for="post-title" class="form-label">Titre</label>
+                    <input type="text" id="post-title" class="form-input" placeholder="Ma belle prise..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="post-description" class="form-label">Description</label>
+                    <textarea id="post-description" class="form-textarea" placeholder="Raconte ton histoire..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="post-fish" class="form-label">Poisson</label>
+                    <input type="text" id="post-fish" class="form-input" placeholder="Truite, Brochet..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="post-photo" class="form-label">Photo (URL)</label>
+                    <input type="url" id="post-photo" class="form-input" placeholder="https://..." required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label for="post-weight" class="form-label">Poids (kg)</label>
+                        <input type="number" id="post-weight" class="form-input" step="0.1" placeholder="2.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="post-length" class="form-label">Longueur (cm)</label>
+                        <input type="number" id="post-length" class="form-input" placeholder="45">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="post-location" class="form-label">Lieu</label>
+                    <input type="text" id="post-location" class="form-input" placeholder="Lac de...">
+                </div>
+
+                <div class="form-group">
+                    <label for="post-date" class="form-label">Date de capture</label>
+                    <input type="datetime-local" id="post-date" class="form-input">
+                </div>
+
+                <div class="flex-end">
+                    <button type="button" id="cancelPostBtn" class="btn btn-secondary">Annuler</button>
+                    <button type="submit" class="btn btn-primary btn-submit">Publier le souvenir</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ========== MESSAGES D'ÉTAT ========== -->
+        <div id="loadingMessage" class="loading-message">
+            Chargement de tes souvenirs...
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;">
+            Une erreur est survenue
+        </div>
+
+        <!-- ========== DERNIÈRE PUBLICATION ========== -->
+        <div id="latestPostSection" style="display: none;">
+            <h2 class="section-title">📸 Dernière Prise</h2>
+            <div id="latestPostContainer">
+                <!-- Dernière publication injectée ici -->
+            </div>
+        </div>
+
+        <!-- ========== SOUVENIRS ========== -->
+        <div id="memoryPostsSection" style="display: none;">
+            <h2 class="section-title">🎣 Tes Souvenirs</h2>
+            <div id="memoryPostsContainer" class="grid-2">
+                <!-- Souvenirs injectés ici -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ========== TEMPLATES ========== -->
+
+<!-- Template dernière publication -->
+<template id="latest-post-template">
+    <div class="post-card">
+        <div class="post-header">
+            <img class="avatar-img" src="" alt="">
+            <div class="post-info">
+                <div class="post-author"></div>
+                <div class="post-date"></div>
+            </div>
+        </div>
+        <div class="post-content">
+            <h3 class="post-title"></h3>
+            <p class="post-description"></p>
+            <img class="post-image" src="" alt="" style="display: none;">
+        </div>
+        <div class="post-details">
+            <!-- Détails injectés dynamiquement -->
+        </div>
+        <div class="flex-end">
+            <button class="btn btn-edit btn-edit-post">Modifier</button>
+            <button class="btn btn-delete btn-delete-post">Supprimer</button>
+        </div>
+    </div>
+</template>
+
+<!-- Template souvenir -->
+<template id="souvenir-post-template">
+    <div class="post-card">
+        <img class="post-image souvenir-img" src="" alt="">
+        <h4 class="post-title souvenir-title"></h4>
+        <p style="color: #007bff; font-weight: 500; margin-bottom: 8px;" class="souvenir-fish"></p>
+        <p style="font-size: 12px; color: #6c757d; margin-bottom: 12px;" class="souvenir-date"></p>
+        <div class="souvenir-details" style="display: flex; gap: 12px; margin-bottom: 12px;">
+            <!-- Détails compacts -->
+        </div>
+        <div class="flex-end">
+            <button class="btn btn-edit btn-edit-souvenir">Modifier</button>
+            <button class="btn btn-delete btn-delete-souvenir">Supprimer</button>
+        </div>
+    </div>
+</template>
+
+<!-- Template détail -->
+<template id="detail-template">
+    <div class="detail-item">
+        <div class="detail-label"></div>
+        <div class="detail-value"></div>
+    </div>
+</template>
+
+<!-- Template état vide -->
+<template id="empty-page-template">
+    <div class="empty-state">
+        <div class="empty-icon">🎣</div>
+        <div class="empty-title">Aucun souvenir</div>
+        <p>Crée ton premier souvenir de pêche !</p>
+    </div>
+</template>
+
+<!-- Templates modals (inchangés) -->
+<template id="edit-post-modal-template">
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Modifier le souvenir</h3>
+                <button class="modal-close" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <form class="edit-post-form">
+                <div class="form-group">
+                    <label class="form-label">Titre</label>
+                    <input type="text" id="edit-post-title" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="edit-post-description" class="form-textarea" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Poisson</label>
+                    <input type="text" id="edit-post-fish" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Photo (URL)</label>
+                    <input type="url" id="edit-post-photo" class="form-input"placeholder="https://example.com/photo.jpg"
+                           maxlength="10000" required>
+                    <small style="color: #6c757d; font-size: 12px;">
+                        URL directe vers image (maximum 2000 caractères)
+                        <br>Évitez les liens de partage Google Drive/Dropbox
+                    </small>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">Poids (kg)</label>
+                        <input type="number" id="edit-post-weight" class="form-input" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Longueur (cm)</label>
+                        <input type="number" id="edit-post-length" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Lieu</label>
+                    <input type="text" id="edit-post-location" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="datetime-local" id="edit-post-date" class="form-input">
+                </div>
+                <div class="flex-end">
+                    <button type="button" class="btn btn-secondary btn-cancel">Annuler</button>
+                    <button type="submit" class="btn btn-primary btn-save">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+
+<template id="delete-confirmation-modal-template">
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Confirmer la suppression</h3>
+                <button class="modal-close" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <p style="margin-bottom: 20px;">Êtes-vous sûr de vouloir supprimer ce souvenir ? Cette action est irréversible.</p>
+            <div class="flex-end">
+                <button class="btn btn-secondary btn-cancel">Annuler</button>
+                <button class="btn btn-delete btn-delete-confirm">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+    <div class="footer-content">
+        <h3 class="footer-title">Suivez-nous !</h3>
+
+        <!-- Icônes et liens vers les réseaux sociaux -->
+        <ul class="social-links">
+            <li><img src="../IMG/Facebook.png" alt="Facebook"></li>
+            <li><img src="../IMG/X.png" alt="X (Twitter)"></li>
+            <li><img src="../IMG/Instagram.png" alt="Instagram"></li>
+        </ul>
+
+        <!-- Informations de marque et copyright -->
+        <div class="footer-brand">Bienvenue sur FishOn</div>
+        <div class="footer-copyright">@copyright2025</div>
+    </div>
+</footer>
+
+<!-- ========== SCRIPTS ========== -->
+<script src="../JS/API.js"></script>
+<script src="../JS/ErrorHandler.js"></script>
+<script src="../JS/APIService.js"></script>
+<script src="../JS/utils.js"></script>
+<script src="../JS/Journal.js"></script>
+
+</body>
+</html>

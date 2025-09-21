@@ -1,0 +1,522 @@
+/* ========== RESET ET BASE ========== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-image: url('../IMG/Login.webp');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+    padding-top: 80px;
+    padding-bottom: 140px;
+}
+
+/* ========== NAVIGATION ========== */
+
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    padding: 15px 0;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.nav-btn {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-logout {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.btn-logout:hover {
+    background: #c82333;
+}
+
+/* ========== CONTAINERS ========== */
+
+.main-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.main-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ========== TITRES ========== */
+
+.page-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-title h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: #6c757d;
+    font-weight: 400;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* ========== MESSAGES D'ÉTAT ========== */
+
+.loading-message,
+.error-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+.error-message {
+    color: #dc3545;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.6;
+}
+
+.empty-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 12px;
+}
+
+/* ========== CARTES POST ========== */
+
+.post-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.avatar-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(0, 123, 255, 0.1);
+}
+
+.post-info {
+    flex: 1;
+}
+
+.post-author {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 2px;
+}
+
+.post-date {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.post-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.post-description {
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: 12px;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.post-image:hover {
+    transform: scale(1.02);
+}
+
+/* ========== DÉTAILS POST ========== */
+
+.post-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(0, 123, 255, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.detail-item {
+    text-align: center;
+}
+
+.detail-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.detail-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* ========== BOUTONS ========== */
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: rgba(108, 117, 125, 0.2);
+}
+
+.btn-edit {
+    background: rgba(0, 123, 255, 0.1);
+    color: #007bff;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-delete {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* ========== FORMULAIRES ========== */
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #495057;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    background: white;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.form-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ========== GRILLES ========== */
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* ========== MODALS ========== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* ========== FOOTER ========== */
+/* ========== FOOTER ========== */
+
+footer {
+    position: fixed; /* Positionnement fixe même lors du scroll */
+    bottom: 0; /* Positionné en bas de l'écran */
+    left: 0; /* Aligné à gauche */
+    right: 0; /* Aligné à droite (étend sur toute la largeur) */
+    background: rgba(255, 255, 255, 0.9); /* Fond blanc semi-transparent */
+    backdrop-filter: blur(10px); /* Effet de flou sur l'arrière-plan */
+    padding: 20px 0; /* Espacement intérieur vertical */
+    text-align: center; /* Centre le contenu */
+    border-top: 1px solid rgba(0, 0, 0, 0.05); /* Bordure supérieure subtile */
+    z-index: 999; /* S'affiche au-dessus du contenu */
+}
+
+.footer-content {
+    max-width: 1200px; /* Largeur maximale du contenu */
+    margin: 0 auto; /* Centre le contenu horizontalement */
+    padding: 0 20px; /* Espacement intérieur horizontal */
+}
+
+.footer-title {
+    font-size: 16px; /* Taille de la police */
+    font-weight: 600; /* Épaisseur de la police */
+    color: #2c3e50; /* Couleur du texte */
+    margin-bottom: 12px; /* Espacement inférieur */
+}
+
+.social-links {
+    display: flex; /* Activation flexbox */
+    justify-content: center; /* Centre les éléments horizontalement */
+    gap: 20px; /* Espacement entre les liens */
+    margin-bottom: 12px; /* Espacement inférieur */
+    list-style: none; /* Suppression puces de liste */
+}
+
+.social-links img {
+    width: 24px; /* Largeur des icônes */
+    height: 24px; /* Hauteur des icônes */
+    opacity: 0.7; /* Transparence par défaut */
+    transition: opacity 0.2s ease; /* Animation fluide de l'opacité */
+}
+
+.social-links img:hover {
+    opacity: 1; /* Opacité complète au survol */
+}
+
+.footer-brand {
+    font-size: 18px; /* Taille de la police */
+    font-weight: 700; /* Épaisseur de la police */
+    color: #2c3e50; /* Couleur du texte */
+    margin-bottom: 4px; /* Espacement inférieur */
+}
+
+.footer-copyright {
+    font-size: 12px; /* Taille de la police */
+    color: #6c757d; /* Couleur du texte grise */
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+
+    .main-container {
+        max-width: 95%;
+        padding: 0 15px;
+    }
+
+    .main-card {
+        padding: 25px 20px;
+    }
+
+    .page-title h1 {
+        font-size: 28px;
+    }
+
+    .nav-brand {
+        font-size: 20px;
+    }
+
+    .nav-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .post-details {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .main-card {
+        padding: 20px 15px;
+        border-radius: 12px;
+    }
+
+    .page-title h1 {
+        font-size: 24px;
+    }
+
+    .avatar-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .post-details {
+        grid-template-columns: 1fr;
+    }
+
+    .flex-end {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FishOn - Fil d'actualité des pêcheurs">
+    <title>FishOn - Feed</title>
+    <link rel="stylesheet" href="../CSS/feed.css">
+</head>
+<body>
+
+<!-- ========== BARRE DE NAVIGATION ========== -->
+<!-- Barre de navigation fixe en haut de la page avec logo et boutons utilisateur -->
+<nav class="nav-bar">
+    <div class="nav-container">
+        <!-- Logo de l'application FishOn -->
+        <div class="nav-logo">
+            <span class="nav-brand">FishOn</span>
+        </div>
+
+        <!-- Boutons de navigation pour l'utilisateur connecté -->
+        <div class="nav-buttons">
+            <button id="journalBtn" class="nav-btn">Journal de Bord</button>
+            <button id="profileBtn" class="nav-btn">Ton navire !</button>
+            <button id="logoutBtn" class="nav-btn btn-logout">Déconnexion</button>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== CONTENU PRINCIPAL DE LA PAGE ========== -->
+<!-- Container principal qui contient tout le feed des publications -->
+<div class="feed-container">
+    <!-- Carte principale du feed avec titre et publications -->
+    <div class="feed-card">
+
+        <!-- ========== EN-TÊTE DU FEED ========== -->
+        <!-- Titre et sous-titre d'accueil du feed -->
+        <div class="feed-title">
+            <h1>A l'aventure marin d'eau douce !</h1>
+            <p class="feed-subtitle">Découvrez les dernières prises de la communauté</p>
+        </div>
+
+        <!-- ========== MESSAGES D'ÉTAT ========== -->
+        <!-- Message affiché pendant le chargement des publications -->
+        <div id="loadingMessage" class="loading-message">
+            Chargement des publications...
+        </div>
+
+        <!-- Message d'erreur en cas de problème de chargement (caché par défaut) -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            Une erreur est survenue lors du chargement
+        </div>
+
+        <!-- ========== CONTAINER DES PUBLICATIONS ========== -->
+        <!-- Zone où seront injectées dynamiquement toutes les publications via JavaScript -->
+        <div id="postsContainer" class="posts-container">
+            <!-- Les posts seront ajoutés dynamiquement par JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- ========== TEMPLATES HTML (INVISIBLES) ========== -->
+<!-- Ces templates sont utilisés par JavaScript pour créer dynamiquement le contenu -->
+
+<!-- ========== TEMPLATE PRINCIPAL D'UNE PUBLICATION ========== -->
+<!-- Structure HTML réutilisable pour chaque publication de pêche -->
+<template id="post-template">
+    <div class="post-card">
+
+        <!-- En-tête de la publication avec informations sur l'auteur -->
+        <div class="post-header">
+            <div class="post-author-info">
+                <!-- Avatar de l'auteur de la publication -->
+                <div class="post-author-avatar">
+                    <img class="avatar-img" src="" alt="" loading="lazy">
+                </div>
+                <!-- Détails de l'auteur (nom et date de publication) -->
+                <div class="post-author-details">
+                    <div class="post-author"></div>
+                    <div class="post-date"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu principal de la publication (titre, description, image) -->
+        <div class="post-content">
+            <h2 class="post-title"></h2>
+            <p class="post-description"></p>
+            <!-- Image de la prise de pêche (cachée si pas d'image, cliquable pour agrandir) -->
+            <img class="post-image" src="" alt="Photo de pêche" loading="lazy" style="display: none; cursor: pointer;">
+        </div>
+
+        <!-- ========== DÉTAILS DE LA PÊCHE ========== -->
+        <!-- Section pour afficher les détails techniques de la pêche (lieu, poisson, etc.) -->
+        <div class="post-details">
+            <!-- Les détails seront ajoutés dynamiquement par JavaScript -->
+        </div>
+
+        <!-- ========== SECTION COMMENTAIRES ========== -->
+        <!-- Section complète pour la gestion des commentaires -->
+        <div class="comments-section">
+            <!-- Titre des commentaires avec icône toggle et compteur -->
+            <h3 class="comments-title">
+                <span class="comments-toggle-icon">▶</span>
+                <span class="comments-count">Commentaires (0)</span>
+            </h3>
+
+            <!-- Contenu des commentaires (caché par défaut, s'ouvre au clic) -->
+            <div class="comments-content hidden">
+                <!-- Liste des commentaires existants -->
+                <div class="comments-list">
+                    <!-- Les commentaires seront ajoutés ici dynamiquement -->
+                </div>
+
+                <!-- Bouton pour ouvrir le formulaire d'ajout de commentaire -->
+                <button class="add-comment-toggle">
+                    💬 Ajouter un commentaire
+                </button>
+
+                <!-- Formulaire d'ajout de nouveau commentaire (caché par défaut) -->
+                <form class="add-comment-form hidden">
+                    <!-- Zone de texte pour saisir le commentaire -->
+                    <textarea
+                            class="comment-input"
+                            placeholder="Écrivez votre commentaire..."
+                            maxlength="1000"
+                            required
+                    ></textarea>
+                    <!-- Boutons d'action du formulaire -->
+                    <div class="comment-form-buttons">
+                        <button type="button" class="comment-btn comment-btn-cancel">
+                            Annuler
+                        </button>
+                        <button type="submit" class="comment-btn comment-btn-submit">
+                            Publier
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- ========== TEMPLATE POUR UN DÉTAIL DE PÊCHE ========== -->
+<!-- Structure pour afficher un détail spécifique (ex: "Lieu: Lac de Savoie") -->
+<template id="detail-template">
+    <div class="detail-item">
+        <div class="detail-label"></div> <!-- Label du détail (ex: "Lieu") -->
+        <div class="detail-value"></div> <!-- Valeur du détail (ex: "Lac de Savoie") -->
+    </div>
+</template>
+
+<!-- ========== TEMPLATE POUR UN COMMENTAIRE ========== -->
+<!-- Structure HTML pour chaque commentaire individuel -->
+<template id="comment-template">
+    <div class="comment-item">
+        <!-- En-tête du commentaire avec avatar et informations auteur -->
+        <div class="comment-header">
+            <div class="comment-author-info">
+                <!-- Avatar de l'auteur du commentaire -->
+                <div class="comment-author-avatar">
+                    <img class="comment-avatar-img" src="" alt="" loading="lazy">
+                </div>
+                <!-- Détails de l'auteur du commentaire (nom et date) -->
+                <div class="comment-author-details">
+                    <div class="comment-author"></div>
+                    <div class="comment-date"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Contenu textuel du commentaire -->
+        <div class="comment-content"></div>
+    </div>
+</template>
+
+<!-- ========== TEMPLATE POUR MESSAGE "AUCUN COMMENTAIRE" ========== -->
+<!-- Affiché quand une publication n'a pas encore de commentaires -->
+<template id="no-comments-template">
+    <div class="no-comments">Aucun commentaire pour le moment</div>
+</template>
+
+<!-- ========== TEMPLATE POUR FEED VIDE ========== -->
+<!-- Affiché quand aucune publication n'est disponible dans le feed -->
+<template id="empty-feed-template">
+    <div class="empty-feed-message">
+        <div class="empty-feed-icon">🎣</div>
+        <div class="empty-feed-title">Aucune publication à afficher</div>
+        <div class="empty-feed-subtitle">
+            La communauté n'a pas encore partagé de prises.<br>
+            Revenez plus tard pour découvrir les dernières captures !
+        </div>
+    </div>
+</template>
+
+<!-- ========== PIED DE PAGE ========== -->
+<!-- Footer avec liens sociaux et informations sur l'application -->
+<footer>
+    <div class="footer-content">
+        <h3 class="footer-title">Suivez-nous !</h3>
+
+        <!-- Icônes et liens vers les réseaux sociaux -->
+        <ul class="social-links">
+            <li><img src="../IMG/Facebook.png" alt="Facebook"></li>
+            <li><img src="../IMG/X.png" alt="X (Twitter)"></li>
+            <li><img src="../IMG/Instagram.png" alt="Instagram"></li>
+        </ul>
+
+        <!-- Informations de marque et copyright -->
+        <div class="footer-brand">Bienvenue sur FishOn</div>
+        <div class="footer-copyright">@copyright2025</div>
+    </div>
+</footer>
+
+<!-- ========== SCRIPTS JAVASCRIPT ========== -->
+<!-- Chargement des scripts pour les fonctionnalités de l'application -->
+<script src="../JS/API.js"></script>
+<script src="../JS/ErrorHandler.js"></script>
+<script src="../JS/APIService.js"></script>
+<script src="../JS/utils.js"></script>
+<script src="../JS/Feed.js"></script>
+
+</body>
+</html>
