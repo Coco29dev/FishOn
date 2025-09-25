@@ -9,7 +9,7 @@
 
 body {
     font-family: system-ui, -apple-system, sans-serif; /* Police système pour cohérence */
-    background-image: url('../IMG/Login.webp'); /* Image de fond identique aux pages auth */
+    background-image: url('../IMG/Login.png'); /* Image de fond identique aux pages auth */
     background-size: cover; /* Image couvre entièrement la zone */
     background-position: center center; /* Centrage horizontal et vertical */
     background-attachment: fixed; /* Image fixe pendant le scroll */

@@ -9,7 +9,7 @@
 
 body {
     font-family: system-ui, -apple-system, sans-serif; /* Police d'écriture */
-    background-image: url('../IMG/Login.webp'); /* Image de fond de la maquette */
+    background-image: url('../IMG/Login.png'); /* Image de fond de la maquette */
     background-size: cover; /* Taille de l'image de fond, couvre entièrement la zone */
     background-position: center center; /* Positionnement image de fond centrer horizontalement et verticalement */
     background-attachment: fixed; /* Définition image fixe pendant le scroll */
