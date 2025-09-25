@@ -556,7 +556,7 @@ footer {
     right: 0; /* Étendu sur toute la largeur */
     background: rgba(255, 255, 255, 0.9); /* Fond blanc semi-transparent */
     backdrop-filter: blur(10px); /* Effet de flou */
-    padding: 20px 0; /* Espacement vertical */
+    padding: 12px 0; /* Espacement vertical */
     border-top: 1px solid rgba(0, 0, 0, 0.05); /* Bordure subtile en haut */
     z-index: 999; /* S'affiche au-dessus du contenu */
 }

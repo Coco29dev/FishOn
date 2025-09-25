@@ -409,7 +409,7 @@ footer {
     right: 0; /* Aligné à droite (étend sur toute la largeur) */
     background: rgba(255, 255, 255, 0.9); /* Fond blanc semi-transparent */
     backdrop-filter: blur(10px); /* Effet de flou sur l'arrière-plan */
-    padding: 20px 0; /* Espacement intérieur vertical */
+    padding: 12px 0; /* Espacement intérieur vertical */
     text-align: center; /* Centre le contenu */
     border-top: 1px solid rgba(0, 0, 0, 0.05); /* Bordure supérieure subtile */
     z-index: 999; /* S'affiche au-dessus du contenu */
